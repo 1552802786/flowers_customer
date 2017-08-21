@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private SparseIntArray items;// used for change ViewPager selected item
     private List<Fragment> fragments;// used for ViewPager adapter
 
-    private ActionBar actionBar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
         bind.bnve.enableAnimation(true);
         bind.bnve.enableItemShiftingMode(false);
 
-        actionBar = getSupportActionBar();
-        setBarTitle(0);
     }
 
     /**
@@ -113,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                     previousPosition = position;
                     Log.i(TAG, "-----bnve-------- previous item:" + bind.bnve.getCurrentItem() + " current item:" + position + " ------------------");
                     bind.vp.setCurrentItem(position);
-                    setBarTitle(position);
                 }
                 return true;
             }
@@ -129,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 Log.i(TAG, "-----ViewPager-------- previous item:" + bind.bnve.getCurrentItem() + " current item:" + position + " ------------------");
                 bind.bnve.setCurrentItem(position);
-                setBarTitle(position);
             }
 
             @Override
@@ -161,17 +155,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setBarTitle(int position) {
-        if (position == 0) {
-            actionBar.setTitle(getString(R.string.title_home));
-        } else if (position == 1) {
-            actionBar.setTitle(getString(R.string.title_buy));
-        } else if (position == 2) {
-            actionBar.setTitle(getString(R.string.title_shopping_cart));
-        } else if (position == 3) {
-            actionBar.setTitle(getString(R.string.title_reserve));
-        } else if (position == 4) {
-            actionBar.setTitle(getString(R.string.title_mine));
-        }
-    }
+//    private void setBarTitle(int position) {
+//        if (position == 0) {
+//            actionBar.setTitle(getString(R.string.title_home));
+//        } else if (position == 1) {
+//            actionBar.setTitle(getString(R.string.title_buy));
+//        } else if (position == 2) {
+//            actionBar.setTitle(getString(R.string.title_shopping_cart));
+//        } else if (position == 3) {
+//            actionBar.setTitle(getString(R.string.title_reserve));
+//        } else if (position == 4) {
+//            actionBar.setTitle(getString(R.string.title_mine));
+//        }
+//    }
 }
