@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/i_home"
+        android:checked="true"
+        android:icon="@drawable/ic_audiotrack_black_24dp"
+        android:title="@string/title_home" />
+    <item
+        android:id="@+id/i_buy"
+        android:icon="@drawable/ic_backup_black_24dp"
+        android:title="@string/title_buy" />
+    <item
+        android:id="@+id/i_shopping"
+        android:icon="@drawable/ic_camera_black_24dp"
+        android:title="@string/title_shopping_cart" />
+    <item
+        android:id="@+id/i_reserve"
+        android:icon="@drawable/ic_backup_black_24dp"
+        android:title="@string/title_reserve" />
+    <item
+        android:id="@+id/i_mine"
+        android:icon="@drawable/ic_audiotrack_black_24dp"
+        android:title="@string/title_mine" />
+</menu>
