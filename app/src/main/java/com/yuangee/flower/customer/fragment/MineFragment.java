@@ -1,30 +1,81 @@
 package com.yuangee.flower.customer.fragment;
 
-import android.databinding.DataBindingUtil;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.design.widget.AppBarLayout;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.databinding.FragmentMineBinding;
-import com.yuangee.flower.customer.databinding.FragmentReserveBinding;
+import com.yuangee.flower.customer.activity.PersonalCenterActivity;
+import com.yuangee.flower.customer.base.RxLazyFragment;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by developerLzh on 2017/8/21 0021.
  */
 
-public class MineFragment extends Fragment {
+public class MineFragment extends RxLazyFragment {
 
-    private FragmentMineBinding binding;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
-    @Nullable
+    @BindView(R.id.tv_av)
+    TextView tvAv;
+
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout appbarLayout;
+
+    @BindView(R.id.notification_icon)
+    ImageView notificationIcon;
+
+    @OnClick(R.id.notification_icon)
+    void toMessage() {
+
+    }
+
+    @OnClick(R.id.mine_top)
+    void toPersonal() {
+        startActivity(new Intent(getActivity(), PersonalCenterActivity.class));
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = View.inflate(getContext(), R.layout.fragment_mine, null);
-        binding = DataBindingUtil.bind(view);
-        return view;
+    public int getLayoutResId() {
+        return R.layout.fragment_mine;
+    }
+
+    @Override
+    public void finishCreateView(Bundle state) {
+        isPrepared = true;
+        lazyLoad();
+    }
+
+    @Override
+    protected void lazyLoad() {
+        if (!isPrepared || !isVisible) {
+            return;
+        }
+        initView();
+        isPrepared = false;
+    }
+
+    private void initView() {
+//        appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+//            @Override
+//            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+//                if (i == 0) {
+//                    //展开状态
+//                    tvAv.setTextColor(getResources().getColor(R.color.colorPrimary));
+//                    notificationIcon.setImageResource(R.drawable.ic_notifications_primary);
+//                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
+//                    //折叠状态
+//                    tvAv.setTextColor(getResources().getColor(R.color.white));
+//                    notificationIcon.setImageResource(R.drawable.ic_notifications_white);
+//                }
+//            }
+//        });
     }
 }

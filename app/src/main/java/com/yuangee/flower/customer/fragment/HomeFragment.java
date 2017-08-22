@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +16,15 @@ import com.yuangee.flower.customer.widget.sectioned.SectionedRecyclerViewAdapter
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.Observable;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.observers.Observers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -129,6 +134,17 @@ public class HomeFragment extends RxLazyFragment {
 
     @Override
     protected void loadData() {
+
+        Observable.timer(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        mIsRefreshing = false;
+                    }
+                });
 //        RetrofitHelper.getBangumiAPI()
 //                .getBangumiAppIndex()
 //                .compose(bindToLifecycle())

@@ -5,6 +5,8 @@
     <color name="colorAccent">#f74f50</color>
     <color name="colorGray">#ccc</color>
 
+    <color name="bg_color">#f7f7f7</color>
+
     <color name="line_color">#dfdfdf</color>
 
     <color name="white">#ffffff</color>
