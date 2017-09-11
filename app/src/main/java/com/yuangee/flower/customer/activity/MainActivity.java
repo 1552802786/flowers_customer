@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -16,11 +15,11 @@ import android.view.MenuItem;
 
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.databinding.ActivityMainBinding;
-import com.yuangee.flower.customer.fragment.HomeFragment;
 import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ReserveFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
 import com.yuangee.flower.customer.fragment.ShoppingFragment;
+import com.yuangee.flower.customer.fragment.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;

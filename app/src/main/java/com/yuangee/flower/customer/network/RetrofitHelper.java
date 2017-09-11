@@ -34,7 +34,7 @@ public class RetrofitHelper {
         initOkHttpClient();
     }
 
-    public static ApiService getLiveAPI() {
+    public static ApiService getFlowerApi() {
         return createApi(ApiService.class, Constant.BASE_URL);
     }
 

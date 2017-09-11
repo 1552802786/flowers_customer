@@ -4,9 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
-import android.os.StatFs;
-
-import java.io.File;
 
 /**
  * Created by hcc on 16/8/4 21:18

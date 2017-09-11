@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.databinding.FragmentReserveBinding;
-import com.yuangee.flower.customer.databinding.FragmentShoppingCartBinding;
 
 /**
  * Created by developerLzh on 2017/8/21 0021.

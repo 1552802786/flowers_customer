@@ -10,4 +10,29 @@
     <string name="backup">Backup</string>
     <string name="friends">Friends</string>
     <string name="favor">Favor</string>
+
+    <string name="response_error">请求无响应，错误编码：</string>
+    <string name="out_time">网络连接超时，请检查网络连接</string>
+    <string name="no_internet">网络连接失败，请检查网络连接</string>
+    <string name="parse_error">数据异常，解析失败</string>
+
+    <string name="wait">请稍候..</string>
+    <string name="yuan">元</string>
+
+    <string name="xiaoshiqian">小时前</string>
+    <string name="fenzhongqian">分钟前</string>
+    <string name="tianqian">天前</string>
+    <string name="miaoqian">秒前</string>
+
+    <string name="today">今天</string>
+    <string name="tomorrow">明天</string>
+    <string name="bermorgen">后天</string>
+
+    <string name="NotFoundBooks">请选择导入的图书</string>
+    <string name="NotFoundPath">SD 存储卡状态不可用</string>
+    <string name="UpOneLevel">上一级</string>
+    <string name="Selected">选中</string>
+    <string name="LItem">项</string>
+    <string name="Detail">详情</string>
+    <string name="FileSize">文件大小 : </string>
 </resources>
