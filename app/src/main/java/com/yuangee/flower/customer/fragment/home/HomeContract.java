@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
+import com.yuangee.flower.customer.fragment.BasePresenter;
 
 import java.util.List;
 
@@ -21,7 +22,6 @@ public interface HomeContract {
         void showRecommendList(List<Recommend> orders);
 
         /**
-         *
          * @param tag 0代表正常返回但没数据  1代表请求异常
          */
         void showEmptyView(int tag);
@@ -33,14 +33,12 @@ public interface HomeContract {
         void showOrHideRow(RecyclerView recyclerView);
     }
 
-    interface Presenter {
-        void getBannerData();
+    abstract class Presenter extends BasePresenter {
+        abstract void getBannerData();
 
-        void getRecommendData(long customerId);
+        abstract void getRecommendData(long customerId);
 
-        void getTypeData();
-
-        void onDestroy();
+        abstract void getTypeData();
     }
 
     interface Model {
@@ -53,6 +51,7 @@ public interface HomeContract {
          * 获取首页数据
          */
         Observable<List<Recommend>> getRecommendData(long customerId);
+
         /**
          * 获取种类数据
          */

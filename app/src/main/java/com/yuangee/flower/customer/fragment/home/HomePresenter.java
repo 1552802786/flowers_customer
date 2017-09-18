@@ -5,6 +5,7 @@ import android.content.Context;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
+import com.yuangee.flower.customer.fragment.BasePresenter;
 import com.yuangee.flower.customer.util.RxManager;
 
 import java.util.ArrayList;
@@ -14,14 +15,12 @@ import java.util.List;
  * Created by developerLzh on 2017/9/4 0004.
  */
 
-public class HomePresenter implements HomeContract.Presenter {
+public class HomePresenter extends HomeContract.Presenter {
 
     private Context context;
 
     private HomeContract.Model mModel;
     private HomeContract.View mView;
-
-    private RxManager mRxManager = new RxManager();
 
     public void setMV(HomeContract.Model djMode, HomeContract.View view) {
         this.mModel = djMode;
@@ -80,11 +79,6 @@ public class HomePresenter implements HomeContract.Presenter {
 //                mView.showEmptyView();
 //            }
 //        })));
-    }
-
-    @Override
-    public void onDestroy() {
-        mRxManager.clear();
     }
 
     private List<BannerBean> createBanner() {

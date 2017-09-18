@@ -18,7 +18,7 @@ import com.yuangee.flower.customer.databinding.ActivityMainBinding;
 import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ReserveFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
-import com.yuangee.flower.customer.fragment.ShoppingFragment;
+import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
 import com.yuangee.flower.customer.fragment.home.HomeFragment;
 
 import java.util.ArrayList;
@@ -154,7 +154,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void setBarTitle(int position) {
+    @Override
+    public void onBackPressed() {
+        if (bind.vp.getCurrentItem() == 1) {
+            if (shoppingFragment.onBackPressed()) {
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
+
+    //    private void setBarTitle(int position) {
 //        if (position == 0) {
 //            actionBar.setTitle(getString(R.string.title_home));
 //        } else if (position == 1) {

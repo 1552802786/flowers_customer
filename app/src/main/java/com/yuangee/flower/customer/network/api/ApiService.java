@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.network.api;
 
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.result.BaseResult;
@@ -27,9 +28,16 @@ public interface ApiService {
      */
     @GET("driver/api/rest/v4/acceptTask")
     Observable<BaseResult<List<Recommend>>> getOrderData(@Query("customerId") long customerId);
+
     /**
      * 获取订单信息
      */
     @GET("driver/api/rest/v4/acceptTask")
     Observable<BaseResult<List<Type>>> getTypeData();
+
+    /**
+     * 获取商品信息接口
+     */
+    @GET("driver/api/rest/v4/acceptTask")
+    Observable<BaseResult<List<Goods>>> getGoodsData(@Query("page") int page, @Query("limit") int limit);
 }

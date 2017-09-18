@@ -237,8 +237,8 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     }
 
     @Override
-    public void onDestroy() {
+    public void onDetach() {
         presenter.onDestroy();
-        super.onDestroy();
+        super.onDetach();
     }
 }
