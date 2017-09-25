@@ -16,15 +16,16 @@ import android.view.MenuItem;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.databinding.ActivityMainBinding;
 import com.yuangee.flower.customer.fragment.MineFragment;
-import com.yuangee.flower.customer.fragment.ReserveFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
+import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
+import com.yuangee.flower.customer.fragment.reserve.ReserveFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
 import com.yuangee.flower.customer.fragment.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ToSpecifiedFragmentListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private VpAdapter adapter;
     private ActivityMainBinding bind;
@@ -68,7 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
         homeFragment = new HomeFragment();
         shoppingFragment = new ShoppingFragment();
+
         shoppingCartFragment = new ShoppingCartFragment();
+        shoppingCartFragment.setToSpecifiedFragmentListener(this);
+
         reserveFragment = new ReserveFragment();
         mineFragment = new MineFragment();
 
@@ -130,6 +134,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void toFragment(int position) {
+        bind.vp.setCurrentItem(position);
     }
 
     /**

@@ -61,19 +61,36 @@
             android:text="可售量:800" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/add_to_car"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="40dp"
         android:layout_height="150dp"
-        android:layout_alignParentRight="true"
-        android:padding="5dp"
-        app:srcCompat="@drawable/ic_shopping_car" />
+        android:id="@+id/right_con"
+        android:layout_alignParentRight="true">
+
+        <ImageView
+            android:id="@+id/add_to_car"
+            android:layout_width="40dp"
+            android:layout_height="150dp"
+            android:padding="5dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_shopping_car" />
+
+        <TextView
+            android:id="@+id/yu_yue"
+            android:layout_width="40dp"
+            android:layout_height="150dp"
+            android:padding="5dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="预\n\n约"
+            android:textColor="#ff0000"/>
+    </FrameLayout>
 
     <View
         android:id="@+id/line1"
         android:layout_width="0.1dp"
         android:layout_height="150dp"
-        android:layout_toLeftOf="@+id/add_to_car"
+        android:layout_toLeftOf="@+id/right_con"
         android:background="@color/line_color" />
 
     <RelativeLayout
@@ -101,22 +118,23 @@
                 android:id="@+id/num_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_sub" />
+                app:srcCompat="@drawable/ic_sub_selector"
+                android:paddingRight="5dp"/>
 
             <TextView
                 android:id="@+id/goods_num"
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="2"
+                android:text="1"
+                android:gravity="center"
                 android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/num_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                app:srcCompat="@drawable/ic_add" />
+                android:paddingLeft="5dp"
+                app:srcCompat="@drawable/ic_add_selector" />
 
         </LinearLayout>
 

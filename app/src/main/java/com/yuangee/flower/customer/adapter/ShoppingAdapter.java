@@ -1,21 +1,19 @@
 package com.yuangee.flower.customer.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Goods;
-import com.yuangee.flower.customer.entity.Recommend;
-import com.yuangee.flower.customer.fragment.shopping.ShoppingContract;
-import com.yuangee.flower.customer.util.DisplayUtil;
-import com.yuangee.flower.customer.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +21,12 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/3/10.
  */
-public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder> {
+public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.GoodsHolder> {
 
     private Context context;
     private List<Goods> data;
 
     private OnItemClickListener mOnItemClickListener;   //声明监听器接口
-
-    private int flag = 0;//0代表右侧是加入购物车  1代表右侧是预约
 
     public interface OnItemClickListener {
         /**
@@ -51,8 +47,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    public GoodsAdapter(Context context,int flag) {
-        this.flag = flag;
+    public ShoppingAdapter(Context context) {
         this.context = context;
         data = new ArrayList<>();
     }
@@ -60,23 +55,19 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
     @Override
     public GoodsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = View.inflate(context, R.layout.goods_item, null);
+        View view = View.inflate(context, R.layout.shopping_car_item, null);
         GoodsHolder holder = new GoodsHolder(view);
 
         holder.layoutView = view;    //将布局view保存起来用作点击事件
 
         holder.goodsImg = view.findViewById(R.id.goods_img);
         holder.goodsName = view.findViewById(R.id.goods_name);
-        holder.goodsGrade = view.findViewById(R.id.goods_grade);
-        holder.goodsColor = view.findViewById(R.id.goods_color);
-        holder.goodsSpec = view.findViewById(R.id.goods_spec);
-        holder.goodsLeft = view.findViewById(R.id.goods_left);
-        holder.addToCar = view.findViewById(R.id.add_to_car);
         holder.goodsMoney = view.findViewById(R.id.goods_money);
+        holder.goodsPrice = view.findViewById(R.id.goods_price);
+        holder.removeFromCar = view.findViewById(R.id.delete_con);
         holder.numSub = view.findViewById(R.id.num_sub);
         holder.numAdd = view.findViewById(R.id.num_add);
         holder.goodsNum = view.findViewById(R.id.goods_num);
-        holder.yuYue = view.findViewById(R.id.yu_yue);
 
         return holder;
     }
@@ -87,7 +78,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
     }
 
     private void setBtnEnable(GoodsHolder holder, Goods bean) {
-        if (bean.selectedNum == 1) {
+        if (bean.selectedNum == 0) {
             holder.numSub.setEnabled(false);
             holder.numAdd.setEnabled(true);
         } else if (bean.selectedNum == 10) {
@@ -97,6 +88,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
             holder.numSub.setEnabled(true);
             holder.numAdd.setEnabled(true);
         }
+        holder.goodsMoney.setText("总计：" + bean.goodsPrice * bean.selectedNum + "元");
     }
 
     //设置数据
@@ -112,32 +104,18 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.goodsImg);
         holder.goodsName.setText(bean.goodsName);
-        holder.goodsGrade.setText("等级：" + bean.goodsGrade);
-        holder.goodsColor.setText("颜色：" + bean.goodsColor);
-        holder.goodsSpec.setText("规格：" + bean.goodsSpec + "cm");
-        holder.goodsLeft.setText("可售量：" + bean.goodsLeft);
-        holder.goodsNum.setText(bean.selectedNum + "");
+        holder.goodsPrice.setText(bean.goodsMoney);
+        holder.goodsMoney.setText("总计：" + bean.goodsPrice * bean.selectedNum + "元");
 
-        if(flag == 0){
-            holder.addToCar.setVisibility(View.VISIBLE);
-            holder.yuYue.setVisibility(View.GONE);
-        } else {
-            holder.addToCar.setVisibility(View.GONE);
-            holder.yuYue.setVisibility(View.VISIBLE);
-        }
+        holder.goodsNum.setText(bean.selectedNum + "");
 
         setBtnEnable(holder, bean);
 
-        holder.addToCar.setOnClickListener(new View.OnClickListener() {
+        holder.removeFromCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bean.isAddToCar = true;
-            }
-        });
-        holder.yuYue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bean.isAddToCar = true;
+                data.remove(position);
+                notifyDataSetChanged();
             }
         });
 
@@ -158,8 +136,6 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
                 holder.goodsNum.setText("" + bean.selectedNum);
             }
         });
-
-        holder.goodsMoney.setText(bean.goodsMoney);
 
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
@@ -188,16 +164,12 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         View layoutView;
         ImageView goodsImg;
         TextView goodsName;
-        TextView goodsGrade;
-        TextView goodsColor;
-        TextView goodsSpec;
-        TextView goodsLeft;
-        ImageView addToCar;
-        TextView goodsMoney;
+        FrameLayout removeFromCar;
+        TextView goodsMoney;//总计
+        TextView goodsPrice;//单价
         ImageView numSub;
         ImageView numAdd;
         TextView goodsNum;
-        TextView yuYue;
     }
 
 }

@@ -14,7 +14,9 @@ public class Goods {
 
     public boolean isAddToCar;
 
-    public String goodsMoney;//  ¥200/束
+    public String goodsMoney;// String型单价  ¥200/束
 
     public int selectedNum;//选中的数量
+
+    public double goodsPrice;//int型单价
 }

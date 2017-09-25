@@ -1,4 +1,4 @@
-package com.yuangee.flower.customer.fragment.shopping;
+package com.yuangee.flower.customer.fragment.reserve;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +29,7 @@ import butterknife.OnClick;
  * Created by developerLzh on 2017/8/21 0021.
  */
 
-public class ShoppingFragment extends RxLazyFragment implements ShoppingContract.View, PullLoadMoreRecyclerView.PullLoadMoreListener, BackPressedHandler {
+public class ReserveFragment extends RxLazyFragment implements ReserveContract.View, PullLoadMoreRecyclerView.PullLoadMoreListener, BackPressedHandler {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -57,7 +57,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         myDrawerLayout.openDrawer(Gravity.LEFT);
     }
 
-    ShoppingPresenter presenter;
+    ReservePresenter presenter;
 
     GoodsAdapter adapter;
 
@@ -75,8 +75,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     public void finishCreateView(Bundle state) {
         isPrepared = true;
         lazyLoad();
-        presenter = new ShoppingPresenter(getActivity());
-        presenter.setMV(new ShoppingModel(getActivity()), this);
+        presenter = new ReservePresenter(getActivity());
+        presenter.setMV(new ReserveModel(getActivity()), this);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setFooterViewText("加载中..");
 
-        adapter = new GoodsAdapter(getActivity(),0);
+        adapter = new GoodsAdapter(getActivity(),1);
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
