@@ -88,7 +88,7 @@ public class ShoppingCartFragment extends RxLazyFragment {
 
         shoppingRecycle.setAdapter(adapter);
 
-//        createGoods();
+        createGoods();
 
         adapter.setData(goodsList);
 

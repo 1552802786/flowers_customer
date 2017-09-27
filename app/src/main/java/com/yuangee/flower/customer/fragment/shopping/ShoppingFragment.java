@@ -3,7 +3,9 @@ package com.yuangee.flower.customer.fragment.shopping;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
@@ -13,8 +15,12 @@ import android.widget.TextView;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
+import com.yuangee.flower.customer.adapter.Type2Adapter;
+import com.yuangee.flower.customer.adapter.Type3Adapter;
+import com.yuangee.flower.customer.adapter.TypeAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
@@ -57,11 +63,23 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         myDrawerLayout.openDrawer(Gravity.LEFT);
     }
 
+    @BindView(R.id.type_recycler)
+    RecyclerView typeRecycler;
+
+    @BindView(R.id.detail_type_recycler)
+    RecyclerView detailRecycler;
+
     ShoppingPresenter presenter;
 
     GoodsAdapter adapter;
+    Type2Adapter typeAdapter;
+
+    Type3Adapter detailTypeAdapter;
 
     public List<Goods> goodsList;
+
+    private List<Type> types;
+    private List<Type> detailTypes;
 
     private int page = 0;
     private int limit = 10;
@@ -86,7 +104,57 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         }
         myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initRecyclerView();
+        initDrawer();
         isPrepared = false;
+    }
+
+    private void initDrawer() {
+
+        types = new ArrayList<>();
+        typeAdapter = new Type2Adapter(getActivity());
+        typeRecycler.setAdapter(typeAdapter);
+        LinearLayoutManager linManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        typeRecycler.setLayoutManager(linManager);
+        typeAdapter.setOnItemClickListener(new Type2Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                createDetailType(position);
+                detailTypeAdapter.setData(detailTypes);
+            }
+        });
+        createType();
+        typeAdapter.setData(types);
+
+        detailTypes = new ArrayList<>();
+        detailTypeAdapter = new Type3Adapter(getActivity());
+        detailRecycler.setAdapter(detailTypeAdapter);
+        GridLayoutManager gridManager = new GridLayoutManager(getActivity(), 3);
+        detailRecycler.setLayoutManager(gridManager);
+        detailTypeAdapter.setOnItemClickListener(new Type3Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                myDrawerLayout.closeDrawer(Gravity.LEFT);
+            }
+        });
+        createDetailType(0);
+        detailTypeAdapter.setData(detailTypes);
+    }
+
+    private void createType() {
+        for (int i = 0; i < 10; i++) {
+            Type type = new Type();
+            type.typeName = "种类" + i;
+            types.add(type);
+        }
+    }
+
+    private void createDetailType(int position) {
+        detailTypes.clear();
+        for (int i = 0; i < 10; i++) {
+            Type type = new Type();
+            type.typeName = "种类" + position + "_" + i;
+            detailTypes.add(type);
+        }
     }
 
     @Override
@@ -94,7 +162,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setFooterViewText("加载中..");
 
-        adapter = new GoodsAdapter(getActivity(),0);
+        adapter = new GoodsAdapter(getActivity(), 0);
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

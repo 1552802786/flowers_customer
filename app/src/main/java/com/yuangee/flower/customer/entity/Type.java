@@ -6,4 +6,6 @@ package com.yuangee.flower.customer.entity;
 
 public class Type {
     public String typeName;
+
+    public boolean clicked;
 }
