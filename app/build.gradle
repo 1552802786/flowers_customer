@@ -21,6 +21,10 @@ android {
     dataBinding {
         enabled true
     }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
 }
 
 dependencies {
@@ -48,8 +52,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.youth.banner:banner:1.4.9'
     compile 'com.victor:lib:1.0.4'
-    compile "com.github.bumptech.glide:glide:3.7.0"
     compile 'com.wuxiaolong.pullloadmorerecyclerview:library:1.1.2'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     testCompile 'junit:junit:4.12'
 

@@ -1,5 +1,6 @@
 package com.yuangee.flower.customer.fragment.shopping;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.GoodsActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.adapter.Type2Adapter;
 import com.yuangee.flower.customer.adapter.Type3Adapter;
@@ -166,7 +168,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ToastUtil.showMessage(getActivity(), "您点击了" + position);
+//                ToastUtil.showMessage(getActivity(), "您点击了" + position);
+                startActivity(new Intent(getActivity(), GoodsActivity.class));
             }
         });
 

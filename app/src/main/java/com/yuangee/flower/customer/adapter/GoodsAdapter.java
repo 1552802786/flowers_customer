@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Recommend;
@@ -105,12 +106,15 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
 
         final Goods bean = data.get(position);
 
-        Glide.with(context)
-                .load(bean.imgPath)
+        RequestOptions options = new RequestOptions()
                 .centerCrop()
                 .placeholder(R.color.color_f6)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+        Glide.with(context)
+                .load(bean.imgPath)
+                .apply(options)
                 .into(holder.goodsImg);
+
         holder.goodsName.setText(bean.goodsName);
         holder.goodsGrade.setText("等级：" + bean.goodsGrade);
         holder.goodsColor.setText("颜色：" + bean.goodsColor);

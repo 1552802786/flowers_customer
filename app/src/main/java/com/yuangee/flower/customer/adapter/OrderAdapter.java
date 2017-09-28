@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.util.DisplayUtil;
@@ -64,11 +65,11 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
         ImageView imageView = new ImageView(context);
 
-        int width = DisplayUtil.getScreenWidth(context) / 2 - DisplayUtil.dp2px(context,15);
+        int width = DisplayUtil.getScreenWidth(context) / 2 - DisplayUtil.dp2px(context, 15);
 
-        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(width,width);
+        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(width, width);
 
-        holder.relativeLayout.addView(imageView,layoutParams);
+        holder.relativeLayout.addView(imageView, layoutParams);
 
         holder.imageView = imageView;
 
@@ -87,11 +88,13 @@ public class OrderAdapter extends RecyclerView.Adapter {
         OrderHolder orderHolder = (OrderHolder) holder;
         final Recommend bean = data.get(position);
 
-        Glide.with(context)
-                .load(bean.imgPath)
+        RequestOptions options = new RequestOptions()
                 .centerCrop()
                 .placeholder(R.color.color_f6)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+        Glide.with(context)
+                .load(bean.imgPath)
+                .apply(options)
                 .into(orderHolder.imageView);
 
         //给该item设置一个监听器

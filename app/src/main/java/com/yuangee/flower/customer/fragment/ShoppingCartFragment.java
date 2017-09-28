@@ -1,5 +1,6 @@
 package com.yuangee.flower.customer.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.adapter.ShoppingAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.Goods;
@@ -40,6 +42,7 @@ public class ShoppingCartFragment extends RxLazyFragment {
     @OnClick(R.id.apply)
     void apply() {
         ToastUtil.showMessage(getActivity(), "点击了提交订单");
+        startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
     @BindView(R.id.empty_layout)

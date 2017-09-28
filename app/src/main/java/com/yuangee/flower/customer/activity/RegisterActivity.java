@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -10,37 +11,40 @@ import com.yuangee.flower.customer.base.RxBaseActivity;
 import butterknife.BindView;
 
 /**
- * Created by developerLzh on 2017/8/22 0022.
+ * Created by developerLzh on 2017/9/28 0028.
  */
 
-public class PersonalCenterActivity extends RxBaseActivity {
+public class RegisterActivity extends RxBaseActivity {
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-
     @Override
     public int getLayoutId() {
-        return R.layout.activity_personal_center;
+        return R.layout.activity_apply_supplier;
     }
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        toolbar.setTitle("个人中心");
-        setSupportActionBar(toolbar);
-        if (null != getSupportActionBar()) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+
     }
 
     @Override
     public void initToolBar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("商品详情");
 
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
