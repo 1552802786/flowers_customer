@@ -26,16 +26,18 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="50dp"
                     android:background="@color/white">
 
                     <TextView
+                        android:id="@+id/person_check"
                         android:layout_width="0.0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="个人申请"
-                        android:textSize="20sp" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp" />
 
                     <View
                         android:layout_width="0.1dp"
@@ -43,12 +45,14 @@
                         android:background="@color/line_color" />
 
                     <TextView
+                        android:id="@+id/company_check"
                         android:layout_width="0.0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:textColor="@color/txt_black"
                         android:gravity="center"
                         android:text="公司申请"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -87,7 +91,8 @@
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_1"
                         android:background="@null"
-                        android:gravity="right"
+                        android:gravity="end"
+                        android:textCursorDrawable="@null"
                         android:hint="个人或公司全程"
                         android:minWidth="80dp"
                         android:text=""
@@ -127,6 +132,7 @@
                         android:layout_toLeftOf="@+id/ic_right_2"
                         android:background="@null"
                         android:gravity="right"
+                        android:textCursorDrawable="@null"
                         android:hint="公司简称或品牌"
                         android:minWidth="80dp"
                         android:text=""
@@ -166,6 +172,7 @@
                         android:layout_toLeftOf="@+id/ic_right_3"
                         android:background="@null"
                         android:gravity="right"
+                        android:textCursorDrawable="@null"
                         android:hint="负责人姓名"
                         android:minWidth="80dp"
                         android:text=""
@@ -205,6 +212,7 @@
                         android:layout_toLeftOf="@+id/ic_right_4"
                         android:background="@null"
                         android:gravity="right"
+                        android:textCursorDrawable="@null"
                         android:hint="联系电话"
                         android:minWidth="80dp"
                         android:text=""
@@ -244,6 +252,7 @@
                         android:layout_toLeftOf="@+id/ic_right_5"
                         android:background="@null"
                         android:gravity="right"
+                        android:textCursorDrawable="@null"
                         android:hint="详细地址"
                         android:minWidth="80dp"
                         android:text=""
@@ -299,6 +308,7 @@
                         android:layout_toLeftOf="@+id/ic_right_6"
                         android:background="@null"
                         android:gravity="right"
+                        android:textCursorDrawable="@null"
                         android:hint="银行卡号"
                         android:minWidth="80dp"
                         android:text=""
@@ -338,6 +348,7 @@
                         android:layout_toLeftOf="@+id/ic_right_7"
                         android:background="@null"
                         android:gravity="right"
+                        android:textCursorDrawable="@null"
                         android:hint="开户行地址"
                         android:minWidth="80dp"
                         android:text=""
@@ -377,6 +388,7 @@
                         android:layout_toLeftOf="@+id/ic_right_8"
                         android:background="@null"
                         android:gravity="right"
+                        android:textCursorDrawable="@null"
                         android:hint="户主名"
                         android:minWidth="80dp"
                         android:text=""
@@ -398,17 +410,64 @@
                 android:text="完善个人信息后才能参与远程售卖，七日内不完善会员，账号将被注销"
                 android:textColor="#aaff0000" />
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/card_no_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="13dp"
+                    android:text="身份证号码"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/ic_right_9"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_chevron" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/ic_right_9"
+                    android:background="@null"
+                    android:gravity="right"
+                    android:hint="身份证号码"
+                    android:textCursorDrawable="@null"
+                    android:minWidth="80dp"
+                    android:text=""
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/line_color" />
+
             <FrameLayout
+                android:id="@+id/card_frame"
                 android:layout_width="match_parent"
                 android:layout_height="108.75dp"
                 android:background="@color/white">
 
                 <ImageView
                     android:id="@+id/id_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center"/>
 
                 <LinearLayout
+                    android:id="@+id/card_hint"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
@@ -438,15 +497,21 @@
                 android:background="@color/line_color" />
 
             <FrameLayout
+                android:id="@+id/card_sec_frame"
                 android:layout_width="match_parent"
                 android:layout_height="108.75dp"
                 android:background="@color/white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:id="@+id/id_card_sec"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center"/>
 
                 <LinearLayout
+                    android:id="@+id/card_sec_hint"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
@@ -459,6 +524,7 @@
                         app:srcCompat="@drawable/ic_pick_photo" />
 
                     <TextView
+                        android:id="@+id/id_card_sec_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
@@ -475,15 +541,21 @@
                 android:background="@color/line_color" />
 
             <FrameLayout
+                android:id="@+id/quanshen_frame"
                 android:layout_width="match_parent"
                 android:layout_height="108.75dp"
                 android:background="@color/white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:id="@+id/quanshen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center"/>
 
                 <LinearLayout
+                    android:id="@+id/quanshen_hint"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
@@ -496,6 +568,7 @@
                         app:srcCompat="@drawable/ic_pick_photo" />
 
                     <TextView
+                        android:id="@+id/quanshen_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
@@ -506,119 +579,177 @@
                 </LinearLayout>
             </FrameLayout>
 
-
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/company_img_con"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:background="@color/white">
+                android:visibility="gone"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="13dp"
+                        android:text="营业执照号"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ic_right_10"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/ic_right_10"
+                        android:background="@null"
+                        android:textCursorDrawable="@null"
+                        android:gravity="right"
+                        android:hint="营业执照号"
+                        android:minWidth="80dp"
+                        android:text=""
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+                <FrameLayout
+                    android:id="@+id/zhizhao_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="108.75dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/zhizhao"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_gravity="center"/>
+
+                    <LinearLayout
+                        android:id="@+id/zhizhao_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            app:srcCompat="@drawable/ic_pick_photo" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:text="点击上传营业执照"
+                            android:textColorHint="@android:color/darker_gray"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+                <FrameLayout
+                    android:id="@+id/company_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="108.75dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/company"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_gravity="center"/>
+
+                    <LinearLayout
+                        android:id="@+id/company_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            app:srcCompat="@drawable/ic_pick_photo" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:text="点击上传公司照片"
+                            android:textColorHint="@android:color/darker_gray"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="13dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="13dp"
-                    android:text="地址"
-                    android:textSize="16sp" />
+                    android:text="我已阅读，并同意"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"/>
 
-                <ImageView
-                    android:id="@+id/ic_right_10"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_chevron" />
-
-                <EditText
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/ic_right_10"
-                    android:background="@null"
-                    android:gravity="right"
-                    android:hint="详细地址"
-                    android:minWidth="80dp"
-                    android:text=""
-                    android:textSize="14sp" />
+                    android:text="《供货商服务协议》"
+                    android:textSize="16sp"
+                    android:textColor="@color/green"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <View
+            <Button
                 android:layout_width="match_parent"
-                android:layout_height="0.1dp"
-                android:background="@color/line_color" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="108.75dp"
-                android:background="@color/white">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        app:srcCompat="@drawable/ic_pick_photo" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="点击上传营业执照"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-            </FrameLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.1dp"
-                android:background="@color/line_color" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="108.75dp"
-                android:background="@color/white">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        app:srcCompat="@drawable/ic_pick_photo" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="点击上传公司照片"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-            </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:text="立即申请"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:background="@drawable/corners_color_accent"
+                />
 
         </LinearLayout>
-
 
     </ScrollView>
 
