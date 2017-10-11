@@ -24,6 +24,7 @@ import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
+import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
@@ -71,6 +72,15 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     @BindView(R.id.detail_type_recycler)
     RecyclerView detailRecycler;
 
+    @OnClick(R.id.tv_av)
+    void toSearch() {
+        if (toSpecifiedFragmentListener != null) {
+            toSpecifiedFragmentListener.toFragment(-1);
+        }
+    }
+
+    private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
+
     ShoppingPresenter presenter;
 
     GoodsAdapter adapter;
@@ -85,6 +95,10 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     private int page = 0;
     private int limit = 10;
+
+    public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
+        this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
+    }
 
     @Override
     public int getLayoutResId() {

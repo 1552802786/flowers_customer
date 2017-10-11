@@ -16,6 +16,7 @@ import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
+import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
@@ -57,6 +58,19 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         myDrawerLayout.openDrawer(Gravity.LEFT);
     }
 
+    @OnClick(R.id.tv_av)
+    void toSearch() {
+        if (toSpecifiedFragmentListener != null) {
+            toSpecifiedFragmentListener.toFragment(-1);
+        }
+    }
+
+    private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
+
+    public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
+        this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
+    }
+
     ReservePresenter presenter;
 
     GoodsAdapter adapter;
@@ -94,7 +108,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
         plRecycler.setFooterViewText("加载中..");
 
-        adapter = new GoodsAdapter(getActivity(),1);
+        adapter = new GoodsAdapter(getActivity(), 1);
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

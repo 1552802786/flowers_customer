@@ -22,6 +22,7 @@ import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
+import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.util.GlideImageLoader;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 import com.yuangee.flower.customer.widget.SpaceItemDecoration;
@@ -67,6 +68,19 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     private HomePresenter presenter;
 
     private long customerId = 0;
+
+    private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
+
+    public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
+        this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
+    }
+
+    @OnClick(R.id.tv_av)
+    void toSearch() {
+        if (null != toSpecifiedFragmentListener) {
+            toSpecifiedFragmentListener.toFragment(-1);
+        }
+    }
 
     @Override
     public int getLayoutResId() {
