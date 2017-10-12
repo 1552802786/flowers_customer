@@ -34,6 +34,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/order_detail_con"
                 android:layout_width="0.0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -43,7 +44,9 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:srcCompat="@drawable/ic_sheild" />
+                    android:background="@drawable/f7_circle"
+                    android:padding="11dp"
+                    app:srcCompat="@drawable/ic_pay_money" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -55,6 +58,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/wait_receive"
                 android:layout_width="0.0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -64,28 +68,9 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:srcCompat="@drawable/ic_sheild" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="待付款"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0.0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:srcCompat="@drawable/ic_sheild" />
+                    android:background="@drawable/f7_circle"
+                    android:padding="11dp"
+                    app:srcCompat="@drawable/ic_freight" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -97,6 +82,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/book"
                 android:layout_width="0.0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -106,13 +92,39 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:srcCompat="@drawable/ic_sheild" />
+                    android:background="@drawable/f7_circle"
+                    android:padding="11dp"
+                    app:srcCompat="@drawable/ic_olock" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="预约"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/send_goods"
+                android:layout_width="0.0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/f7_circle"
+                    android:padding="11dp"
+                    app:srcCompat="@drawable/ic_pay_money" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="待我发货"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -145,6 +157,7 @@
         android:paddingRight="10dp">
 
         <LinearLayout
+            android:id="@+id/to_agreement"
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -154,7 +167,9 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/ic_sheild" />
+                android:background="@drawable/f7_circle"
+                android:padding="11dp"
+                app:srcCompat="@drawable/ic_agreement" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -166,6 +181,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/shouhou_rule"
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -175,7 +191,9 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/ic_sheild" />
+                android:background="@drawable/f7_circle"
+                android:padding="11dp"
+                app:srcCompat="@drawable/ic_question" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -187,6 +205,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/yunfei_rule"
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -196,7 +215,9 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/ic_sheild" />
+                android:background="@drawable/f7_circle"
+                android:padding="11dp"
+                app:srcCompat="@drawable/ic_money" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -208,6 +229,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/be_supplier"
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -217,7 +239,9 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/ic_sheild" />
+                android:background="@drawable/f7_circle"
+                android:padding="11dp"
+                app:srcCompat="@drawable/ic_person" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -239,6 +263,7 @@
         android:paddingRight="10dp">
 
         <LinearLayout
+            android:id="@+id/feedback"
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -248,7 +273,9 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/ic_sheild" />
+                android:background="@drawable/f7_circle"
+                android:padding="11dp"
+                app:srcCompat="@drawable/ic_feedback" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -260,6 +287,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/call_service"
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -269,7 +297,9 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/ic_sheild" />
+                android:background="@drawable/f7_circle"
+                android:padding="11dp"
+                app:srcCompat="@drawable/ic_service" />
 
             <TextView
                 android:layout_width="wrap_content"

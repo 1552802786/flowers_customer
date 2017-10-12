@@ -42,7 +42,6 @@ public class ShoppingCartFragment extends RxLazyFragment {
     @OnClick(R.id.apply)
     void apply() {
         ToastUtil.showMessage(getActivity(), "点击了提交订单");
-        startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
     @BindView(R.id.empty_layout)

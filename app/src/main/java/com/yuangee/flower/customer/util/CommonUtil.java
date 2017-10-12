@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.util;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -60,6 +61,20 @@ public class CommonUtil {
      */
     private static boolean checkSdCard() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+    public static String getAppVersion(Context paramContext) {
+        try {
+            if (null == paramContext) {
+                return "2.4.3";
+            }
+            String str = paramContext.getPackageManager().getPackageInfo(
+                    paramContext.getPackageName(), 0).versionName;
+            return str;
+        } catch (PackageManager.NameNotFoundException localNameNotFoundException) {
+//            printExceptionStackTrace(localNameNotFoundException);
+        }
+        return null;
     }
 
 }

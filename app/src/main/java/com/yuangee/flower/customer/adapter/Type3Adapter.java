@@ -72,11 +72,27 @@ public class Type3Adapter extends RecyclerView.Adapter {
         final Type bean = data.get(position);
         orderHolder.titleStr.setText(bean.typeName);
 
+        if (!bean.clicked) {
+            orderHolder.titleStr.setBackgroundResource(R.drawable.corners_bg_white);
+        } else {
+            orderHolder.titleStr.setBackgroundResource(R.drawable.corners_bg_orange);
+        }
+
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
             orderHolder.layoutView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    for (int i = 0; i < data.size(); i++) {
+                        Type type = data.get(i);
+                        if (i == position) {
+                            type.clicked = true;
+                        } else {
+                            type.clicked = false;
+                        }
+                        notifyDataSetChanged();
+                    }
+
                     mOnItemClickListener.onItemClick(v, position);
                 }
             });

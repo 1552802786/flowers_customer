@@ -9,7 +9,10 @@ import android.widget.TextView;
 
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
+import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
+import com.yuangee.flower.customer.util.PhoneUtil;
+import com.yuangee.flower.customer.util.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -40,6 +43,56 @@ public class MineFragment extends RxLazyFragment {
     @OnClick(R.id.mine_top)
     void toPersonal() {
         startActivity(new Intent(getActivity(), PersonalCenterActivity.class));
+    }
+
+    @OnClick(R.id.order_detail_con)
+    void toDetail() {
+        ToastUtil.showMessage(getActivity(), "订单详情");
+    }
+
+    @OnClick(R.id.wait_receive)
+    void waitReceive() {
+        ToastUtil.showMessage(getActivity(), "待收货");
+    }
+
+    @OnClick(R.id.book)
+    void book() {
+        ToastUtil.showMessage(getActivity(), "预约");
+    }
+
+    @OnClick(R.id.send_goods)
+    void sendGoods() {
+        ToastUtil.showMessage(getActivity(), "待我发货");
+    }
+
+    @OnClick(R.id.to_agreement)
+    void toAgreement() {
+        ToastUtil.showMessage(getActivity(), "服务条款");
+    }
+
+    @OnClick(R.id.shouhou_rule)
+    void shoufeiRule() {
+        ToastUtil.showMessage(getActivity(), "售后规则");
+    }
+
+    @OnClick(R.id.yunfei_rule)
+    void yunfeiRule() {
+        ToastUtil.showMessage(getActivity(), "运费规则");
+    }
+
+    @OnClick(R.id.be_supplier)
+    void beSupplier() {
+        startActivity(new Intent(getActivity(), RegisterActivity.class));
+    }
+
+    @OnClick(R.id.feedback)
+    void feedback() {
+        ToastUtil.showMessage(getActivity(), "意见反馈");
+    }
+
+    @OnClick(R.id.call_service)
+    void callService() {
+        PhoneUtil.call(getActivity(), "15102875535");
     }
 
     @Override

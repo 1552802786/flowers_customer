@@ -20,6 +20,7 @@ public class FlowerApp extends Application {
         super.onCreate();
         mInstance = this;
         init();
+        App.initApp(this);
     }
 
     private void init() {

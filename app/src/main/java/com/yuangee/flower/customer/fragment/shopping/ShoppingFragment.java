@@ -169,6 +169,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         for (int i = 0; i < 10; i++) {
             Type type = new Type();
             type.typeName = "种类" + position + "_" + i;
+            type.clicked = false;
             detailTypes.add(type);
         }
     }

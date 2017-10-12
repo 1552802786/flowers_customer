@@ -26,25 +26,33 @@
         android:gravity="center"
         android:layout_height="wrap_content"
         android:text="罗小猪"
-        android:layout_marginLeft="20dp"
         android:textColor="@color/white"
         android:textSize="18sp"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:background="@color/line_color"/>
     <TextView
         android:layout_width="0.0dp"
         android:layout_weight="0.7"
         android:gravity="center"
         android:layout_height="wrap_content"
         android:text="普通会员"
-        android:layout_marginLeft="20dp"
         android:textColor="@color/white"
         android:textSize="18sp"/>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:background="@color/line_color"/>
     <TextView
         android:layout_width="0.0dp"
         android:layout_weight="1"
         android:gravity="center"
         android:layout_height="wrap_content"
         android:text="151****5535"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:textColor="@color/white"
         android:textSize="18sp"/>
 
