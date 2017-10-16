@@ -19,4 +19,5 @@
     <color name="green">#52A436</color>
 
     <color name="txt_black">#323344</color>
+    <color name="txt_normal">#999999</color>
 </resources>
