@@ -1,12 +1,15 @@
 package com.yuangee.flower.customer.base;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
+import com.yuangee.flower.customer.util.AppManager;
+import com.yuangee.flower.customer.util.RxManager;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -20,9 +23,13 @@ import butterknife.Unbinder;
 public abstract class RxBaseActivity extends RxAppCompatActivity {
     private Unbinder bind;
 
+    protected RxManager mRxManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRxManager = new RxManager();
+        AppManager.getAppManager().addActivity(this);
         //设置布局内容
         setContentView(getLayoutId());
         //初始化黄油刀控件绑定框架
@@ -91,6 +98,7 @@ public abstract class RxBaseActivity extends RxAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        mRxManager.clear();
         super.onDestroy();
         bind.unbind();
     }

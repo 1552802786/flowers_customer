@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
@@ -21,6 +22,10 @@ public class FlowerApp extends Application {
         mInstance = this;
         init();
         App.initApp(this);
+    }
+
+    public static Context getContext(){
+        return mInstance;
     }
 
     private void init() {
