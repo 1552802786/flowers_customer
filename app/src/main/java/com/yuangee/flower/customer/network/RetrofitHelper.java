@@ -1,7 +1,7 @@
 package com.yuangee.flower.customer.network;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
-import com.yuangee.flower.customer.Constant;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.FlowerApp;
 import com.yuangee.flower.customer.network.api.ApiService;
 import com.yuangee.flower.customer.util.CommonUtil;
@@ -35,7 +35,7 @@ public class RetrofitHelper {
     }
 
     public static ApiService getFlowerApi() {
-        return createApi(ApiService.class, Constant.BASE_URL);
+        return createApi(ApiService.class, Config.BASE_URL);
     }
 
 

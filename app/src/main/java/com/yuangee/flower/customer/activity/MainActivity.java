@@ -25,13 +25,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.fragment.home.HomeFragment;
 import com.yuangee.flower.customer.fragment.reserve.ReserveFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
@@ -41,8 +47,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements ToSpecifiedFragmentListener {
+public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private VpAdapter adapter;
 
@@ -72,15 +82,20 @@ public class MainActivity extends AppCompatActivity implements ToSpecifiedFragme
     RecyclerView searchResultSuggest;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public int getLayoutId() {
+        return R.layout.activity_main;
+    }
 
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
+    @Override
+    public void initViews(Bundle savedInstanceState) {
         initView();
         initData();
         initEvent();
+    }
+
+    @Override
+    public void initToolBar() {
+
     }
 
     /**
@@ -283,17 +298,22 @@ public class MainActivity extends AppCompatActivity implements ToSpecifiedFragme
         }
     }
 
-    //    private void setBarTitle(int position) {
-//        if (position == 0) {
-//            actionBar.setTitle(getString(R.string.title_home));
-//        } else if (position == 1) {
-//            actionBar.setTitle(getString(R.string.title_buy));
-//        } else if (position == 2) {
-//            actionBar.setTitle(getString(R.string.title_shopping_cart));
-//        } else if (position == 3) {
-//            actionBar.setTitle(getString(R.string.title_reserve));
-//        } else if (position == 4) {
-//            actionBar.setTitle(getString(R.string.title_mine));
-//        }
-//    }
+    /**
+     * 查询所有种类
+     */
+    private void findAllGenre(){
+        Observable<List<Genre>> observable = ApiManager.getInstance().api
+                .findAllGenre()
+                .map(new HttpResultFunc<List<Genre>>(MainActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(new MySubscriber<>(MainActivity.this, true, true, new NoErrSubscriberListener<List<Genre>>() {
+            @Override
+            public void onNext(List<Genre> genres) {
+
+            }
+        }));
+    }
+
 }

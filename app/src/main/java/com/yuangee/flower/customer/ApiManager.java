@@ -1,7 +1,5 @@
 package com.yuangee.flower.customer;
 
-import android.app.Application;
-
 import com.yuangee.flower.customer.network.api.ApiService;
 
 import java.io.File;
@@ -74,7 +72,7 @@ public class ApiManager {
                 .build();
 
         //创建api
-        api = createApi(okHttpClient, Constant.BASE_URL, ApiService.class);
+        api = createApi(okHttpClient, Config.BASE_URL, ApiService.class);
     }
 
     /**

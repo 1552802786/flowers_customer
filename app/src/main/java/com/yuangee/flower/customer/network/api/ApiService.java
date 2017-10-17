@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.network.api;
 
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
@@ -39,7 +40,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/wares/findAllGenre")
-    Observable<BaseResult<Object>> findAllGenre();
+    Observable<BaseResult<List<Genre>>> findAllGenre();
 
     /**
      * 根据商品类型id查询子类型

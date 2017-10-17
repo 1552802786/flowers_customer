@@ -11,12 +11,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StatusBarUtil;
+import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -99,6 +104,46 @@ public class LoginActivity extends RxBaseActivity {
     }
 
     private void getVerfityCode(String phone) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .sendSmsLogin(phone)
+                .map(new HttpResultFunc<>(LoginActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
 
+        mRxManager.add(observable.subscribe(new MySubscriber<>(LoginActivity.this, true, true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                ToastUtil.showMessage(LoginActivity.this, "获取验证码成功");
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (timerTask != null) {
+                    timerTask.cancel();
+                }
+                timer = new Timer();
+                timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        count--;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (count != 0) {
+                                    getCode.setEnabled(false);
+                                    getCode.setText(count + "s");
+                                } else {
+                                    count = 60;
+                                    timer.cancel();
+                                    timerTask.cancel();
+                                    getCode.setEnabled(true);
+                                    getCode.setText("获取验证码");
+                                }
+                            }
+                        });
+                    }
+                };
+                timer.schedule(timerTask, 0, 1000);
+            }
+        })));
     }
 }
