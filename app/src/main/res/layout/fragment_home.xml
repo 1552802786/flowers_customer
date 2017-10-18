@@ -47,9 +47,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:minHeight="?attr/actionBarSize"
+                    app:contentInsetStart="0dp"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    app:contentInsetStart="0dp">
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -60,8 +60,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:padding="5dp"
                             android:layout_marginLeft="5dp"
+                            android:padding="5dp"
                             app:srcCompat="@drawable/ic_shops" />
 
                         <TextView
@@ -85,8 +85,8 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:padding="5dp"
                             android:layout_marginRight="5dp"
+                            android:padding="5dp"
                             app:srcCompat="@drawable/ic_notifications_white" />
                     </RelativeLayout>
 
@@ -102,31 +102,11 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
+
+            <com.yuangee.flower.customer.widget.SwipeRecyclerView
+                android:id="@+id/swipe_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <include layout="@layout/type_con"
-                    />
-
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/swipe_refresh_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycle"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:descendantFocusability="beforeDescendants"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
-                </android.support.v4.widget.SwipeRefreshLayout>
-            </LinearLayout>
-
+                android:layout_height="match_parent" />
 
             <com.yuangee.flower.customer.widget.CustomEmptyView
                 android:id="@+id/empty_layout"

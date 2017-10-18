@@ -13,4 +13,5 @@ public class Genre {
     public String genreName;//种类名
     public int genreSequence;//排序
     public List<GenreSub> genreSubs;
+    public boolean clicked;
 }

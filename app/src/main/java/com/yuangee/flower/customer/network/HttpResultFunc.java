@@ -25,7 +25,7 @@ public class HttpResultFunc<T> implements Func1<BaseResult<T>, T> {
 
     @Override
     public T call(BaseResult<T> httpResult) {
-        if (httpResult.isSuccess()) {
+        if (!httpResult.isSuccess()) {
             throw new ApiException(httpResult.getMsg());
         }
         return httpResult.getData();

@@ -298,22 +298,4 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         }
     }
 
-    /**
-     * 查询所有种类
-     */
-    private void findAllGenre(){
-        Observable<List<Genre>> observable = ApiManager.getInstance().api
-                .findAllGenre()
-                .map(new HttpResultFunc<List<Genre>>(MainActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(new MySubscriber<>(MainActivity.this, true, true, new NoErrSubscriberListener<List<Genre>>() {
-            @Override
-            public void onNext(List<Genre> genres) {
-
-            }
-        }));
-    }
-
 }

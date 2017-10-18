@@ -2,13 +2,11 @@ package com.yuangee.flower.customer.fragment.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -16,16 +14,16 @@ import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.DepthPageTransformer;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.BrowserActivity;
-import com.yuangee.flower.customer.adapter.OrderAdapter;
-import com.yuangee.flower.customer.adapter.TypeAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
-import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.util.GlideImageLoader;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
-import com.yuangee.flower.customer.widget.SpaceItemDecoration;
+import com.yuangee.flower.customer.widget.SwipeRecyclerView;
+import com.yuangee.flower.customer.widget.sectioned.SectionedRecyclerViewAdapter;
+import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +39,8 @@ import butterknife.OnClick;
  */
 public class HomeFragment extends RxLazyFragment implements HomeContract.View, OnBannerListener {
 
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
-
-    @BindView(R.id.recycle)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.swipe_recycler_view)
+    SwipeRecyclerView swipeRecyclerView;
 
     @BindView(R.id.empty_layout)
     CustomEmptyView mCustomEmptyView;
@@ -53,21 +48,13 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     @BindView(R.id.banner)
     Banner banner;
 
-    @BindView(R.id.type_recycler)
-    RecyclerView typeRecycler;
-
-    @BindView(R.id.left_row)
-    ImageView leftRow;
-
-    @BindView(R.id.right_row)
-    ImageView rightRow;
-
-    private OrderAdapter recyclerAdapter;
-    private TypeAdapter typeAdapter;
-
     private HomePresenter presenter;
 
-    private long customerId = 0;
+    private List<Genre> genreList = new ArrayList<>();
+
+    private List<Recommend> recommends = new ArrayList<>();
+
+    private SectionedRecyclerViewAdapter mSectionedAdapter;
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
 
@@ -89,10 +76,10 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
 
     @Override
     public void finishCreateView(Bundle state) {
-        isPrepared = true;
-        lazyLoad();
         presenter = new HomePresenter(getActivity());
         presenter.setMV(new HomeModel(getActivity()), this);
+        isPrepared = true;
+        lazyLoad();
     }
 
     @Override
@@ -108,86 +95,98 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
 
     @Override
     protected void initRecyclerView() {
-        recyclerAdapter = new OrderAdapter(getActivity());
-        RecyclerView.LayoutManager manager = new GridLayoutManager(getActivity(), 2);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(recyclerAdapter);
-//        mRecyclerView.addItemDecoration(new SpaceItemDecoration(30));
+        mSectionedAdapter = new SectionedRecyclerViewAdapter();
+        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
 
-        typeAdapter = new TypeAdapter(getActivity());
-        RecyclerView.LayoutManager horManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        typeRecycler.setLayoutManager(horManager);
-        typeRecycler.setAdapter(typeAdapter);
-        typeRecycler.addItemDecoration(new SpaceItemDecoration(0, 0, 30, 30, LinearLayout.HORIZONTAL));
+        swipeRecyclerView.getRecyclerView().setLayoutManager(mLayoutManager);
 
-        typeRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        swipeRecyclerView.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                showOrHideRow(recyclerView);
+            public int getSpanSize(int position) {
+                switch (mSectionedAdapter.getSectionItemViewType(position)) {
+                    case SectionedRecyclerViewAdapter.VIEW_TYPE_HEADER:
+                        return 2;
+                    case SectionedRecyclerViewAdapter.VIEW_TYPE_FOOTER:
+                        return 2;
+                    default:
+                        return 1;
+                }
             }
         });
-    }
 
-
-    @Override
-    protected void initRefreshLayout() {
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRecyclerView.setAdapter(mSectionedAdapter);
+        swipeRecyclerView.setOnLoadListener(new SwipeRecyclerView.OnLoadListener() {
             @Override
             public void onRefresh() {
-                presenter.getRecommendData(customerId);
+                refresh();
+            }
+
+            @Override
+            public void onLoadMore() {
+
             }
         });
-        mSwipeRefreshLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-                presenter.getBannerData();
-                presenter.getRecommendData(customerId);
-                presenter.getTypeData();
-            }
-        }, 1000);
+        swipeRecyclerView.onRefresh();
     }
 
+
+    /**
+     * 网络加载任务完成
+     */
     @Override
     protected void finishTask() {
+        swipeRecyclerView.complete();
+        if (recommends.size() == 0 && genreList.size() == 0) {
+            showEmptyView(0);
+        }
 
+        mSectionedAdapter.addSection(new HomeBigGenreSelection(genreList, getActivity(), new StatelessSection.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+        }));
+
+        mSectionedAdapter.addSection(new HomeRecommedSelection(recommends, getActivity(), new StatelessSection.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+        }));
+
+        mSectionedAdapter.notifyDataSetChanged();
     }
 
 
     @Override
     public void hideEmptyView() {
         mCustomEmptyView.setVisibility(View.GONE);
-        mSwipeRefreshLayout.setRefreshing(false);
+        swipeRecyclerView.setRefreshing(false);
     }
 
     @Override
-    public void showTypeList(List<Type> types) {
-        typeAdapter.setData(types);
-        showOrHideRow(typeRecycler);
+    public void showGenre(List<Genre> genres) {
+        genreList.addAll(genres);
+
+        finishTask();
+
     }
 
-    @Override
-    public void showOrHideRow(RecyclerView recyclerView) {
-        boolean isBottom = !recyclerView.canScrollHorizontally(1);//返回false不能往右滑动，即代表到最右边了
-        boolean isTop = !recyclerView.canScrollHorizontally(-1);//返回false不能往左滑动，即代表到最左边了
-        if (isBottom) {
-            rightRow.setVisibility(View.INVISIBLE);
-        } else {
-            rightRow.setVisibility(View.VISIBLE);
-        }
-        if (isTop) {
-            leftRow.setVisibility(View.INVISIBLE);
-        } else {
-            leftRow.setVisibility(View.VISIBLE);
-        }
-    }
+//    @Override
+//    public void showOrHideRow(RecyclerView recyclerView) {
+//        boolean isBottom = !recyclerView.canScrollHorizontally(1);//返回false不能往右滑动，即代表到最右边了
+//        boolean isTop = !recyclerView.canScrollHorizontally(-1);//返回false不能往左滑动，即代表到最左边了
+//        if (isBottom) {
+//            rightRow.setVisibility(View.INVISIBLE);
+//        } else {
+//            rightRow.setVisibility(View.VISIBLE);
+//        }
+//        if (isTop) {
+//            leftRow.setVisibility(View.INVISIBLE);
+//        } else {
+//            leftRow.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     private List<BannerBean> bannerBeanList;
 
@@ -210,22 +209,22 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     }
 
     @Override
-    public void showRecommendList(List<Recommend> orders) {
-        recyclerAdapter.setData(orders);
+    public void showRecommendList(List<Recommend> recommends) {
+        this.recommends.addAll(recommends);
+        presenter.getGenreData();//推荐商品 商品种类  链式请求
     }
 
     @Override
     public void showEmptyView(int tag) {
-        mSwipeRefreshLayout.setRefreshing(false);
-        mRecyclerView.setVisibility(View.GONE);
+        swipeRecyclerView.complete();
+        swipeRecyclerView.setVisibility(View.GONE);
         if (tag == 0) {
             mCustomEmptyView.setEmptyImage(R.drawable.ic_filed);
-            mCustomEmptyView.setEmptyText("您没有任何订单信息，\n点我去下单");
+            mCustomEmptyView.setEmptyText("未能获取到任何数据，\n点我重试");
             mCustomEmptyView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Intent intent = new Intent(getActivity(), CreateOrderActivity.class);
-//                    startActivity(intent);
+                    refresh();
                 }
             });
         } else {
@@ -234,11 +233,24 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             mCustomEmptyView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    presenter.getRecommendData(customerId);
+                    refresh();
                 }
             });
         }
+    }
 
+    private void refresh() {
+        clearData();
+        presenter.getBannerData();
+        presenter.getRecommendData();
+        swipeRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void clearData() {
+        recommends.clear();
+        genreList.clear();
+        mSectionedAdapter.removeAllSections();
+        mSectionedAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -8,8 +8,9 @@ import android.widget.TextView;
 
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Recommend;
-import com.yuangee.flower.customer.entity.Type;
+import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.util.TimeUtil;
+import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,26 +21,16 @@ import java.util.List;
 public class TypeAdapter extends RecyclerView.Adapter {
 
     private Context context;
-    private List<Type> data;
+    private List<Genre> data;
 
-    private OnItemClickListener mOnItemClickListener;   //声明监听器接口
-
-    public interface OnItemClickListener {
-        /**
-         * 点击事件的处理
-         *
-         * @param view     :item中设置了监听的view
-         * @param position :点击了item的位置
-         */
-        void onItemClick(View view, int position);
-    }
+    private StatelessSection.OnItemClickListener mOnItemClickListener;   //声明监听器接口
 
     /**
      * 通过adapter设置监听器
      *
      * @param mOnItemClickListener 监听器的接口类型
      */
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+    public void setOnItemClickListener(StatelessSection.OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
@@ -61,7 +52,7 @@ public class TypeAdapter extends RecyclerView.Adapter {
         return holder;
     }
 
-    public void setData(List<Type> data) {
+    public void setData(List<Genre> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -71,8 +62,8 @@ public class TypeAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         OrderHolder orderHolder = (OrderHolder) holder;
-        final Type bean = data.get(position);
-        orderHolder.titleStr.setText(bean.typeName);
+        final Genre bean = data.get(position);
+        orderHolder.titleStr.setText(bean.genreName);
 
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {

@@ -3,9 +3,12 @@ package com.yuangee.flower.customer.fragment.home;
 import android.content.Context;
 
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.BasePresenter;
+import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
+import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.RxManager;
 
 import java.util.ArrayList;
@@ -47,38 +50,37 @@ public class HomePresenter extends HomeContract.Presenter {
     }
 
     @Override
-    public void getRecommendData(long customerId) {
-        mView.showRecommendList(createOrder());
-        mView.hideEmptyView();
-//        mRxManager.add(mModel.getOrdersData(customerId).subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<Recommend>>() {
-//            @Override
-//            public void onNext(List<Recommend> orderList) {
-//                mView.showOrderList(orderList);
-//                mView.hideEmptyView();
-//            }
-//
-//            @Override
-//            public void onError(int code) {
-//                mView.showEmptyView();
-//            }
-//        })));
+    public void getRecommendData() {
+//        mView.c(createOrder());
+//        mView.hideEmptyView();
+        mRxManager.add(mModel.getRecommend().subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<Recommend>>() {
+            @Override
+            public void onNext(List<Recommend> recommends) {
+                mView.showRecommendList(recommends);
+                mView.hideEmptyView();
+            }
+
+            @Override
+            public void onError(int code) {
+                mView.showEmptyView(code);
+            }
+        })));
     }
 
     @Override
-    public void getTypeData() {
-        mView.showTypeList(createType());
-//        mRxManager.add(mModel.getOrdersData(customerId).subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<Recommend>>() {
-//            @Override
-//            public void onNext(List<Recommend> orderList) {
-//                mView.showOrderList(orderList);
-//                mView.hideEmptyView();
-//            }
-//
-//            @Override
-//            public void onError(int code) {
-//                mView.showEmptyView();
-//            }
-//        })));
+    public void getGenreData() {
+        mRxManager.add(mModel.getAllGenre().subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<Genre>>() {
+            @Override
+            public void onNext(List<Genre> orderList) {
+                mView.showGenre(orderList);
+                mView.hideEmptyView();
+            }
+
+            @Override
+            public void onError(int code) {
+                mView.showEmptyView(code);
+            }
+        })));
     }
 
     private List<BannerBean> createBanner() {
@@ -115,22 +117,22 @@ public class HomePresenter extends HomeContract.Presenter {
         return bannerBeanList;
     }
 
-    private List<Recommend> createOrder() {
-        List<Recommend> orderList = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-            Recommend order1 = new Recommend();
-            order1.status = (int) (System.currentTimeMillis() % 3);
-            order1.createdTime = System.currentTimeMillis();
-            order1.money = 22.5;
-            order1.orderNum = "1101100178";
-            order1.imgPath = "http://ww4.sinaimg.cn/large/006uZZy8jw1faic2e7vsaj30ci08cglz.jpg";
-
-            orderList.add(order1);
-        }
-
-        return orderList;
-    }
+//    private List<Recommend> createOrder() {
+//        List<Recommend> orderList = new ArrayList<>();
+//
+//        for (int i = 0; i < 10; i++) {
+//            Recommend order1 = new Recommend();
+//            order1.status = (int) (System.currentTimeMillis() % 3);
+//            order1.createdTime = System.currentTimeMillis();
+//            order1.money = 22.5;
+//            order1.orderNum = "1101100178";
+//            order1.imgPath = "http://ww4.sinaimg.cn/large/006uZZy8jw1faic2e7vsaj30ci08cglz.jpg";
+//
+//            orderList.add(order1);
+//        }
+//
+//        return orderList;
+//    }
 
     private List<Type> createType() {
         List<Type> typeList = new ArrayList<>();

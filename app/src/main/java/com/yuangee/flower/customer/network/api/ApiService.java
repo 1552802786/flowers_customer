@@ -57,7 +57,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/wares/findAllRecommend")
-    Observable<BaseResult<Object>> findAllRecommend();
+    Observable<BaseResult<List<Recommend>>> findAllRecommend();
 
     /**
      * 根据条件分页查询商品

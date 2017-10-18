@@ -50,14 +50,6 @@ public class SplashActivity extends BaseActivity {
             delayToLogin();
         }
 
-//        AssetManager assetManager = getAssets();
-//        try {
-//            InputStream in = assetManager.open("IMG_20170502_145608.png");
-//            Bitmap bmp = BitmapFactory.decodeStream(in);
-//            imageView.setImageBitmap(bmp);
-//        } catch (Exception e) {
-//            // TODO: handle exception
-//        }
     }
 
     private void delayToLogin() {

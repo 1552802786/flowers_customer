@@ -1,10 +1,8 @@
 package com.yuangee.flower.customer.fragment.home;
 
-import android.support.v7.widget.RecyclerView;
-
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
-import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.BasePresenter;
 
 import java.util.List;
@@ -19,6 +17,8 @@ public interface HomeContract {
     interface View {
         void showBanner(List<BannerBean> bannerBeen);
 
+        void showGenre(List<Genre> orders);
+
         void showRecommendList(List<Recommend> orders);
 
         /**
@@ -28,17 +28,15 @@ public interface HomeContract {
 
         void hideEmptyView();
 
-        void showTypeList(List<Type> types);
-
-        void showOrHideRow(RecyclerView recyclerView);
+//        void showOrHideRow(RecyclerView recyclerView);
     }
 
     abstract class Presenter extends BasePresenter {
         abstract void getBannerData();
 
-        abstract void getRecommendData(long customerId);
+        abstract void getRecommendData();
 
-        abstract void getTypeData();
+        abstract void getGenreData();
     }
 
     interface Model {
@@ -50,11 +48,11 @@ public interface HomeContract {
         /**
          * 获取首页数据
          */
-        Observable<List<Recommend>> getRecommendData(long customerId);
+        Observable<List<Genre>> getAllGenre();
 
         /**
          * 获取种类数据
          */
-        Observable<List<Type>> getTypeData();
+        Observable<List<Recommend>> getRecommend();
     }
 }

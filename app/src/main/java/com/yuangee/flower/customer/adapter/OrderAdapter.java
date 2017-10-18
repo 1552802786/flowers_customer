@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.util.DisplayUtil;
@@ -93,7 +94,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
                 .placeholder(R.color.color_f6)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         Glide.with(context)
-                .load(bean.imgPath)
+                .load(Config.BASE_URL + bean.image)
                 .apply(options)
                 .into(orderHolder.imageView);
 

@@ -2,11 +2,12 @@ package com.yuangee.flower.customer.fragment.home;
 
 import android.content.Context;
 
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.network.HttpResultFunc;
-import com.yuangee.flower.customer.network.RetrofitHelper;
 
 import java.util.List;
 
@@ -28,24 +29,25 @@ public class HomeModel implements HomeContract.Model {
 
     @Override
     public Observable<List<BannerBean>> getBannerData() {
-        return RetrofitHelper.getFlowerApi().getBannerData()
+        return ApiManager.getInstance().api.getBannerData()
                 .map(new HttpResultFunc<List<BannerBean>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<List<Recommend>> getRecommendData(long customerId) {
-        return RetrofitHelper.getFlowerApi().getOrderData(customerId)
-                .map(new HttpResultFunc<List<Recommend>>(context))
+    public Observable<List<Genre>> getAllGenre() {
+        return ApiManager.getInstance().api
+                .findAllGenre()
+                .map(new HttpResultFunc<List<Genre>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<List<Type>> getTypeData() {
-        return RetrofitHelper.getFlowerApi().getTypeData()
-                .map(new HttpResultFunc<List<Type>>(context))
+    public Observable<List<Recommend>> getRecommend() {
+        return ApiManager.getInstance().api.findAllRecommend()
+                .map(new HttpResultFunc<List<Recommend>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

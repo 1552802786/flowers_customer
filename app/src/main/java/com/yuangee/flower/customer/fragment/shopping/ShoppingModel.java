@@ -2,9 +2,9 @@ package com.yuangee.flower.customer.fragment.shopping;
 
 import android.content.Context;
 
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.network.HttpResultFunc;
-import com.yuangee.flower.customer.network.RetrofitHelper;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class ShoppingModel implements ShoppingContract.Model {
 
     @Override
     public Observable<List<Goods>> getGoodsData(int page, int limit) {
-        return RetrofitHelper.getFlowerApi().getGoodsData(page, limit)
+        return ApiManager.getInstance().api.getGoodsData(page, limit)
                 .map(new HttpResultFunc<List<Goods>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

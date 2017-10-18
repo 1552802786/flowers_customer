@@ -73,11 +73,6 @@ public class LoginActivity extends RxBaseActivity {
     private TimerTask timerTask;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public int getLayoutId() {
         return R.layout.activity_login;
     }
@@ -100,7 +95,8 @@ public class LoginActivity extends RxBaseActivity {
     }
 
     private void login(String phone, String code) {
-
+        App.me().getSharedPreferences().edit().putBoolean("login", true).apply();
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
     }
 
     private void getVerfityCode(String phone) {

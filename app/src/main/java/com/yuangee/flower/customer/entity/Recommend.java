@@ -5,13 +5,15 @@ package com.yuangee.flower.customer.entity;
  */
 
 public class Recommend {
-    public long createdTime;
+    public long id;
 
-    public String orderNum;//订单编号
+    public String keywords;//关键词
 
-    public int status;//订单状态
+    public String depict;//描述
 
-    public double money;//订单金额
+    public String startTime;
 
-    public String imgPath;
+    public String endTime;
+
+    public String image;
 }

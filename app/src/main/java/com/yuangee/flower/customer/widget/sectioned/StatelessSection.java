@@ -71,4 +71,14 @@ public abstract class StatelessSection extends Section {
     public final RecyclerView.ViewHolder getFailedViewHolder(View view) {
         return super.getFailedViewHolder(view);
     }
+
+    public interface OnItemClickListener {
+        /**
+         * 点击事件的处理
+         *
+         * @param view     :item中设置了监听的view
+         * @param position :点击了item的位置
+         */
+        void onItemClick(View view, int position);
+    }
 }
