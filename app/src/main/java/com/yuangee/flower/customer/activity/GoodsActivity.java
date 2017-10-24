@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import okhttp3.MultipartBody;
 
 /**
  * Created by developerLzh on 2017/9/28 0028.
@@ -135,5 +136,14 @@ public class GoodsActivity extends RxBaseActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createGoods(long genreId,String genreName,long genreSubId,String genreSubName,
+                             String name,String grade,String color,String spec,String unit,String unitPrice){
+        for (LocalMedia localMedia : selectList) {
+
+        }
+        MultipartBody.Part genreIdPart = MultipartBody.Part.createFormData("genreId", String.valueOf(genreId));
+        MultipartBody.Part genreNamePart = MultipartBody.Part.createFormData("genreName", String.valueOf(genreName));
     }
 }

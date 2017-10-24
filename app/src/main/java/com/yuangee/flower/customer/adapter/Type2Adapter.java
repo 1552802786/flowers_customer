@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.entity.GenreSub;
 import com.yuangee.flower.customer.entity.Type;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.List;
 public class Type2Adapter extends RecyclerView.Adapter {
 
     private Context context;
-    private List<Type> data;
+    private List<Genre> data;
 
     private OnItemClickListener mOnItemClickListener;   //声明监听器接口
 
@@ -59,7 +61,7 @@ public class Type2Adapter extends RecyclerView.Adapter {
         return holder;
     }
 
-    public void setData(List<Type> data) {
+    public void setData(List<Genre> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -69,8 +71,8 @@ public class Type2Adapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         final OrderHolder orderHolder = (OrderHolder) holder;
-        final Type bean = data.get(position);
-        orderHolder.titleStr.setText(bean.typeName);
+        final Genre bean = data.get(position);
+        orderHolder.titleStr.setText(bean.genreName);
 
         if (bean.clicked) {
             orderHolder.titleStr.setBackgroundColor(context.getResources().getColor(R.color.bg_color));
@@ -83,10 +85,18 @@ public class Type2Adapter extends RecyclerView.Adapter {
             orderHolder.layoutView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for (Type type : data) {
-                        type.clicked = false;
+                    for (int i = 0; i < data.size(); i++) {
+                        Genre type = data.get(i);
+                        if (i == position) {
+                            if(type.clicked){
+                                type.clicked = false;
+                            } else {
+                                type.clicked = true;
+                            }
+                        } else {
+                            type.clicked = false;
+                        }
                     }
-                    bean.clicked = true;
                     notifyDataSetChanged();
                     mOnItemClickListener.onItemClick(v, position);
                 }

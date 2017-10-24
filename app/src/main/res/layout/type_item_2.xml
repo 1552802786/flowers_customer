@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/title_str"
-        android:layout_width="match_parent"
+        android:layout_width="60dp"
         android:layout_height="40dp"
         android:gravity="center"
         android:background="@color/white"

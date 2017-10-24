@@ -113,7 +113,12 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
-                    ToastUtil.showMessage(MainActivity.this, "点击了键盘上的查询");
+                    searchFrame.setVisibility(View.GONE);
+                    String params = textView.getText().toString();
+                    if(null != shoppingFragment){
+                        bnve.setCurrentItem(1);
+                        shoppingFragment.findWares(params);
+                    }
                     return true;
                 }
                 return false;

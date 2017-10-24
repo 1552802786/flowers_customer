@@ -11,16 +11,27 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.LoginActivity;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingContract;
+import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.DisplayUtil;
+import com.yuangee.flower.customer.util.RxManager;
 import com.yuangee.flower.customer.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2016/3/10.
@@ -136,7 +147,8 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.addToCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bean.isAddToCar = true;
+                long memberId = App.me().getSharedPreferences().getLong("memberId",0);
+                addToCar(memberId,bean.id,(int)bean.selectedNum,bean);
             }
         });
         holder.yuYue.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +215,30 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         ImageView numAdd;
         TextView goodsNum;
         TextView yuYue;
+    }
+
+    private void addToCar(long memberId, long waresId, final int num, final Goods goods){
+        Observable<Object> observable = ApiManager.getInstance().api
+                .addCartItem(memberId,waresId,num)
+                .map(new HttpResultFunc<>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        RxManager rxManager = new RxManager();
+
+        rxManager.add(observable.subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                //TODO 添加到购物车成功
+                goods.isAddToCar = true;
+                goods.selectedNum = num;
+            }
+
+            @Override
+            public void onError(int code) {
+                //TODO 添加到购物车失败
+            }
+        })));
     }
 
 }

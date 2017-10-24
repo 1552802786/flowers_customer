@@ -12,4 +12,5 @@ public class GenreSub {
     public long genreId;
     public String genreName;
     public String name;
+    public boolean clicked;
 }

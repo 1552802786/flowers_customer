@@ -2,7 +2,6 @@ package com.yuangee.flower.customer.fragment.shopping;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,16 +19,13 @@ import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.adapter.Type2Adapter;
 import com.yuangee.flower.customer.adapter.Type3Adapter;
-import com.yuangee.flower.customer.adapter.TypeAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.GenreSub;
 import com.yuangee.flower.customer.entity.Goods;
-import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.result.PageResult;
-import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
@@ -95,8 +91,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     public List<Goods> goodsList;
 
-    private List<Type> types;
-    private List<Type> detailTypes;
+    private List<Genre> types = new ArrayList<>();
+    private List<GenreSub> detailTypes = new ArrayList<>();
 
     private int page = 0;
     private int limit = 10;
@@ -134,7 +130,6 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     private void initDrawer() {
 
-        types = new ArrayList<>();
         typeAdapter = new Type2Adapter(getActivity());
         typeRecycler.setAdapter(typeAdapter);
         LinearLayoutManager linManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -144,13 +139,17 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             public void onItemClick(View view, int position) {
                 createDetailType(position);
                 detailTypeAdapter.setData(detailTypes);
-                genreName = detailTypes.get(position).typeName;
+                if(types.get(position).clicked){
+                    genreName = types.get(position).genreName;
+                } else {
+                    genreName = "";
+                }
             }
         });
         createType();
         typeAdapter.setData(types);
 
-        detailTypes = new ArrayList<>();
+
         detailTypeAdapter = new Type3Adapter(getActivity());
         detailRecycler.setAdapter(detailTypeAdapter);
         GridLayoutManager gridManager = new GridLayoutManager(getActivity(), 3);
@@ -159,7 +158,11 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             @Override
             public void onItemClick(View view, int position) {
                 myDrawerLayout.closeDrawer(Gravity.LEFT);
-                genreSubName = detailTypes.get(position).typeName;
+                if(detailTypes.get(position).clicked){
+                    genreSubName = detailTypes.get(position).name;
+                } else {
+                    genreSubName = "";
+                }
             }
         });
         myDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -184,26 +187,20 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
             }
         });
-        createDetailType(0);
         detailTypeAdapter.setData(detailTypes);
     }
 
     private void createType() {
+        types.clear();
         for (Genre genre : MainActivity.genreList) {
-            Type type = new Type();
-            type.typeName = genre.genreName;
-            types.add(type);
+            types.add(genre);
         }
     }
 
     private void createDetailType(int position) {
         detailTypes.clear();
         if (MainActivity.genreList.size() > 0) {
-            for (GenreSub genreSub : MainActivity.genreList.get(position).genreSubs) {
-                Type type = new Type();
-                type.typeName = genreSub.name;
-                detailTypes.add(type);
-            }
+            detailTypes.addAll(MainActivity.genreList.get(position).genreSubs);
         }
     }
 
@@ -325,6 +322,11 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         } else {
             return false;
         }
+    }
+
+    public void findWares(String params){
+        page = 0;
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }
 
 }

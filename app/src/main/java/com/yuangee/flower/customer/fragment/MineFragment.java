@@ -1,5 +1,6 @@
 package com.yuangee.flower.customer.fragment;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -7,15 +8,23 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.LoginActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
+import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by developerLzh on 2017/8/21 0021.
@@ -113,6 +122,26 @@ public class MineFragment extends RxLazyFragment {
         }
         initView();
         isPrepared = false;
+    }
+
+    private void geConsumerInfo(long id) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .findById(id)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<Object>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+
+            @Override
+            public void onError(int code) {
+
+            }
+        })));
     }
 
     private void initView() {

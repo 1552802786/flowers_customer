@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.yuangee.flower.customer.util.RxManager;
 import com.yuangee.flower.customer.widget.RxProgressHUD;
 
 import butterknife.ButterKnife;
@@ -32,6 +33,11 @@ public abstract class RxLazyFragment extends RxFragment {
     private Unbinder bind;
 
     protected RxProgressHUD hud;
+
+    /**
+     * rx请求管理者
+     */
+    protected RxManager mRxManager = new RxManager();
 
     public abstract
     @LayoutRes
@@ -68,6 +74,7 @@ public abstract class RxLazyFragment extends RxFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mRxManager.clear();
         bind.unbind();
     }
 

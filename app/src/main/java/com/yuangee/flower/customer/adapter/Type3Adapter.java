@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.entity.GenreSub;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Type;
 
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import java.util.List;
 public class Type3Adapter extends RecyclerView.Adapter {
 
     private Context context;
-    private List<Type> data;
+    private List<GenreSub> data;
 
     private OnItemClickListener mOnItemClickListener;   //声明监听器接口
 
@@ -59,7 +62,7 @@ public class Type3Adapter extends RecyclerView.Adapter {
         return holder;
     }
 
-    public void setData(List<Type> data) {
+    public void setData(List<GenreSub> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -69,8 +72,8 @@ public class Type3Adapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         OrderHolder orderHolder = (OrderHolder) holder;
-        final Type bean = data.get(position);
-        orderHolder.titleStr.setText(bean.typeName);
+        final GenreSub bean = data.get(position);
+        orderHolder.titleStr.setText(bean.name);
 
         if (!bean.clicked) {
             orderHolder.titleStr.setBackgroundResource(R.drawable.corners_bg_white);
@@ -84,15 +87,18 @@ public class Type3Adapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     for (int i = 0; i < data.size(); i++) {
-                        Type type = data.get(i);
+                        GenreSub type = data.get(i);
                         if (i == position) {
-                            type.clicked = true;
+                            if (type.clicked) {
+                                type.clicked = false;
+                            } else {
+                                type.clicked = true;
+                            }
                         } else {
                             type.clicked = false;
                         }
-                        notifyDataSetChanged();
                     }
-
+                    notifyDataSetChanged();
                     mOnItemClickListener.onItemClick(v, position);
                 }
             });
