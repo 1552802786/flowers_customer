@@ -44,6 +44,7 @@ public class ShoppingPresenter extends ShoppingContract.Presenter {
 
                     @Override
                     public void onError(int code) {
+                        mView.showEmptyView(code);
                     }
                 })));
     }
