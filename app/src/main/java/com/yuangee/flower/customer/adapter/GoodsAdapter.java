@@ -25,6 +25,7 @@ import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.RxManager;
 import com.yuangee.flower.customer.util.TimeUtil;
+import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +104,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         if (bean.selectedNum == 1) {
             holder.numSub.setEnabled(false);
             holder.numAdd.setEnabled(true);
-        } else if (bean.selectedNum == 10) {
+        } else if (bean.selectedNum == bean.salesVolume) {//商品可售的最大值
             holder.numSub.setEnabled(true);
             holder.numAdd.setEnabled(false);
         } else {
@@ -148,7 +149,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
             @Override
             public void onClick(View view) {
                 long memberId = App.me().getSharedPreferences().getLong("memberId",0);
-                addToCar(memberId,bean.id,(int)bean.selectedNum,bean);
+                addToCar(memberId,bean.id,(int)bean.selectedNum,bean,holder);
             }
         });
         holder.yuYue.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +218,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         TextView yuYue;
     }
 
-    private void addToCar(long memberId, long waresId, final int num, final Goods goods){
+    private void addToCar(long memberId, long waresId, final int num, final Goods goods, final GoodsHolder holder){
         Observable<Object> observable = ApiManager.getInstance().api
                 .addCartItem(memberId,waresId,num)
                 .map(new HttpResultFunc<>(context))
@@ -232,11 +233,14 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
                 //TODO 添加到购物车成功
                 goods.isAddToCar = true;
                 goods.selectedNum = num;
+                ToastUtil.showMessage(context,"添加到购物车成功");
+                holder.addToCar.setEnabled(false);
             }
 
             @Override
             public void onError(int code) {
                 //TODO 添加到购物车失败
+                ToastUtil.showMessage(context,"添加到购物车失败");
             }
         })));
     }

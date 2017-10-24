@@ -71,9 +71,10 @@
             android:id="@+id/add_to_car"
             android:layout_width="40dp"
             android:layout_height="150dp"
+            android:background="@null"
             android:padding="5dp"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_shopping_car" />
+            app:srcCompat="@drawable/shoping_car_selector" />
 
         <TextView
             android:id="@+id/yu_yue"
