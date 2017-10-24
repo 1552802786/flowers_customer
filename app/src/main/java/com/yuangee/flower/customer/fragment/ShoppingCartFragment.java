@@ -90,53 +90,12 @@ public class ShoppingCartFragment extends RxLazyFragment {
 
         shoppingRecycle.setAdapter(adapter);
 
-        createGoods();
+//        createGoods();
 
         adapter.setData(goodsList);
 
         if (goodsList.size() == 0) {
             showEmptyView();
-        }
-    }
-
-    private void createGoods() {
-        for (int i = 0; i < 20; i++) {
-            Goods goods = new Goods();
-            goods.selectedNum = 1;
-            goods.isAddToCar = false;
-            String color = "红";
-            if (System.currentTimeMillis() % 7 == 0) {
-                color = "红";
-            } else if (System.currentTimeMillis() % 7 == 1) {
-                color = "橙";
-            } else if (System.currentTimeMillis() % 7 == 2) {
-                color = "黄";
-            } else if (System.currentTimeMillis() % 7 == 3) {
-                color = "绿";
-            } else if (System.currentTimeMillis() % 7 == 4) {
-                color = "蓝";
-            } else if (System.currentTimeMillis() % 7 == 5) {
-                color = "青";
-            } else if (System.currentTimeMillis() % 7 == 6) {
-                color = "紫";
-            }
-            goods.goodsColor = color;
-            String grade = "A";
-            if (System.currentTimeMillis() % 3 == 0) {
-                grade = "A";
-            } else if (System.currentTimeMillis() % 3 == 1) {
-                grade = "B";
-            } else if (System.currentTimeMillis() % 3 == 1) {
-                grade = "C";
-            }
-            goods.goodsGrade = grade;
-            goods.goodsLeft = "" + 200;
-            goods.goodsMoney = "¥200/束";
-            goods.goodsName = "鲜花名" + i;
-            goods.goodsSpec = i + "00";
-            goods.goodsPrice = 200;
-            goods.imgPath = "http://ww4.sinaimg.cn/large/006uZZy8jw1faic2b16zuj30ci08cwf4.jpg";
-            goodsList.add(goods);
         }
     }
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Goods;
 
@@ -89,7 +90,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.GoodsH
             holder.numSub.setEnabled(true);
             holder.numAdd.setEnabled(true);
         }
-        holder.goodsMoney.setText("总计：" + bean.goodsPrice * bean.selectedNum + "元");
+        holder.goodsMoney.setText("总计：" + bean.unitPrice * bean.selectedNum + "元");
     }
 
     //设置数据
@@ -103,13 +104,13 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.GoodsH
                 .placeholder(R.color.color_f6)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         Glide.with(context)
-                .load(bean.imgPath)
+                .load(Config.BASE_URL + bean.image)
                 .apply(options)
                 .into(holder.goodsImg);
 
-        holder.goodsName.setText(bean.goodsName);
-        holder.goodsPrice.setText(bean.goodsMoney);
-        holder.goodsMoney.setText("总计：" + bean.goodsPrice * bean.selectedNum + "元");
+        holder.goodsName.setText(bean.name);
+        holder.goodsPrice.setText("¥"+bean.unitPrice +"/"+bean.unit);
+        holder.goodsMoney.setText("总计：" + bean.unitPrice * bean.selectedNum + "元");
 
         holder.goodsNum.setText(bean.selectedNum + "");
 

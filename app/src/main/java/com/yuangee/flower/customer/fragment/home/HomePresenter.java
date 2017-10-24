@@ -53,7 +53,7 @@ public class HomePresenter extends HomeContract.Presenter {
     public void getRecommendData() {
 //        mView.c(createOrder());
 //        mView.hideEmptyView();
-        mRxManager.add(mModel.getRecommend().subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<Recommend>>() {
+        mRxManager.add(mModel.getRecommend().subscribe(new MySubscriber<>(context, false, false, new HaveErrSubscriberListener<List<Recommend>>() {
             @Override
             public void onNext(List<Recommend> recommends) {
                 mView.showRecommendList(recommends);
@@ -69,7 +69,7 @@ public class HomePresenter extends HomeContract.Presenter {
 
     @Override
     public void getGenreData() {
-        mRxManager.add(mModel.getAllGenre().subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<Genre>>() {
+        mRxManager.add(mModel.getAllGenre().subscribe(new MySubscriber<>(context, false, false, new HaveErrSubscriberListener<List<Genre>>() {
             @Override
             public void onNext(List<Genre> orderList) {
                 mView.showGenre(orderList);

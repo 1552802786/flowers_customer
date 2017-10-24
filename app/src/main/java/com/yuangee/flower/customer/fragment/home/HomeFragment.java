@@ -3,10 +3,7 @@ package com.yuangee.flower.customer.fragment.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -14,6 +11,7 @@ import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.DepthPageTransformer;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.BrowserActivity;
+import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
@@ -135,6 +133,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
      */
     @Override
     protected void finishTask() {
+        hideLoading();
         swipeRecyclerView.complete();
         if (recommends.size() == 0 && genreList.size() == 0) {
             showEmptyView(0);
@@ -168,25 +167,11 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     public void showGenre(List<Genre> genres) {
         genreList.addAll(genres);
 
+        MainActivity.genreList = genreList;
+
         finishTask();
 
     }
-
-//    @Override
-//    public void showOrHideRow(RecyclerView recyclerView) {
-//        boolean isBottom = !recyclerView.canScrollHorizontally(1);//返回false不能往右滑动，即代表到最右边了
-//        boolean isTop = !recyclerView.canScrollHorizontally(-1);//返回false不能往左滑动，即代表到最左边了
-//        if (isBottom) {
-//            rightRow.setVisibility(View.INVISIBLE);
-//        } else {
-//            rightRow.setVisibility(View.VISIBLE);
-//        }
-//        if (isTop) {
-//            leftRow.setVisibility(View.INVISIBLE);
-//        } else {
-//            leftRow.setVisibility(View.VISIBLE);
-//        }
-//    }
 
     private List<BannerBean> bannerBeanList;
 
@@ -217,7 +202,9 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     @Override
     public void showEmptyView(int tag) {
         swipeRecyclerView.complete();
+        hideLoading();
         swipeRecyclerView.setVisibility(View.GONE);
+        mCustomEmptyView.setVisibility(View.VISIBLE);
         if (tag == 0) {
             mCustomEmptyView.setEmptyImage(R.drawable.ic_filed);
             mCustomEmptyView.setEmptyText("未能获取到任何数据，\n点我重试");
@@ -240,10 +227,12 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     }
 
     private void refresh() {
+        showLoading(true, "", "请稍候..", null);
         clearData();
         presenter.getBannerData();
         presenter.getRecommendData();
         swipeRecyclerView.setVisibility(View.VISIBLE);
+        mCustomEmptyView.setVisibility(View.GONE);
     }
 
     private void clearData() {

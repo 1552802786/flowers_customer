@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Recommend;
@@ -52,7 +53,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    public GoodsAdapter(Context context,int flag) {
+    public GoodsAdapter(Context context, int flag) {
         this.flag = flag;
         this.context = context;
         data = new ArrayList<>();
@@ -111,18 +112,18 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
                 .placeholder(R.color.color_f6)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         Glide.with(context)
-                .load(bean.imgPath)
+                .load(Config.BASE_URL + bean.image)
                 .apply(options)
                 .into(holder.goodsImg);
 
-        holder.goodsName.setText(bean.goodsName);
-        holder.goodsGrade.setText("等级：" + bean.goodsGrade);
-        holder.goodsColor.setText("颜色：" + bean.goodsColor);
-        holder.goodsSpec.setText("规格：" + bean.goodsSpec + "cm");
-        holder.goodsLeft.setText("可售量：" + bean.goodsLeft);
+        holder.goodsName.setText(bean.name);
+        holder.goodsGrade.setText("等级：" + bean.grade);
+        holder.goodsColor.setText("颜色：" + bean.color);
+        holder.goodsSpec.setText("规格：" + bean.spec );
+        holder.goodsLeft.setText("可售量：" + bean.salesVolume);
         holder.goodsNum.setText(bean.selectedNum + "");
 
-        if(flag == 0){
+        if (flag == 0) {
             holder.addToCar.setVisibility(View.VISIBLE);
             holder.yuYue.setVisibility(View.GONE);
         } else {
@@ -163,7 +164,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
             }
         });
 
-        holder.goodsMoney.setText(bean.goodsMoney);
+        holder.goodsMoney.setText( bean.unitPrice + "/" + bean.unit);
 
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {

@@ -6,6 +6,7 @@ import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.result.BaseResult;
+import com.yuangee.flower.customer.result.PageResult;
 
 import java.util.List;
 
@@ -62,19 +63,19 @@ public interface ApiService {
     /**
      * 根据条件分页查询商品
      *
+     * @param genreName    大类型名称
      * @param genreSubName 子类型名称
-     * @param waresName    商品名称
-     * @param params       搜索条件
+     * @param params       搜索条件 （商品名称、类别名称、还有颜色）
      * @param offset       分页参数
      * @param Limit        分页参数
      * @return
      */
     @GET("rest/wares/findWares")
-    Observable<BaseResult<Object>> findWares(@Query("genreSubName") String genreSubName,
-                                             @Query("waresName") String waresName,
-                                             @Query("params") String params,
-                                             @Query("offset") Long offset,
-                                             @Query("Limit") Long Limit);
+    Observable<BaseResult<PageResult<Goods>>> findWares(@Query("genreName") String genreName,
+                                                 @Query("genreSubName") String genreSubName,
+                                                 @Query("params") String params,
+                                                 @Query("offset") Long offset,
+                                                 @Query("limit") Long Limit);
 
     /**
      * 根据用户id查询店铺信息
@@ -240,11 +241,12 @@ public interface ApiService {
 
     /**
      * 下单
-     * @param memberId 用户id
-     * @param receiverName 收货人姓名
-     * @param receiverPhone 收货人手机号
+     *
+     * @param memberId        用户id
+     * @param receiverName    收货人姓名
+     * @param receiverPhone   收货人手机号
      * @param receiverAddress 收货人地址
-     * @param expressId 快递id
+     * @param expressId       快递id
      * @return
      */
     @GET("rest/order/confirmOrderMulti")
@@ -256,6 +258,7 @@ public interface ApiService {
 
     /**
      * 查询单个用户
+     *
      * @param id 用户id
      * @return
      */
@@ -264,12 +267,13 @@ public interface ApiService {
 
     /**
      * 修改用户信息
-     * @param id 用户id
-     * @param name 用户名称
+     *
+     * @param id     用户id
+     * @param name   用户名称
      * @param gender 性别
-     * @param phone 电话
-     * @param email 邮箱
-     * @param photo 头像
+     * @param phone  电话
+     * @param email  邮箱
+     * @param photo  头像
      * @return
      */
     @Multipart
@@ -280,78 +284,81 @@ public interface ApiService {
                                                 @Part MultipartBody.Part phone,
                                                 @Part MultipartBody.Part email,
                                                 @Part MultipartBody.Part photo
-                                                );
+    );
 
     /**
      * 创建收货地址
-     * @param shippingId 收货人id
-     * @param shippingName 收货人名称
-     * @param phone 收货人电话
-     * @param pro 省
-     * @param city 市
-     * @param area 区县
-     * @param street 街道
+     *
+     * @param shippingId     收货人id
+     * @param shippingName   收货人名称
+     * @param phone          收货人电话
+     * @param pro            省
+     * @param city           市
+     * @param area           区县
+     * @param street         街道
      * @param defaultAddress 是否设为默认地址
      * @return
      */
     @FormUrlEncoded
     @POST("rest/member/createMemberAddress")
     Observable<BaseResult<Object>> createMemberAddress(@Field("shippingId") Long shippingId,
-                                                @Field("shippingName") String shippingName,
-                                                @Field("phone") String phone,
-                                                @Field("pro") String pro,
-                                                @Field("city") String city,
-                                                @Field("area") String area,
-                                                @Field("street") String street,
-                                                @Field("defaultAddress") Boolean defaultAddress
-                                                );
+                                                       @Field("shippingName") String shippingName,
+                                                       @Field("phone") String phone,
+                                                       @Field("pro") String pro,
+                                                       @Field("city") String city,
+                                                       @Field("area") String area,
+                                                       @Field("street") String street,
+                                                       @Field("defaultAddress") Boolean defaultAddress
+    );
 
     /**
      * 申请成为供货商
-     * @param shopName 店铺名称
-     * @param simpleShopName 店铺简称
-     * @param name 法人名称
-     * @param phone 电话
-     * @param address 地址
-     * @param description 供应品种
-     * @param bankNo 银行卡号
-     * @param bankName 开户行
-     * @param openAccountName 开户名称
-     * @param idCardNo 身份证号码
-     * @param idImgFront 身份证正面
-     * @param idImgBack 身份证反面
-     * @param photo 全身照
-     * @param businessLicence 营业执照
-     * @param scene1 公司照片
+     *
+     * @param shopName          店铺名称
+     * @param simpleShopName    店铺简称
+     * @param name              法人名称
+     * @param phone             电话
+     * @param address           地址
+     * @param description       供应品种
+     * @param bankNo            银行卡号
+     * @param bankName          开户行
+     * @param openAccountName   开户名称
+     * @param idCardNo          身份证号码
+     * @param idImgFront        身份证正面
+     * @param idImgBack         身份证反面
+     * @param photo             全身照
+     * @param businessLicence   营业执照
+     * @param scene1            公司照片
      * @param businessLicenceNo 营业执照号
-     * @param memberId 用户id 类型 0 个人 1 企业
+     * @param memberId          用户id 类型 0 个人 1 企业
      * @param type
      * @return
      */
     @Multipart
     @POST("rest/shop/shopApply")
     Observable<BaseResult<Object>> shopApply(@Part MultipartBody.Part shopName,
-                                                @Part MultipartBody.Part simpleShopName,
-                                                @Part MultipartBody.Part name,
-                                                @Part MultipartBody.Part phone,
-                                                @Part MultipartBody.Part address,
-                                                @Part MultipartBody.Part description,
-                                                @Part MultipartBody.Part bankNo,
-                                                @Part MultipartBody.Part bankName,
-                                                @Part MultipartBody.Part openAccountName,
-                                                @Part MultipartBody.Part idCardNo,
-                                                @Part MultipartBody.Part idImgFront,
-                                                @Part MultipartBody.Part idImgBack,
-                                                @Part MultipartBody.Part photo,
-                                                @Part MultipartBody.Part businessLicence,
-                                                @Part MultipartBody.Part scene1,
-                                                @Part MultipartBody.Part businessLicenceNo,
-                                                @Part MultipartBody.Part memberId,
-                                                @Part MultipartBody.Part type
+                                             @Part MultipartBody.Part simpleShopName,
+                                             @Part MultipartBody.Part name,
+                                             @Part MultipartBody.Part phone,
+                                             @Part MultipartBody.Part address,
+                                             @Part MultipartBody.Part description,
+                                             @Part MultipartBody.Part bankNo,
+                                             @Part MultipartBody.Part bankName,
+                                             @Part MultipartBody.Part openAccountName,
+                                             @Part MultipartBody.Part idCardNo,
+                                             @Part MultipartBody.Part idImgFront,
+                                             @Part MultipartBody.Part idImgBack,
+                                             @Part MultipartBody.Part photo,
+                                             @Part MultipartBody.Part businessLicence,
+                                             @Part MultipartBody.Part scene1,
+                                             @Part MultipartBody.Part businessLicenceNo,
+                                             @Part MultipartBody.Part memberId,
+                                             @Part MultipartBody.Part type
     );
 
     /**
      * 查询所有快递
+     *
      * @return
      */
     @GET("rest/system/findByExpressDeliveryAll")
@@ -359,6 +366,7 @@ public interface ApiService {
 
     /**
      * 查询用户所有通知消息
+     *
      * @param memberId 用户id
      * @return
      */
@@ -367,6 +375,7 @@ public interface ApiService {
 
     /**
      * 读取通知消息
+     *
      * @param memberId 用户id
      * @param noticeId 通知id
      * @return
@@ -374,26 +383,6 @@ public interface ApiService {
     @GET("rest/notice/readMemberNotice")
     Observable<BaseResult<Object>> readMemberNotice(@Query("memberId") Long memberId,
                                                     @Query("noticeId") Long noticeId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**

@@ -1,121 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_content"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="false">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            android:layout_height="180dp"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle.About"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
+                android:background="@color/window_background"
                 android:fitsSystemWindows="true"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:contentScrim="?attr/colorPrimary"
-                app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle.About"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                android:gravity="center">
 
-                <FrameLayout
+                <com.youth.banner.Banner
+                    android:id="@+id/banner"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:background="@color/window_background"
-                    android:fitsSystemWindows="true"
-                    android:gravity="center">
-
-                    <com.youth.banner.Banner
-                        android:id="@+id/banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="180dp" />
+                    android:layout_height="180dp" />
 
 
-                </FrameLayout>
+            </FrameLayout>
 
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize"
+                app:contentInsetStart="0dp"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:minHeight="?attr/actionBarSize"
-                    app:contentInsetStart="0dp"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                    android:layout_height="match_parent">
 
-                    <RelativeLayout
+                    <ImageView
+                        android:id="@+id/shop_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:padding="5dp"
+                        app:srcCompat="@drawable/ic_shops" />
+
+                    <TextView
+                        android:id="@+id/tv_av"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="35dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="45dp"
+                        android:layout_marginRight="45dp"
+                        android:background="@drawable/corners_bg_white_stroke"
+                        android:drawableLeft="@drawable/ic_search_gray_24dp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="  搜索"
+                        android:textColor="@color/colorGray"
+                        android:textSize="16sp" />
 
-                        <ImageView
-                            android:id="@+id/shop_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="5dp"
-                            android:padding="5dp"
-                            app:srcCompat="@drawable/ic_shops" />
+                    <ImageView
+                        android:id="@+id/notification_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:padding="5dp"
+                        app:srcCompat="@drawable/ic_notifications_white" />
+                </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/tv_av"
-                            android:layout_width="match_parent"
-                            android:layout_height="35dp"
-                            android:layout_centerInParent="true"
-                            android:layout_marginLeft="45dp"
-                            android:layout_marginRight="45dp"
-                            android:background="@drawable/corners_bg_white_stroke"
-                            android:drawableLeft="@drawable/ic_search_gray_24dp"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="8dp"
-                            android:text="  搜索"
-                            android:textColor="@color/colorGray"
-                            android:textSize="16sp" />
+            </android.support.v7.widget.Toolbar>
 
-                        <ImageView
-                            android:id="@+id/notification_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="5dp"
-                            android:padding="5dp"
-                            app:srcCompat="@drawable/ic_notifications_white" />
-                    </RelativeLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-                </android.support.v7.widget.Toolbar>
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-
-        </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>
 
 
-        <FrameLayout
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <com.yuangee.flower.customer.widget.SwipeRecyclerView
+            android:id="@+id/swipe_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.yuangee.flower.customer.widget.CustomEmptyView
+            android:id="@+id/empty_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_gravity="center"
+            android:layout_marginBottom="180dp"
+            android:visibility="gone" />
+    </FrameLayout>
 
-
-            <com.yuangee.flower.customer.widget.SwipeRecyclerView
-                android:id="@+id/swipe_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <com.yuangee.flower.customer.widget.CustomEmptyView
-                android:id="@+id/empty_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
-        </FrameLayout>
-
-    </android.support.design.widget.CoordinatorLayout>
-
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

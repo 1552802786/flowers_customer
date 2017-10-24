@@ -2,6 +2,7 @@ package com.yuangee.flower.customer.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.yuangee.flower.customer.widget.RxProgressHUD;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -28,6 +30,8 @@ public abstract class RxLazyFragment extends RxFragment {
     //标志位 fragment是否可见
     protected boolean isVisible;
     private Unbinder bind;
+
+    protected RxProgressHUD hud;
 
     public abstract
     @LayoutRes
@@ -173,4 +177,21 @@ public abstract class RxLazyFragment extends RxFragment {
     public <T extends View> T $(int id) {
         return (T) parentView.findViewById(id);
     }
+
+    protected void showLoading(boolean cancelable, String title, String message, DialogInterface.OnDismissListener listener) {
+        hud = new RxProgressHUD.Builder(getActivity())
+                .setCancelable(cancelable)
+                .setTitle(title)
+                .setMessage(message)
+                .setOnDismissListener(listener)
+                .create();
+        hud.show();
+    }
+
+    protected void hideLoading() {
+        if (null != hud && hud.isShowing() && getActivity() != null) {
+            hud.dismiss();
+        }
+    }
+
 }

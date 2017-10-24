@@ -16,15 +16,19 @@ import android.widget.TextView;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.GoodsActivity;
+import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.adapter.Type2Adapter;
 import com.yuangee.flower.customer.adapter.Type3Adapter;
 import com.yuangee.flower.customer.adapter.TypeAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
+import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.entity.GenreSub;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
+import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
@@ -64,6 +68,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     @OnClick(R.id.menu_icon)
     void openDawer() {
         myDrawerLayout.openDrawer(Gravity.LEFT);
+        initDrawer();
     }
 
     @BindView(R.id.type_recycler)
@@ -96,6 +101,10 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     private int page = 0;
     private int limit = 10;
 
+    private String genreName = "";
+    private String genreSubName = "";
+    private String params = "";//关键字
+
     public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
         this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
     }
@@ -120,7 +129,6 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         }
         myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initRecyclerView();
-        initDrawer();
         isPrepared = false;
     }
 
@@ -136,6 +144,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             public void onItemClick(View view, int position) {
                 createDetailType(position);
                 detailTypeAdapter.setData(detailTypes);
+                genreName = detailTypes.get(position).typeName;
             }
         });
         createType();
@@ -150,6 +159,29 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             @Override
             public void onItemClick(View view, int position) {
                 myDrawerLayout.closeDrawer(Gravity.LEFT);
+                genreSubName = detailTypes.get(position).typeName;
+            }
+        });
+        myDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                page = 0;
+                presenter.getGoodsData(genreName,genreSubName,params,page,limit);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
             }
         });
         createDetailType(0);
@@ -157,20 +189,21 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     }
 
     private void createType() {
-        for (int i = 0; i < 10; i++) {
+        for (Genre genre : MainActivity.genreList) {
             Type type = new Type();
-            type.typeName = "种类" + i;
+            type.typeName = genre.genreName;
             types.add(type);
         }
     }
 
     private void createDetailType(int position) {
         detailTypes.clear();
-        for (int i = 0; i < 10; i++) {
-            Type type = new Type();
-            type.typeName = "种类" + position + "_" + i;
-            type.clicked = false;
-            detailTypes.add(type);
+        if (MainActivity.genreList.size() > 0) {
+            for (GenreSub genreSub : MainActivity.genreList.get(position).genreSubs) {
+                Type type = new Type();
+                type.typeName = genreSub.name;
+                detailTypes.add(type);
+            }
         }
     }
 
@@ -202,7 +235,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(page, limit);
+        presenter.getGoodsData(null, null, null, page, limit);
+
     }
 
     @Override
@@ -212,31 +246,20 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     }
 
     @Override
-    public void showGoods(final List<Goods> list) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        plRecycler.setVisibility(View.VISIBLE);
-                        plRecycler.setRefreshing(false);
-                        plRecycler.setPullLoadMoreCompleted();
-                        if (page == 0) {
-                            goodsList = list;
-                        } else {
-                            goodsList.addAll(list);
-                        }
-                        adapter.setData(goodsList);
-                        if (goodsList.size() > 43) {
-                            plRecycler.setHasMore(false);
-                        } else {
-                            plRecycler.setHasMore(true);
-                        }
-                    }
-                });
-            }
-        }, 1500);
+    public void showGoods(int page, int limit, PageResult<Goods> pageResult) {
+        if (page == 0) {
+            goodsList.clear();
+        }
+        goodsList.addAll(pageResult.rows);
+        plRecycler.setVisibility(View.VISIBLE);
+        plRecycler.setRefreshing(false);
+        plRecycler.setPullLoadMoreCompleted();
+        if (pageResult.total > (page + 1) * limit) {
+            plRecycler.setHasMore(true);
+        } else {
+            plRecycler.setHasMore(false);
+        }
+        adapter.setData(goodsList);
     }
 
     @Override
@@ -262,7 +285,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(page, limit);
+                    presenter.getGoodsData(null, null, null, page, limit);
                 }
             });
         }
@@ -278,13 +301,13 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(page, limit);
+        presenter.getGoodsData(null, null, null, page, limit);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(page, limit);
+        presenter.getGoodsData(null, null, null, page, limit);
     }
 
     @Override

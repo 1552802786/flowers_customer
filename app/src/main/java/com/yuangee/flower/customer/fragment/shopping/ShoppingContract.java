@@ -2,6 +2,7 @@ package com.yuangee.flower.customer.fragment.shopping;
 
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.fragment.BasePresenter;
+import com.yuangee.flower.customer.result.PageResult;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import rx.Observable;
 
 public interface ShoppingContract {
     interface View {
-        void showGoods(List<Goods> goodsList);
+        void showGoods(int page,int limit, PageResult<Goods> goodsList);
 
         /**
          * @param tag 0代表正常返回但没数据  1代表请求异常
@@ -25,13 +26,13 @@ public interface ShoppingContract {
     }
 
     abstract class Presenter extends BasePresenter {
-        abstract void getGoodsData(int page, int limit);
+        abstract void getGoodsData(String genreName, String genreSubName, String params, int page, int limit);
     }
 
     interface Model {
         /**
          * 获取banner数据
          */
-        Observable<List<Goods>> getGoodsData(int page, int limit);
+        Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName, String params, long page, long limit);
     }
 }

@@ -35,34 +35,17 @@ public class RxProgressHUD extends Dialog {
     }
 
     public void dismiss() {
-        NewtonCradleLoading imageView = (NewtonCradleLoading) findViewById(R.id.spinnerImageView);
+        NewtonCradleLoading imageView = findViewById(R.id.spinnerImageView);
         imageView.stop();
         super.dismiss();
     }
 
-    public static RxProgressHUD show(Context context, CharSequence message, boolean indeterminate, boolean cancelable,
-                                     OnCancelListener cancelListener) {
-        RxProgressHUD dialog = new RxProgressHUD(context, R.style.ProgressHUD);
-        dialog.setTitle("");
-        dialog.setContentView(R.layout.progress_hud);
-        if (message == null || message.length() == 0) {
-            dialog.findViewById(R.id.message).setVisibility(View.GONE);
-        } else {
-            TextView txt = (TextView) dialog.findViewById(R.id.message);
-            txt.setText(message);
-        }
-        NewtonCradleLoading imageView = (NewtonCradleLoading) dialog.findViewById(R.id.spinnerImageView);
+    public void show() {
+
+        NewtonCradleLoading imageView = findViewById(R.id.spinnerImageView);
         imageView.start();
 
-        dialog.setCancelable(cancelable);
-        dialog.setOnCancelListener(cancelListener);
-        dialog.getWindow().getAttributes().gravity = Gravity.CENTER;
-        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.dimAmount = 0.2f;
-        dialog.getWindow().setAttributes(lp);
-        //dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-        dialog.show();
-        return dialog;
+        super.show();
     }
 
     public static class Builder {

@@ -5,18 +5,35 @@ package com.yuangee.flower.customer.entity;
  */
 
 public class Goods {
-    public String imgPath;
-    public String goodsName;
-    public String goodsGrade;
-    public String goodsColor;
-    public String goodsSpec;
-    public String goodsLeft;
+    public String image;//图片地址
+
+    public long genreId;//一级大类id
+
+    public String genreName;//一级大类名称
+
+    public long genreSubId;//二级小类Id
+
+    public String genreSubName;//二级小类名称
+
+    public String name;//商品名称
+
+    public String grade;//商品等级
+
+    public String color;//颜色
+
+    public String spec;//说明
+
+    public String unit;//单位
+
+    public double unitPrice;//单价
+
+    public double salesVolume;//可售量
+
+    public long shopId;//商铺id
+
+    public String shopName;//商铺名
+
+    public long selectedNum;//选中的商品数量
 
     public boolean isAddToCar;
-
-    public String goodsMoney;// String型单价  ¥200/束
-
-    public int selectedNum;//选中的数量
-
-    public double goodsPrice;//int型单价
 }
