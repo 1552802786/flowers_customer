@@ -65,6 +65,16 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
+    public interface OnAddClickListener {
+        void onAddClick(ImageView view, int selectedNum);
+    }
+
+    private OnAddClickListener mOnAddClickListener;
+
+    public void setmOnAddClickListener(OnAddClickListener listener) {
+        this.mOnAddClickListener = listener;
+    }
+
     public GoodsAdapter(Context context, int flag) {
         this.flag = flag;
         this.context = context;
@@ -131,7 +141,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.goodsName.setText(bean.name);
         holder.goodsGrade.setText("等级：" + bean.grade);
         holder.goodsColor.setText("颜色：" + bean.color);
-        holder.goodsSpec.setText("规格：" + bean.spec );
+        holder.goodsSpec.setText("规格：" + bean.spec);
         holder.goodsLeft.setText("可售量：" + bean.salesVolume);
         holder.goodsNum.setText(bean.selectedNum + "");
 
@@ -148,14 +158,14 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.addToCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                long memberId = App.me().getSharedPreferences().getLong("memberId",0);
-                addToCar(memberId,bean.id,(int)bean.selectedNum,bean,holder);
+                long memberId = App.me().getSharedPreferences().getLong("memberId", 0);
+                addToCar(memberId, bean.id, (int) bean.selectedNum, bean, holder);
             }
         });
         holder.yuYue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bean.isAddToCar = true;
+//                bean.isAddToCar = true;
             }
         });
 
@@ -177,7 +187,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
             }
         });
 
-        holder.goodsMoney.setText( bean.unitPrice + "/" + bean.unit);
+        holder.goodsMoney.setText(bean.unitPrice + "/" + bean.unit);
 
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
@@ -218,29 +228,33 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         TextView yuYue;
     }
 
-    private void addToCar(long memberId, long waresId, final int num, final Goods goods, final GoodsHolder holder){
+    private void addToCar(long memberId, long waresId, final int num, final Goods goods, final GoodsHolder holder) {
         Observable<Object> observable = ApiManager.getInstance().api
-                .addCartItem(memberId,waresId,num)
+                .addCartItem(memberId, waresId, num)
                 .map(new HttpResultFunc<>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        RxManager rxManager = new RxManager();
+        final RxManager rxManager = new RxManager();
 
-        rxManager.add(observable.subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<Object>() {
+        rxManager.add(observable.subscribe(new MySubscriber<>(context, true, false, new HaveErrSubscriberListener<Object>() {
             @Override
             public void onNext(Object o) {
                 //TODO 添加到购物车成功
-                goods.isAddToCar = true;
                 goods.selectedNum = num;
-                ToastUtil.showMessage(context,"添加到购物车成功");
+                ToastUtil.showMessage(context, "添加到购物车成功");
                 holder.addToCar.setEnabled(false);
+                if (null != mOnAddClickListener) {
+                    mOnAddClickListener.onAddClick(holder.addToCar, (int) goods.selectedNum);
+                }
+                rxManager.clear();
             }
 
             @Override
             public void onError(int code) {
                 //TODO 添加到购物车失败
-                ToastUtil.showMessage(context,"添加到购物车失败");
+                ToastUtil.showMessage(context, "添加到购物车失败");
+                rxManager.clear();
             }
         })));
     }

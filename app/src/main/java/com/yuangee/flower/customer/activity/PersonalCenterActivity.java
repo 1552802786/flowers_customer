@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,7 +77,7 @@ public class PersonalCenterActivity extends RxBaseActivity {
 
     @OnClick(R.id.pick_name)
     void pickName() {
-        showEditDialog(personName,"姓名");
+        showEditDialog(personName, "姓名");
     }
 
     @OnClick(R.id.pick_gender)
@@ -125,31 +126,32 @@ public class PersonalCenterActivity extends RxBaseActivity {
 
     @OnClick(R.id.pick_phone)
     void pickPhone() {
-        showEditDialog(personPhone,"手机号码");
+        showEditDialog(personPhone, "手机号码");
     }
 
     @OnClick(R.id.pick_email)
-    void pickEmail(){
-        showEditDialog(personEmail,"邮箱");
+    void pickEmail() {
+        showEditDialog(personEmail, "邮箱");
     }
 
     @OnClick(R.id.pick_consignee)
-    void pickConsignee(){
-        showEditDialog(personConsignee,"收货人姓名");
+    void pickConsignee() {
+        showEditDialog(personConsignee, "收货人姓名");
     }
 
     @OnClick(R.id.pick_consignee_phone)
-    void pickConsigneePhone(){
-        showEditDialog(personConsigneePhone,"收货人电话");
+    void pickConsigneePhone() {
+        showEditDialog(personConsigneePhone, "收货人电话");
     }
 
     @OnClick(R.id.person_consignee_method)
-    void pickConsigneeMethod(){
-        showEditDialog(personConsigneeMethod,"收货方式");
+    void pickConsigneeMethod() {
+        showEditDialog(personConsigneeMethod, "收货方式");
     }
+
     @OnClick(R.id.person_consignee_place)
-    void pickConsigneePlace(){
-        showEditDialog(personConsigneePlace,"收货地址");
+    void pickConsigneePlace() {
+        showEditDialog(personConsigneePlace, "收货地址");
     }
 
     @Override
@@ -202,10 +204,17 @@ public class PersonalCenterActivity extends RxBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void showEditDialog(final TextView showView, String hint){
+    private void showEditDialog(final TextView showView, String hint) {
         final EditText editName = new EditText(this);
         String sName = showView.getText().toString();
         editName.setText(sName);
+        if (hint.contains("号码") || hint.contains("电话")) {
+            editName.setInputType(InputType.TYPE_CLASS_PHONE);
+        } else if (hint.contains("邮箱")) {
+            editName.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        } else {
+            editName.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
         if (!StringUtils.isEmpty(sName)) {
             editName.setSelection(sName.length());
         }

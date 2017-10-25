@@ -22,7 +22,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
@@ -30,6 +32,7 @@ import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
@@ -44,18 +47,21 @@ import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
+import com.yuangee.flower.customer.widget.AddCartAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentListener {
+public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentListener, AddAnimateListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private VpAdapter adapter;
 
@@ -83,6 +89,9 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
     @BindView(R.id.search_suggest)
     RecyclerView searchResultSuggest;
+
+    @BindView(R.id.activity_main)
+    RelativeLayout rootView;
 
     @Override
     public int getLayoutId() {
@@ -115,7 +124,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     searchFrame.setVisibility(View.GONE);
                     String params = textView.getText().toString();
-                    if(null != shoppingFragment){
+                    if (null != shoppingFragment) {
                         bnve.setCurrentItem(1);
                         shoppingFragment.findWares(params);
                     }
@@ -182,6 +191,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
         shoppingFragment = new ShoppingFragment();
         shoppingFragment.setToSpecifiedFragmentListener(this);
+        shoppingFragment.setAddAnimateListener(this);
 
         shoppingCartFragment = new ShoppingCartFragment();
         shoppingCartFragment.setToSpecifiedFragmentListener(this);
@@ -267,7 +277,15 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         } else {
             vp.setCurrentItem(position);
         }
+    }
 
+    private int selectedNum = 0;
+
+    @Override
+    public void showAddAnimate(ImageView startView, int selectedNum) {
+        this.selectedNum += selectedNum;
+        AddCartAnimation.AddToCart(startView, bnve.getBottomNavigationItemView(2), this, rootView, 1);
+        addBadgeAt(2, this.selectedNum);
     }
 
     /**
@@ -303,6 +321,19 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                 }
             }
             super.onBackPressed();
+        }
+    }
+
+    private Badge badge;
+
+    private void addBadgeAt(int position, int number) {
+        if (null == badge) {
+            badge = new QBadgeView(this)
+                    .setBadgeNumber(number)
+                    .setGravityOffset(12, 2, true)
+                    .bindTarget(bnve.getBottomNavigationItemView(position));
+        } else {
+            badge.setBadgeNumber(number);
         }
     }
 

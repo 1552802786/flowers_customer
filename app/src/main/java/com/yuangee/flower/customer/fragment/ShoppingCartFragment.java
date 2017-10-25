@@ -8,13 +8,18 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.LoginActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.adapter.ShoppingAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.fragment.home.HomeModel;
 import com.yuangee.flower.customer.fragment.home.HomePresenter;
+import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
@@ -23,6 +28,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by developerLzh on 2017/8/21 0021.
@@ -112,6 +120,112 @@ public class ShoppingCartFragment extends RxLazyFragment {
                 }
             }
         });
+    }
+
+    /**
+     * 查询购物车中所有商品
+     *
+     * @param memberId
+     */
+    private void queryCart(long memberId) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .queryCart(memberId)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                //TODO 获取购物车数据成功
+            }
+
+            @Override
+            public void onError(int code) {
+                //TODO 获取购物车数据失败
+            }
+        })));
+    }
+
+    private void cartItemAdd(long memberId, long waresId, int num) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .cartItemAdd(memberId, waresId, num)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                //TODO 添加商品数量成功
+            }
+
+            @Override
+            public void onError(int code) {
+                //TODO 添加商品数量失败
+            }
+        })));
+    }
+
+    private void cartItemSub(long memberId, long waresId, int num) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .cartItemSub(memberId, waresId, num)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                //TODO 减少商品数量成功
+            }
+
+            @Override
+            public void onError(int code) {
+                //TODO 减少商品数量失败
+            }
+        })));
+    }
+
+    private void deleteCartItem(long itemId, long cartId) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .deleteCartItem(itemId, cartId)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                //TODO 删除购车中的一栏商品成功
+            }
+
+            @Override
+            public void onError(int code) {
+                //TODO 删除购车中的一栏商品失败
+            }
+        })));
+    }
+
+    private void booking(long memberId, String receiverName,
+                          String receiverPhone, String receiverAddress, long expressId) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                //TODO 下单成功
+            }
+
+            @Override
+            public void onError(int code) {
+                //TODO 下单失败
+            }
+        })));
     }
 
 }

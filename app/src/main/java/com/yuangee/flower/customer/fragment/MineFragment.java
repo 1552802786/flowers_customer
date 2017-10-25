@@ -1,6 +1,5 @@
 package com.yuangee.flower.customer.fragment;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.activity.LoginActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;

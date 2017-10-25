@@ -23,9 +23,11 @@ import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.GenreSub;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.widget.AddCartAnimation;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
@@ -82,6 +84,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
 
+    private AddAnimateListener addAnimateListener;
+
     ShoppingPresenter presenter;
 
     GoodsAdapter adapter;
@@ -103,6 +107,10 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
         this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
+    }
+
+    public void setAddAnimateListener(AddAnimateListener addAnimateListener) {
+        this.addAnimateListener = addAnimateListener;
     }
 
     @Override
@@ -139,7 +147,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             public void onItemClick(View view, int position) {
                 createDetailType(position);
                 detailTypeAdapter.setData(detailTypes);
-                if(types.get(position).clicked){
+                if (types.get(position).clicked) {
                     genreName = types.get(position).genreName;
                 } else {
                     genreName = "";
@@ -158,7 +166,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             @Override
             public void onItemClick(View view, int position) {
                 myDrawerLayout.closeDrawer(Gravity.LEFT);
-                if(detailTypes.get(position).clicked){
+                if (detailTypes.get(position).clicked) {
                     genreSubName = detailTypes.get(position).name;
                 } else {
                     genreSubName = "";
@@ -216,6 +224,14 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 startActivity(new Intent(getActivity(), GoodsActivity.class));
             }
         });
+        adapter.setmOnAddClickListener(new GoodsAdapter.OnAddClickListener() {
+            @Override
+            public void onAddClick(ImageView view, int selectedNum) {
+                if (null != addAnimateListener) {
+                    addAnimateListener.showAddAnimate(view, selectedNum);
+                }
+            }
+        });
 
 
         plRecycler.setAdapter(adapter);
@@ -247,6 +263,9 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             goodsList.clear();
         }
         goodsList.addAll(pageResult.rows);
+        for (Goods goods : goodsList) {
+            goods.selectedNum = 1;//默认选中的个数为1
+        }
         if (goodsList.size() == 0) {
             showEmptyView(0);
         } else {
@@ -324,7 +343,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         }
     }
 
-    public void findWares(String params){
+    public void findWares(String params) {
         page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }

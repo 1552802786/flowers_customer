@@ -38,5 +38,4 @@ public class Goods {
 
     public long selectedNum;//选中的商品数量
 
-    public boolean isAddToCar;
 }

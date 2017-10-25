@@ -238,6 +238,13 @@ public interface ApiService {
     Observable<BaseResult<Object>> deleteCartItem(@Query("itemId") Long itemId,
                                                   @Query("cartId") Long cartId);
 
+    /**
+     * 查询购物车中的所有商品
+     * @param memberId
+     * @return
+     */
+    @GET("rest/order/findByMemberId")
+    Observable<BaseResult<Object>> queryCart(@Query("memberId")Long memberId);
 
     /**
      * 下单
