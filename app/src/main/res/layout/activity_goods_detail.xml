@@ -46,6 +46,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@color/white">
                 <RelativeLayout
+                    android:id="@+id/genre_first_con"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
@@ -66,6 +67,7 @@
                         app:srcCompat="@drawable/ic_chevron" />
 
                     <TextView
+                        android:id="@+id/genre_first"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/ic_right_1"
@@ -81,6 +83,7 @@
                     android:background="@color/line_color"/>
 
                 <RelativeLayout
+                    android:id="@+id/genre_sub_con"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
@@ -101,6 +104,7 @@
                         app:srcCompat="@drawable/ic_chevron" />
 
                     <TextView
+                        android:id="@+id/genre_sub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/ic_right_2"
@@ -116,6 +120,7 @@
                     android:background="@color/line_color"/>
 
                 <RelativeLayout
+                    android:id="@+id/grade_con"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
@@ -136,6 +141,7 @@
                         app:srcCompat="@drawable/ic_chevron" />
 
                     <TextView
+                        android:id="@+id/grade"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/ic_right_3"
@@ -151,6 +157,7 @@
                     android:background="@color/line_color"/>
 
                 <RelativeLayout
+                    android:id="@+id/color_con"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
@@ -171,6 +178,7 @@
                         app:srcCompat="@drawable/ic_chevron" />
 
                     <TextView
+                        android:id="@+id/color"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/ic_right_4"
@@ -186,6 +194,7 @@
                     android:background="@color/line_color"/>
 
                 <RelativeLayout
+                    android:id="@+id/spec_con"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
@@ -205,14 +214,15 @@
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
 
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_toLeftOf="@+id/ic_right_5"-->
-                        <!--android:text="玫瑰"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:layout_centerVertical="true"-->
-                        <!--/>-->
+                    <TextView
+                        android:id="@+id/spec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/ic_right_5"
+                        android:text="规格"
+                        android:textSize="16sp"
+                        android:layout_centerVertical="true"
+                        />
 
                 </RelativeLayout>
                 <View
@@ -221,6 +231,7 @@
                     android:background="@color/line_color"/>
 
                 <RelativeLayout
+                    android:id="@+id/unit_con"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
@@ -240,14 +251,15 @@
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
 
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_toLeftOf="@+id/ic_right_1"-->
-                        <!--android:text="玫瑰"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:layout_centerVertical="true"-->
-                        <!--/>-->
+                    <TextView
+                        android:id="@+id/unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/ic_right_6"
+                        android:text="束"
+                        android:textSize="16sp"
+                        android:layout_centerVertical="true"
+                        />
 
                 </RelativeLayout>
                 <View
@@ -256,6 +268,7 @@
                     android:background="@color/line_color"/>
 
                 <RelativeLayout
+                    android:id="@+id/sales_value_con"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
@@ -275,14 +288,15 @@
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
 
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_toLeftOf="@+id/ic_right_1"-->
-                        <!--android:text="玫瑰"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:layout_centerVertical="true"-->
-                        <!--/>-->
+                    <TextView
+                        android:id="@+id/sales_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/ic_right_7"
+                        android:text="20"
+                        android:textSize="16sp"
+                        android:layout_centerVertical="true"
+                        />
 
                 </RelativeLayout>
                 <View

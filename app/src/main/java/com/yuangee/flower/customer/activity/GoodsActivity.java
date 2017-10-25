@@ -18,14 +18,20 @@ import com.luck.picture.lib.tools.DoubleUtils;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.GridImageAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.util.StringUtils;
+import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.FullyGridLayoutManager;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by developerLzh on 2017/9/28 0028.
@@ -39,10 +45,45 @@ public class GoodsActivity extends RxBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @OnClick(R.id.genre_first_con)
+    void choiceFirst(){
+
+    }
+
+    @OnClick(R.id.genre_sub_con)
+    void choiceSub(){
+
+    }
+
+    @OnClick(R.id.grade_con)
+    void choiceGrade(){
+
+    }
+
+    @OnClick(R.id.color_con)
+    void editColor(){
+
+    }
+
+    @OnClick(R.id.spec_con)
+    void editSpec(){
+
+    }
+
+    @OnClick(R.id.unit_con)
+    void editUnit(){
+
+    }
+
+    @OnClick(R.id.sales_value_con)
+    void editSalesNum(){
+
+    }
+
     private GridImageAdapter adapter;
     private List<LocalMedia> selectList = new ArrayList<>();
 
-    private int maxSelectNum = 5;
+    private int maxSelectNum = 1;
 
 
     private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
@@ -90,7 +131,7 @@ public class GoodsActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        FullyGridLayoutManager manager = new FullyGridLayoutManager(this, 5, GridLayoutManager.VERTICAL, false);
+        FullyGridLayoutManager manager = new FullyGridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
         photoRecycler.setLayoutManager(manager);
         adapter = new GridImageAdapter(this, onAddPicClickListener);
         adapter.setList(selectList);
@@ -105,12 +146,12 @@ public class GoodsActivity extends RxBaseActivity {
                 switch (mediaType) {
                     case 1:
                         // 预览图片
-                        if(!DoubleUtils.isFastDoubleClick()) {
-                            Intent intent = new Intent(GoodsActivity.this,PictureExternalPreviewActivity.class);
-                            intent.putExtra("previewSelectList", (Serializable)selectList);
+                        if (!DoubleUtils.isFastDoubleClick()) {
+                            Intent intent = new Intent(GoodsActivity.this, PictureExternalPreviewActivity.class);
+                            intent.putExtra("previewSelectList", (Serializable) selectList);
                             intent.putExtra("position", position);
                             startActivity(intent);
-                           overridePendingTransition(com.luck.picture.lib.R.anim.a5, 0);
+                            overridePendingTransition(com.luck.picture.lib.R.anim.a5, 0);
                         }
                         break;
                 }
@@ -138,12 +179,26 @@ public class GoodsActivity extends RxBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void createGoods(long genreId,String genreName,long genreSubId,String genreSubName,
-                             String name,String grade,String color,String spec,String unit,String unitPrice){
-        for (LocalMedia localMedia : selectList) {
-
+    private void createGoods(long genreId, String genreName, long genreSubId, String genreSubName,
+                             String name, String grade, String color, String spec, String unit, String unitPrice) {
+        String path = "";
+        if(selectList.size() != 0){
+            path = selectList.get(0).getCompressPath();
         }
+        if(StringUtils.isEmpty(path)){
+            ToastUtil.showMessage(this,"请选择商品照片");
+            return;
+        }
+        MultipartBody.Part waresImagePart =  MultipartBody.Part.createFormData("waresImage", "waresImage.png", RequestBody.create(MediaType.parse("image/png"), new File(path)));
         MultipartBody.Part genreIdPart = MultipartBody.Part.createFormData("genreId", String.valueOf(genreId));
-        MultipartBody.Part genreNamePart = MultipartBody.Part.createFormData("genreName", String.valueOf(genreName));
+        MultipartBody.Part genreSubIdPart = MultipartBody.Part.createFormData("genreSubId", String.valueOf(genreSubId));
+        MultipartBody.Part genreNamePart = MultipartBody.Part.createFormData("genreName", genreName);
+        MultipartBody.Part genreSubNamePart = MultipartBody.Part.createFormData("genreSubName", genreSubName);
+        MultipartBody.Part namePart = MultipartBody.Part.createFormData("name", name);
+        MultipartBody.Part gradePart = MultipartBody.Part.createFormData("grade", grade);
+        MultipartBody.Part colorPart = MultipartBody.Part.createFormData("color", color);
+        MultipartBody.Part specPart = MultipartBody.Part.createFormData("spec", spec);
+        MultipartBody.Part unitPart = MultipartBody.Part.createFormData("unit", unit);
+        MultipartBody.Part unitPricePart = MultipartBody.Part.createFormData("unitPrice", unitPrice);
     }
 }

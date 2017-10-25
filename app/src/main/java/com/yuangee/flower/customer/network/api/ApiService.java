@@ -35,6 +35,11 @@ public interface ApiService {
     @GET("rest/system/sendSmsLogin")
     Observable<BaseResult<Object>> sendSmsLogin(@Query("phone") String phone);
 
+    @FormUrlEncoded
+    @POST("rest/member/login")
+    Observable<BaseResult<Object>> login(@Field("phone") String phone,
+                                         @Field("smsCode") String smsCode);
+
     /**
      * 查询商品类型
      *
@@ -72,10 +77,10 @@ public interface ApiService {
      */
     @GET("rest/wares/findWares")
     Observable<BaseResult<PageResult<Goods>>> findWares(@Query("genreName") String genreName,
-                                                 @Query("genreSubName") String genreSubName,
-                                                 @Query("params") String params,
-                                                 @Query("offset") Long offset,
-                                                 @Query("limit") Long Limit);
+                                                        @Query("genreSubName") String genreSubName,
+                                                        @Query("params") String params,
+                                                        @Query("offset") Long offset,
+                                                        @Query("limit") Long Limit);
 
     /**
      * 根据用户id查询店铺信息
@@ -84,7 +89,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/wares/findShopByMemberId")
-    Observable<BaseResult<Object>> findWares(@Query("memberId") Long memberId);
+    Observable<BaseResult<Object>> findShopByMemberId(@Query("memberId") Long memberId);
 
     /**
      * 添加商品
@@ -240,11 +245,12 @@ public interface ApiService {
 
     /**
      * 查询购物车中的所有商品
+     *
      * @param memberId
      * @return
      */
     @GET("rest/order/findByMemberId")
-    Observable<BaseResult<Object>> queryCart(@Query("memberId")Long memberId);
+    Observable<BaseResult<Object>> queryCart(@Query("memberId") Long memberId);
 
     /**
      * 下单

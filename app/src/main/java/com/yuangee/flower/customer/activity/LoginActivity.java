@@ -79,7 +79,7 @@ public class LoginActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        StatusBarUtil.setTransStatusBar(this);
+//        StatusBarUtil.setTransStatusBar(this);
     }
 
     @Override
@@ -95,8 +95,19 @@ public class LoginActivity extends RxBaseActivity {
     }
 
     private void login(String phone, String code) {
-        App.me().getSharedPreferences().edit().putBoolean("login", true).apply();
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        Observable<Object> observable = ApiManager.getInstance().api
+                .login(phone, code)
+                .map(new HttpResultFunc<>(LoginActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(LoginActivity.this, true, false, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                App.me().getSharedPreferences().edit().putBoolean("login", true).apply();
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            }
+        })));
     }
 
     private void getVerfityCode(String phone) {
