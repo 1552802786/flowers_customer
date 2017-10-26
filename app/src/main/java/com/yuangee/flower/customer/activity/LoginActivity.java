@@ -16,6 +16,7 @@ import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
@@ -95,19 +96,54 @@ public class LoginActivity extends RxBaseActivity {
     }
 
     private void login(String phone, String code) {
-        Observable<Object> observable = ApiManager.getInstance().api
+        Observable<Member> observable = ApiManager.getInstance().api
                 .login(phone, code)
-                .map(new HttpResultFunc<>(LoginActivity.this))
+                .map(new HttpResultFunc<Member>(LoginActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(LoginActivity.this, true, false, new NoErrSubscriberListener<Object>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(LoginActivity.this, true, false, new NoErrSubscriberListener<Member>() {
             @Override
-            public void onNext(Object o) {
-                App.me().getSharedPreferences().edit().putBoolean("login", true).apply();
+            public void onNext(Member o) {
+                SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
+
+                editor.putLong("id", o.id);
+                editor.putString("name", o.name);
+                editor.putString("userName", o.userName);
+                editor.putString("passWord", o.passWord);
+                editor.putString("phone", o.phone);
+                editor.putString("email", o.email);
+                editor.putString("photo", o.photo);
+                editor.putBoolean("gender", o.gender);
+                editor.putString("address", o.address);
+                editor.putString("type", o.type);
+                editor.putBoolean("inBlacklist", o.inBlacklist);
+                editor.putBoolean("isRecycle", o.isRecycle);
+                editor.putBoolean("inFirst", o.inFirst);
+                editor.putFloat("balance", (float) o.balance);
+                editor.putLong("deathDate", o.memberToken.deathDate);
+                editor.putString("token", o.memberToken.token);
+
+                editor.putBoolean("login", true);
+
+                editor.apply();
+
+                ApiManager.getInstance().addHeader();//添加统一请求头
+
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finishActivity();
             }
         })));
+    }
+
+    private void finishActivity() {
+        if (null != timer) {
+            timer.cancel();
+        }
+        if (null != timerTask) {
+            timerTask.cancel();
+        }
+        finish();
     }
 
     private void getVerfityCode(String phone) {

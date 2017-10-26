@@ -108,7 +108,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
         plRecycler.setFooterViewText("加载中..");
 
-        adapter = new GoodsAdapter(getActivity(), 1);
+        adapter = new GoodsAdapter(getActivity(), 1,mRxManager);
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

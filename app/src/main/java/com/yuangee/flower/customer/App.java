@@ -3,7 +3,10 @@ package com.yuangee.flower.customer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.util.Log;
 
+import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.MemberToken;
 import com.yuangee.flower.customer.util.CommonUtil;
 
 import java.io.File;
@@ -102,7 +105,48 @@ public class App {
     }
 
     public static long getPassengerId() {
-        return App.me().getSharedPreferences().getLong("passengerId", -1);
+        Long memberId = App.me().getSharedPreferences().getLong("id", -1);
+        Log.e("memberId",""+memberId);
+        return memberId;
+    }
+
+    public Member getMemberInfo() {
+        SharedPreferences sp = App.me().getSharedPreferences();
+        long id = sp.getLong("id", -1);
+        String name = sp.getString("name", "");
+        String userName = sp.getString("userName", "");
+        String passWord = sp.getString("passWord", "");
+        String phone = sp.getString("phone", "");
+        String email = sp.getString("email", "");
+        boolean gender = sp.getBoolean("gender", false);
+        String address = sp.getString("address", "");
+        String type = sp.getString("type", "");
+        boolean inBlacklist = sp.getBoolean("inBlacklist", false);
+        boolean isRecycle = sp.getBoolean("isRecycle", false);
+        boolean inFirst = sp.getBoolean("inFirst", false);
+        double balance = sp.getFloat("balance", (float) 0.0);
+        long deathDate = sp.getLong("deathDate", 0);
+        String token = sp.getString("token", "");
+
+        Member member = new Member();
+        member.id = id;
+        member.name = name;
+        member.userName = userName;
+        member.passWord = passWord;
+        member.phone = phone;
+        member.email = email;
+        member.gender = gender;
+        member.address = address;
+        member.type = type;
+        member.inBlacklist = inBlacklist;
+        member.isRecycle = isRecycle;
+        member.inFirst = inFirst;
+        member.balance = balance;
+        member.memberToken = new MemberToken();
+        member.memberToken.token = token;
+        member.memberToken.deathDate = deathDate;
+
+        return member;
     }
 
 }

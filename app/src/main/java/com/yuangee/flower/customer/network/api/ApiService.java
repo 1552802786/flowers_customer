@@ -1,12 +1,15 @@
 package com.yuangee.flower.customer.network.api;
 
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.result.QueryCartResult;
 
 import java.util.List;
 
@@ -37,7 +40,7 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("rest/member/login")
-    Observable<BaseResult<Object>> login(@Field("phone") String phone,
+    Observable<BaseResult<Member>> login(@Field("phone") String phone,
                                          @Field("smsCode") String smsCode);
 
     /**
@@ -202,9 +205,9 @@ public interface ApiService {
      * @return
      */
     @GET("rest/order/addCartItem")
-    Observable<BaseResult<Object>> addCartItem(@Query("memberId") Long memberId,
-                                               @Query("waresId") Long waresId,
-                                               @Query("num") Integer num);
+    Observable<BaseResult<CartItem>> addCartItem(@Query("memberId") Long memberId,
+                                                 @Query("waresId") Long waresId,
+                                                 @Query("num") Integer num);
 
     /**
      * 增加购物车中已有商品数量
@@ -215,8 +218,8 @@ public interface ApiService {
      * @return
      */
     @GET("rest/order/cartItemAdd")
-    Observable<BaseResult<Object>> cartItemAdd(@Query("memberId") Long memberId,
-                                               @Query("waresId") Long waresId,
+    Observable<BaseResult<CartItem>> cartItemAdd(@Query("itemId") Long memberId,
+                                               @Query("cartId") Long waresId,
                                                @Query("num") Integer num);
 
     /**
@@ -250,7 +253,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/order/findByMemberId")
-    Observable<BaseResult<Object>> queryCart(@Query("memberId") Long memberId);
+    Observable<BaseResult<QueryCartResult>> queryCart(@Query("memberId") Long memberId);
 
     /**
      * 下单

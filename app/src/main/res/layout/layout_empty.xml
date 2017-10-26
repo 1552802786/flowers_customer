@@ -20,6 +20,7 @@
             android:id="@+id/empty_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="@dimen/default_general_margin"
             android:textColor="@color/black_alpha_45"
             android:textSize="@dimen/default_small_text_size" />

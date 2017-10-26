@@ -217,7 +217,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setFooterViewText("加载中..");
 
-        adapter = new GoodsAdapter(getActivity(), 0);
+        adapter = new GoodsAdapter(getActivity(), 0, mRxManager);
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

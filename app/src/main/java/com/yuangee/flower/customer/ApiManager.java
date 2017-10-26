@@ -1,5 +1,7 @@
 package com.yuangee.flower.customer;
 
+import android.util.Log;
+
 import com.yuangee.flower.customer.network.api.ApiService;
 
 import java.io.File;
@@ -50,8 +52,9 @@ public class ApiManager {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();   //拦截器用来输出请求日志方便调试
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY); //日志输出等级为BODY(打印请求和返回值的头部和body信息)
 
-        final Long passengerId = App.getPassengerId();
         final String token = App.me().getSharedPreferences().getString("token", "");
+
+        Log.e("token", new String(Base64.encode(token).getBytes()));
         //创建okhttp客户端
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(16000, TimeUnit.MILLISECONDS)
@@ -64,7 +67,7 @@ public class ApiManager {
                     public Response intercept(Chain chain) throws IOException {
                         Request request = chain.request()
                                 .newBuilder()
-                                .addHeader("X-token", new String(Base64.encode((passengerId + "_" + token).getBytes())))
+                                .addHeader("X-token", new String(Base64.encode(token).getBytes()))
                                 .build();
                         return chain.proceed(request);
                     }
