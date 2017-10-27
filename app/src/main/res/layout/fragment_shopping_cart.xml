@@ -48,7 +48,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
+            <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
                 android:id="@+id/shopping_car_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="0.0dp"

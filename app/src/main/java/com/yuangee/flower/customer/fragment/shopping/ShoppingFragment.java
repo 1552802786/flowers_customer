@@ -230,6 +230,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 if (null != addAnimateListener) {
                     addAnimateListener.showAddAnimate(view, selectedNum);
                 }
+                //添加完一项后重新获取数据
+//                presenter.getGoodsData(genreName,genreSubName,params,page,limit);
             }
         });
 

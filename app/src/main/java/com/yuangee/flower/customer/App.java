@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
+import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.MemberToken;
 import com.yuangee.flower.customer.util.CommonUtil;
@@ -106,7 +107,7 @@ public class App {
 
     public static long getPassengerId() {
         Long memberId = App.me().getSharedPreferences().getLong("id", -1);
-        Log.e("memberId",""+memberId);
+        Log.e("memberId", "" + memberId);
         return memberId;
     }
 
@@ -119,7 +120,6 @@ public class App {
         String phone = sp.getString("phone", "");
         String email = sp.getString("email", "");
         boolean gender = sp.getBoolean("gender", false);
-        String address = sp.getString("address", "");
         String type = sp.getString("type", "");
         boolean inBlacklist = sp.getBoolean("inBlacklist", false);
         boolean isRecycle = sp.getBoolean("isRecycle", false);
@@ -136,7 +136,6 @@ public class App {
         member.phone = phone;
         member.email = email;
         member.gender = gender;
-        member.address = address;
         member.type = type;
         member.inBlacklist = inBlacklist;
         member.isRecycle = isRecycle;
@@ -145,6 +144,7 @@ public class App {
         member.memberToken = new MemberToken();
         member.memberToken.token = token;
         member.memberToken.deathDate = deathDate;
+        member.address = DbHelper.getInstance().getAddressLongDBManager().loadAll();
 
         return member;
     }

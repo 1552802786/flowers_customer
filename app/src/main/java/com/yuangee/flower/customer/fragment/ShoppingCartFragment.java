@@ -8,17 +8,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.activity.LoginActivity;
-import com.yuangee.flower.customer.activity.RegisterActivity;
-import com.yuangee.flower.customer.adapter.ShoppingAdapter;
+import com.yuangee.flower.customer.activity.SecAddressActivity;
+import com.yuangee.flower.customer.adapter.ShoppingCartAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Goods;
-import com.yuangee.flower.customer.fragment.home.HomeModel;
-import com.yuangee.flower.customer.fragment.home.HomePresenter;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -39,10 +37,10 @@ import rx.schedulers.Schedulers;
  * Created by developerLzh on 2017/8/21 0021.
  */
 
-public class ShoppingCartFragment extends RxLazyFragment {
+public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCartAdapter.OnMoneyChangedListener {
 
     @BindView(R.id.shopping_car_recycler)
-    RecyclerView shoppingRecycle;
+    PullLoadMoreRecyclerView shoppingRecycle;
 
     @BindView(R.id.total)
     TextView totalText;
@@ -52,7 +50,7 @@ public class ShoppingCartFragment extends RxLazyFragment {
 
     @OnClick(R.id.apply)
     void apply() {
-        ToastUtil.showMessage(getActivity(), "点击了提交订单");
+        startActivity(new Intent(getActivity(), SecAddressActivity.class));
     }
 
     @BindView(R.id.empty_layout)
@@ -63,7 +61,7 @@ public class ShoppingCartFragment extends RxLazyFragment {
 
     private List<Goods> goodsList;
 
-    private ShoppingAdapter adapter;
+    private ShoppingCartAdapter adapter;
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
 
@@ -95,28 +93,46 @@ public class ShoppingCartFragment extends RxLazyFragment {
     protected void initRecyclerView() {
         goodsList = new ArrayList<>();
         LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        adapter = new ShoppingAdapter(getActivity());
-
-        shoppingRecycle.setLayoutManager(manager);
+        adapter = new ShoppingCartAdapter(getActivity(), mRxManager);
+        adapter.setOnMoneyChangedListener(this);
+        shoppingRecycle.getRecyclerView().setLayoutManager(manager);
 
         shoppingRecycle.setAdapter(adapter);
+
+        shoppingRecycle.setHasMore(false);
+
+        shoppingRecycle.setRefreshing(true);
 
         queryCart(App.getPassengerId());
     }
 
-    public void showEmptyView() {
-        emptyLayout.setVisibility(View.VISIBLE);
+    public void showEmptyView(int tag) {
+
+        shoppingRecycle.setRefreshing(false);
         content.setVisibility(View.GONE);
-        emptyLayout.setEmptyImage(R.drawable.ic_filed);
-        emptyLayout.setEmptyText("购物车空空如也，点我去下单吧");
-        emptyLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (null != toSpecifiedFragmentListener) {
-                    toSpecifiedFragmentListener.toFragment(1);//跳转到购物界面
+        shoppingRecycle.setPullLoadMoreCompleted();
+        emptyLayout.setVisibility(View.VISIBLE);
+        if (tag == 0) {
+            emptyLayout.setEmptyImage(R.drawable.ic_filed);
+            emptyLayout.setEmptyText("购物车空空如也，点我去下单吧");
+            emptyLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (null != toSpecifiedFragmentListener) {
+                        toSpecifiedFragmentListener.toFragment(1);//跳转到购物界面
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            emptyLayout.setEmptyImage(R.drawable.ic_filed);
+            emptyLayout.setEmptyText("貌似出了点问题，\n点我重试");
+            emptyLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    queryCart(App.getPassengerId());
+                }
+            });
+        }
     }
 
     /**
@@ -131,82 +147,20 @@ public class ShoppingCartFragment extends RxLazyFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<QueryCartResult>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<QueryCartResult>() {
             @Override
             public void onNext(QueryCartResult result) {
-                //TODO 获取购物车数据成功
-
-
-                adapter.setData(goodsList);
+                adapter.setData(result.items);
+                totalText.setText("合计：" + result.totalPrice);
 
                 if (goodsList.size() == 0) {
-                    showEmptyView();
+                    showEmptyView(0);
                 }
             }
 
             @Override
             public void onError(int code) {
-                //TODO 获取购物车数据失败
-            }
-        })));
-    }
-
-    private void cartItemAdd(long itemId, long cartId, int num) {
-        Observable<CartItem> observable = ApiManager.getInstance().api
-                .cartItemAdd(itemId, cartId, num)
-                .map(new HttpResultFunc<CartItem>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<CartItem>() {
-            @Override
-            public void onNext(CartItem o) {
-                //TODO 添加商品数量成功
-            }
-
-            @Override
-            public void onError(int code) {
-                //TODO 添加商品数量失败
-            }
-        })));
-    }
-
-    private void cartItemSub(long memberId, long waresId, int num) {
-        Observable<Object> observable = ApiManager.getInstance().api
-                .cartItemSub(memberId, waresId, num)
-                .map(new HttpResultFunc<>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
-            @Override
-            public void onNext(Object o) {
-                //TODO 减少商品数量成功
-            }
-
-            @Override
-            public void onError(int code) {
-                //TODO 减少商品数量失败
-            }
-        })));
-    }
-
-    private void deleteCartItem(long itemId, long cartId) {
-        Observable<Object> observable = ApiManager.getInstance().api
-                .deleteCartItem(itemId, cartId)
-                .map(new HttpResultFunc<>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
-            @Override
-            public void onNext(Object o) {
-                //TODO 删除购车中的一栏商品成功
-            }
-
-            @Override
-            public void onError(int code) {
-                //TODO 删除购车中的一栏商品失败
+                showEmptyView(code);
             }
         })));
     }
@@ -232,4 +186,17 @@ public class ShoppingCartFragment extends RxLazyFragment {
         })));
     }
 
+    @Override
+    public void onMoneyChange() {
+        List<CartItem> items = adapter.getList();
+        double totalPrice = 0.0;
+        if (items.size() != 0) {
+            for (CartItem item : items) {
+                totalPrice += item.totalPrice;
+            }
+        } else {
+            showEmptyView(0);
+        }
+        totalText.setText("合计：" + totalPrice);
+    }
 }

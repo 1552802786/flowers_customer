@@ -24,7 +24,7 @@ public class Member {
 
     public boolean gender;
 
-    public String address;
+    public List<Address> address;
 
     public String type;
 

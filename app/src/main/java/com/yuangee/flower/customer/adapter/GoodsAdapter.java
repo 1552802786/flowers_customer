@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -15,17 +14,12 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.activity.LoginActivity;
+import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Goods;
-import com.yuangee.flower.customer.entity.Recommend;
-import com.yuangee.flower.customer.fragment.shopping.ShoppingContract;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
-import com.yuangee.flower.customer.result.AddCartResult;
-import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.RxManager;
-import com.yuangee.flower.customer.util.TimeUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -78,7 +72,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
 
     private RxManager rxManager;
 
-    public GoodsAdapter(Context context, int flag,RxManager rxManager) {
+    public GoodsAdapter(Context context, int flag, RxManager rxManager) {
         this.flag = flag;
         this.context = context;
         this.rxManager = rxManager;
@@ -163,7 +157,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
             @Override
             public void onClick(View view) {
                 long memberId = App.getPassengerId();
-                addToCar(memberId, bean.id, (int) bean.selectedNum, bean, holder,position);
+                addToCar(memberId, bean.id, (int) bean.selectedNum, bean, holder, position);
             }
         });
         holder.yuYue.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +187,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
 
         holder.goodsMoney.setText(bean.unitPrice + "/" + bean.unit);
 
-        if(bean.selectedNum != 0){ //如果已经加入到购物车 将不能再进行添加到购物车
+        if (bean.selectedNum != 0) { //如果已经加入到购物车 将不能再进行添加到购物车
             holder.addToCar.setEnabled(false);
         } else {
             holder.addToCar.setEnabled(true);
@@ -239,17 +233,18 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
     }
 
     private void addToCar(long memberId, long waresId, final int num, final Goods goods, final GoodsHolder holder, final int position) {
-        Observable<AddCartResult> observable = ApiManager.getInstance().api
+        Observable<CartItem> observable = ApiManager.getInstance().api
                 .addCartItem(memberId, waresId, num)
-                .map(new HttpResultFunc<AddCartResult>(context))
+                .map(new HttpResultFunc<CartItem>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        rxManager.add(observable.subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<AddCartResult>() {
+        rxManager.add(observable.subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<CartItem>() {
             @Override
-            public void onNext(AddCartResult o) {
+            public void onNext(CartItem o) {
                 //TODO 添加到购物车成功
                 goods.selectedNum = num;
+                goods.salesVolume -= num;
                 ToastUtil.showMessage(context, "添加到购物车成功");
                 if (null != mOnAddClickListener) {
                     mOnAddClickListener.onAddClick(holder.addToCar, (int) goods.selectedNum);

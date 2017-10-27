@@ -58,7 +58,9 @@ public abstract class RxBaseActivity extends RxAppCompatActivity {
     /**
      * 初始化toolbar
      */
-    public abstract void initToolBar();
+    public void initToolBar(){
+
+    }
 
     /**
      * 加载数据

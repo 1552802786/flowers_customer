@@ -225,14 +225,10 @@ public interface ApiService {
     /**
      * 减少购物车中已有商品数量
      *
-     * @param memberId 用户id
-     * @param waresId  是否为预约订单
-     * @param num      商品数量
-     * @return
      */
     @GET("rest/order/cartItemSub")
-    Observable<BaseResult<Object>> cartItemSub(@Query("memberId") Long memberId,
-                                               @Query("waresId") Long waresId,
+    Observable<BaseResult<CartItem>> cartItemSub(@Query("itemId") Long itemId,
+                                               @Query("cartId") Long cartId,
                                                @Query("num") Integer num);
 
     /**

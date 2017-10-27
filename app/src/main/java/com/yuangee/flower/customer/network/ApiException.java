@@ -7,7 +7,7 @@ import android.content.Context;
  */
 public class ApiException extends RuntimeException {
 
-    private int code;
+    private int code = -100;
 
     public ApiException(Context context, int resultCode) {
         this(getApiExceptionMessage(context, resultCode));

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.permission.RxPermissions;
 
 import butterknife.BindView;
@@ -24,7 +25,7 @@ import rx.functions.Action1;
  * Created by developerLzh on 2017/4/19.
  */
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends RxBaseActivity {
 
     RxPermissions rxPermissions;
 
@@ -35,10 +36,12 @@ public class SplashActivity extends BaseActivity {
     ImageView imageView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+    public int getLayoutId() {
+        return R.layout.activity_splash;
+    }
 
+    @Override
+    public void initViews(Bundle savedInstanceState) {
         ButterKnife.bind(this);
 
         rxPermissions = new RxPermissions(this);
@@ -49,7 +52,6 @@ public class SplashActivity extends BaseActivity {
         } else {
             delayToLogin();
         }
-
     }
 
     private void delayToLogin() {

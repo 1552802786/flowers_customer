@@ -16,6 +16,8 @@ import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.db.DbHelper;
+import com.yuangee.flower.customer.entity.Address;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -24,6 +26,7 @@ import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StatusBarUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -107,6 +110,9 @@ public class LoginActivity extends RxBaseActivity {
             public void onNext(Member o) {
                 SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
 
+                List<Address> addressList = o.address;
+                DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
+
                 editor.putLong("id", o.id);
                 editor.putString("name", o.name);
                 editor.putString("userName", o.userName);
@@ -115,7 +121,6 @@ public class LoginActivity extends RxBaseActivity {
                 editor.putString("email", o.email);
                 editor.putString("photo", o.photo);
                 editor.putBoolean("gender", o.gender);
-                editor.putString("address", o.address);
                 editor.putString("type", o.type);
                 editor.putBoolean("inBlacklist", o.inBlacklist);
                 editor.putBoolean("isRecycle", o.isRecycle);
