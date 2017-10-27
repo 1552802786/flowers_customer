@@ -15,10 +15,13 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class Address implements Serializable{
 
+    @Id
+    public long id;
+
     @Transient
     public static final long serialVersionUID = 1L;
 
-    @Id
+    @Property
     public long shippingId;//收货人id
 
     @Property
@@ -42,10 +45,17 @@ public class Address implements Serializable{
     @Property
     public boolean defaultAddress;//是否是默认地址
 
-    @Generated(hash = 1743525638)
-    public Address(long shippingId, String shippingName, String shippingPhone,
-            String pro, String city, String area, String street,
-            boolean defaultAddress) {
+    @Property
+    public long expressId;
+
+    @Transient
+    public boolean isSelected;
+
+    @Generated(hash = 348042265)
+    public Address(long id, long shippingId, String shippingName,
+            String shippingPhone, String pro, String city, String area,
+            String street, boolean defaultAddress, long expressId) {
+        this.id = id;
         this.shippingId = shippingId;
         this.shippingName = shippingName;
         this.shippingPhone = shippingPhone;
@@ -54,6 +64,7 @@ public class Address implements Serializable{
         this.area = area;
         this.street = street;
         this.defaultAddress = defaultAddress;
+        this.expressId = expressId;
     }
 
     @Generated(hash = 388317431)
@@ -122,6 +133,22 @@ public class Address implements Serializable{
 
     public void setDefaultAddress(boolean defaultAddress) {
         this.defaultAddress = defaultAddress;
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getExpressId() {
+        return this.expressId;
+    }
+
+    public void setExpressId(long expressId) {
+        this.expressId = expressId;
     }
 
 }

@@ -24,7 +24,7 @@ public class Member {
 
     public boolean gender;
 
-    public List<Address> address;
+    public String address;
 
     public String type;
 
@@ -36,9 +36,9 @@ public class Member {
 
     public double balance;
 
-    public Shop shop;
-
     public List<Address> memberAddressList;
+
+    public Shop shop;
 
     public MemberToken memberToken;
 

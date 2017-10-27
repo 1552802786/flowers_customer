@@ -12,11 +12,14 @@ import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.EditAddressActivity;
 import com.yuangee.flower.customer.activity.SecAddressActivity;
 import com.yuangee.flower.customer.adapter.ShoppingCartAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
+import com.yuangee.flower.customer.entity.Address;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -32,6 +35,8 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by developerLzh on 2017/8/21 0021.
@@ -50,7 +55,12 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
     @OnClick(R.id.apply)
     void apply() {
-        startActivity(new Intent(getActivity(), SecAddressActivity.class));
+        if (address == null) {
+            ToastUtil.showMessage(getActivity(), "请选择一个收货地址");
+        } else {
+            booking(App.getPassengerId(), address.shippingName, address.shippingPhone,
+                    address.pro + address.city + address.area + address.street, address.expressId);
+        }
     }
 
     @BindView(R.id.empty_layout)
@@ -59,11 +69,16 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     @BindView(R.id.content)
     LinearLayout content;
 
-    private List<Goods> goodsList;
+    @BindView(R.id.receive_place)
+    TextView receivePlace;
 
     private ShoppingCartAdapter adapter;
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
+
+    public static final int REQUEST_ADDR = 0X00;
+
+    private List<CartItem> items;
 
     public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
         this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
@@ -89,9 +104,11 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         isPrepared = false;
     }
 
+    private Address address;
+
     @Override
     protected void initRecyclerView() {
-        goodsList = new ArrayList<>();
+        items = new ArrayList<>();
         LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         adapter = new ShoppingCartAdapter(getActivity(), mRxManager);
         adapter.setOnMoneyChangedListener(this);
@@ -101,8 +118,37 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
         shoppingRecycle.setHasMore(false);
 
-        shoppingRecycle.setRefreshing(true);
+        Member member = App.me().getMemberInfo();
+        if (null != member.memberAddressList && member.memberAddressList.size() != 0) {
+            for (Address addr : member.memberAddressList) {
+                address = addr;
+                if (address.defaultAddress) {
+                    break;
+                }
+            }
+            receivePlace.setText("收货地址：" + address.getStreet());
+        } else {
+            receivePlace.setText("添加收货地址");
+        }
+        receivePlace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (address == null) {
+                    Intent intent = new Intent(getActivity(), EditAddressActivity.class);
+                    intent.putExtra("from", "shoppingCart");
+                    startActivityForResult(intent, REQUEST_ADDR);
+                } else {
+                    Intent intent = new Intent(getActivity(), SecAddressActivity.class);
+                    intent.putExtra("address", address);
+                    startActivityForResult(intent, REQUEST_ADDR);
+                }
+            }
+        });
+    }
 
+    @Override
+    protected void onVisible() {
+        super.onVisible();
         queryCart(App.getPassengerId());
     }
 
@@ -141,6 +187,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
      * @param memberId
      */
     private void queryCart(long memberId) {
+        shoppingRecycle.setRefreshing(true);
         Observable<QueryCartResult> observable = ApiManager.getInstance().api
                 .queryCart(memberId)
                 .map(new HttpResultFunc<QueryCartResult>(getActivity()))
@@ -150,17 +197,20 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<QueryCartResult>() {
             @Override
             public void onNext(QueryCartResult result) {
-                adapter.setData(result.items);
+                items = result.items;
+                adapter.setData(items);
                 totalText.setText("合计：" + result.totalPrice);
 
-                if (goodsList.size() == 0) {
+                if (items.size() == 0) {
                     showEmptyView(0);
                 }
+                shoppingRecycle.setPullLoadMoreCompleted();
             }
 
             @Override
             public void onError(int code) {
                 showEmptyView(code);
+                shoppingRecycle.setPullLoadMoreCompleted();
             }
         })));
     }
@@ -198,5 +248,19 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
             showEmptyView(0);
         }
         totalText.setText("合计：" + totalPrice);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ADDR) {
+            if (resultCode == RESULT_OK) {
+                address = (Address) data.getSerializableExtra("address");
+                if (address != null) {
+                    receivePlace.setText("收货地址：" + address.getStreet());
+                } else {
+                    receivePlace.setText("添加收货地址");
+                }
+            }
+        }
     }
 }

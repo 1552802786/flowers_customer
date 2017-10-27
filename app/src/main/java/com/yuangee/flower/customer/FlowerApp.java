@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.stetho.Stetho;
+import com.yuangee.flower.customer.db.DbHelper;
 
 /**
  * Created by hcc on 16/8/7 21:18
@@ -34,10 +35,15 @@ public class FlowerApp extends Application {
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                         .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                         .build());
+
+        initDataBase();
     }
 
     public static FlowerApp getInstance() {
         return mInstance;
     }
 
+    private void initDataBase() {
+        DbHelper.getInstance().init(getApplicationContext());
+    }
 }

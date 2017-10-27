@@ -144,7 +144,7 @@ public class App {
         member.memberToken = new MemberToken();
         member.memberToken.token = token;
         member.memberToken.deathDate = deathDate;
-        member.address = DbHelper.getInstance().getAddressLongDBManager().loadAll();
+        member.memberAddressList = DbHelper.getInstance().getAddressLongDBManager().loadAll();
 
         return member;
     }

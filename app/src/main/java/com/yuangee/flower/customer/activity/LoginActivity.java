@@ -110,8 +110,12 @@ public class LoginActivity extends RxBaseActivity {
             public void onNext(Member o) {
                 SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
 
-                List<Address> addressList = o.address;
-                DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
+                List<Address> addressList = o.memberAddressList;
+                if(null != addressList ){
+                    DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
+                } else {
+                    DbHelper.getInstance().getAddressLongDBManager().deleteAll();
+                }
 
                 editor.putLong("id", o.id);
                 editor.putString("name", o.name);

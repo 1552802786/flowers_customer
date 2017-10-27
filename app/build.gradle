@@ -75,4 +75,10 @@ dependencies {
 
     compile 'org.greenrobot:greendao:3.2.2' // add library
 
+    compile('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.5') {
+        exclude group: 'com.android.support'
+    }
+
+    compile 'com.alibaba:fastjson:1.1.55.android'
+
 }

@@ -275,7 +275,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/member/findById")
-    Observable<BaseResult<Object>> findById(@Query("id") Long id);
+    Observable<BaseResult<Member>> findById(@Query("id") Long id);
 
     /**
      * 修改用户信息

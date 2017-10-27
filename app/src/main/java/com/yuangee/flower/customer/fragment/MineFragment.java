@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
@@ -8,15 +9,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
+import com.yuangee.flower.customer.db.DbHelper;
+import com.yuangee.flower.customer.entity.Address;
+import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -122,17 +129,43 @@ public class MineFragment extends RxLazyFragment {
         isPrepared = false;
     }
 
-    private void geConsumerInfo(long id) {
-        Observable<Object> observable = ApiManager.getInstance().api
+    private void getConsumerInfo(long id) {
+        Observable<Member> observable = ApiManager.getInstance().api
                 .findById(id)
-                .map(new HttpResultFunc<>(getActivity()))
+                .map(new HttpResultFunc<Member>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<Object>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<Member>(getActivity(), true, true, new HaveErrSubscriberListener<Member>() {
             @Override
-            public void onNext(Object o) {
+            public void onNext(Member o) {
+                SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
+                List<Address> addressList = o.memberAddressList;
+                if(null != addressList ){
+                    DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
+                } else {
+                    DbHelper.getInstance().getAddressLongDBManager().deleteAll();
+                }
 
+                editor.putLong("id", o.id);
+                editor.putString("name", o.name);
+                editor.putString("userName", o.userName);
+                editor.putString("passWord", o.passWord);
+                editor.putString("phone", o.phone);
+                editor.putString("email", o.email);
+                editor.putString("photo", o.photo);
+                editor.putBoolean("gender", o.gender);
+                editor.putString("type", o.type);
+                editor.putBoolean("inBlacklist", o.inBlacklist);
+                editor.putBoolean("isRecycle", o.isRecycle);
+                editor.putBoolean("inFirst", o.inFirst);
+                editor.putFloat("balance", (float) o.balance);
+                editor.putLong("deathDate", o.memberToken.deathDate);
+                editor.putString("token", o.memberToken.token);
+
+                editor.putBoolean("login", true);
+
+                editor.apply();
             }
 
             @Override
@@ -143,19 +176,6 @@ public class MineFragment extends RxLazyFragment {
     }
 
     private void initView() {
-//        appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-//                if (i == 0) {
-//                    //展开状态
-//                    tvAv.setTextColor(getResources().getColor(R.color.colorPrimary));
-//                    notificationIcon.setImageResource(R.drawable.ic_notifications_primary);
-//                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
-//                    //折叠状态
-//                    tvAv.setTextColor(getResources().getColor(R.color.white));
-//                    notificationIcon.setImageResource(R.drawable.ic_notifications_white);
-//                }
-//            }
-//        });
+        getConsumerInfo(App.getPassengerId());
     }
 }

@@ -90,6 +90,10 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.EditAddressActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.BrowserActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="stateHidden|adjustResize">

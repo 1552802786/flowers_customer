@@ -187,12 +187,6 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
 
         holder.goodsMoney.setText(bean.unitPrice + "/" + bean.unit);
 
-        if (bean.selectedNum != 0) { //如果已经加入到购物车 将不能再进行添加到购物车
-            holder.addToCar.setEnabled(false);
-        } else {
-            holder.addToCar.setEnabled(true);
-        }
-
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
             holder.layoutView.setOnClickListener(new View.OnClickListener() {
