@@ -55,6 +55,14 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
     @OnClick(R.id.apply)
     void apply() {
+        address = new Address();
+        address.shippingName = "刘子豪";
+        address.shippingPhone = "18148140090";
+        address.pro = "四川省";
+        address.city = "成都市";
+        address.area = "温江区";
+        address.street = "锦绣大道南段";
+        address.expressId = 1;
         if (address == null) {
             ToastUtil.showMessage(getActivity(), "请选择一个收货地址");
         } else {

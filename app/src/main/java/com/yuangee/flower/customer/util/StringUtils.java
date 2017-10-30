@@ -1,5 +1,7 @@
 package com.yuangee.flower.customer.util;
 
+import android.content.Context;
+
 /**
  * <pre>
  *     author: Blankj
@@ -170,5 +172,41 @@ public class StringUtils {
             }
         }
         return new String(chars);
+    }
+
+    public static final String EMPTY_STRING = "";
+
+    public static String trimToEmpty(String str) {
+
+        if (null == str) {
+            return EMPTY_STRING;
+        }
+
+        return str.trim();
+    }
+
+    public static boolean isBlank(String str) {
+
+        if (null == str) {
+            return true;
+        }
+
+        for (int i = 0; i < str.length(); i++) {
+            Character character = str.charAt(i);
+            if (!Character.isWhitespace(character)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isNotBlank(String str) {
+
+        return !isBlank(str);
+    }
+
+    public static String getString(Context context, int resId) {
+        return context.getResources().getString(resId);
     }
 }

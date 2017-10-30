@@ -2,6 +2,7 @@ package com.yuangee.flower.customer.network.api;
 
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.CartItem;
+import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
@@ -374,7 +375,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/system/findByExpressDeliveryAll")
-    Observable<BaseResult<Object>> findByExpressDeliveryAll();
+    Observable<BaseResult<List<Express>>> findByExpressDeliveryAll();
 
     /**
      * 查询用户所有通知消息
@@ -383,7 +384,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/notice/findByMemberId")
-    Observable<BaseResult<Object>> findByExpressDeliveryAll(@Query("memberId") Long memberId);
+    Observable<BaseResult<List<Express>>> findByExpressDeliveryAll(@Query("memberId") Long memberId);
 
     /**
      * 读取通知消息
