@@ -6,7 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,14 +18,28 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.DebugUtil;
+import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.StringUtils;
+import com.yuangee.flower.customer.util.ToastUtil;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by developerLzh on 2017/9/28 0028.
@@ -117,12 +131,49 @@ public class RegisterActivity extends RxBaseActivity {
     @BindView(R.id.company_check)
     TextView companyCheck;
 
+    @BindView(R.id.shop_name)
+    EditText shopNameEdit;
+
+    @BindView(R.id.simple_name)
+    EditText simpleNameEdit;
+
+    @BindView(R.id.fuzeren)
+    EditText fuzerenEdit;
+
+    @BindView(R.id.phone)
+    EditText phoneEdit;
+
+    @BindView(R.id.detail_address)
+    EditText detailAddressEdit;
+
+    @BindView(R.id.card_no)
+    EditText cardNoEdit;
+
+    @BindView(R.id.card_address)
+    EditText cardAddressEdit;
+
+    @BindView(R.id.card_zhu_name)
+    EditText cardZhuNameEdit;
+
+    @BindView(R.id.id_card_no)
+    EditText idCardNoEdit;
+
+    @BindView(R.id.jian_jie)
+    EditText jianJieEdit;
+
+    @BindView(R.id.zhizhao_no)
+    EditText zhizhaoNoEdit;
+
     private ImageView currentImg;
+
+    private boolean isPersonal;
 
     @OnClick(R.id.person_check)
     void personCheck() {
         personCheck.setTextColor(getResources().getColor(R.color.colorAccent));
         companyCheck.setTextColor(getResources().getColor(R.color.txt_black));
+
+        isPersonal = true;
 
         companyImgCon.setVisibility(View.GONE);
         cardNoHint.setText("身份证号码");
@@ -135,6 +186,8 @@ public class RegisterActivity extends RxBaseActivity {
     void companyCheck() {
         personCheck.setTextColor(getResources().getColor(R.color.txt_black));
         companyCheck.setTextColor(getResources().getColor(R.color.colorAccent));
+
+        isPersonal = false;
 
         companyImgCon.setVisibility(View.VISIBLE);
         cardNoHint.setText("法人身份证号码");
@@ -186,7 +239,7 @@ public class RegisterActivity extends RxBaseActivity {
                 .compress(true)
                 .showCropGrid(true)
                 .compressMode(PictureConfig.LUBAN_COMPRESS_MODE)
-                .withAspectRatio(x,y)
+                .withAspectRatio(x, y)
                 .previewEggs(true)
                 .hideBottomControls(true)
                 .forResult(PictureConfig.CHOOSE_REQUEST);
@@ -242,5 +295,82 @@ public class RegisterActivity extends RxBaseActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void applyMsg() {
+
+        String shopName = shopNameEdit.getText().toString();
+        String simpleName = simpleNameEdit.getText().toString();
+        String jianjie = jianJieEdit.getText().toString();
+        String fuzeren = fuzerenEdit.getText().toString();
+        String phone = phoneEdit.getText().toString();
+        String address = detailAddressEdit.getText().toString();
+        String cardNo = cardNoEdit.getText().toString();
+        String cardAddress = cardAddressEdit.getText().toString();
+        String cardZhuName = cardZhuNameEdit.getText().toString();
+        String idCardNo = idCardNoEdit.getText().toString();
+        String zhizhaoNo = zhizhaoNoEdit.getText().toString();
+        if (StringUtils.isBlank(shopName) ||
+                StringUtils.isBlank(simpleName) ||
+                StringUtils.isBlank(fuzeren) ||
+                StringUtils.isBlank(phone) ||
+                StringUtils.isBlank(address) ||
+                StringUtils.isBlank(cardNo) ||
+                StringUtils.isBlank(cardAddress) ||
+                StringUtils.isBlank(cardZhuName) ||
+                StringUtils.isBlank(jianjie) ||
+                StringUtils.isBlank(idCardNo) ||
+                (StringUtils.isBlank(zhizhaoNo) && !isPersonal)
+                ) {
+            ToastUtil.showMessage(RegisterActivity.this, "请将信息填写完整");
+            return;
+        }
+        //0:id_card 1:id_card_sec 2:quanshen 3:zhizhao 4:company
+        if (StringUtils.isBlank(imgPaths[0]) ||
+                StringUtils.isBlank(imgPaths[1]) ||
+                StringUtils.isBlank(imgPaths[2]) ||
+                (!isPersonal && StringUtils.isBlank(imgPaths[3])) ||
+                (!isPersonal && StringUtils.isBlank(imgPaths[4]))) {
+            ToastUtil.showMessage(RegisterActivity.this, "请将照片选择完整");
+            return;
+        }
+
+        MultipartBody.Part shopNamePart = MultipartBody.Part.createFormData("shopName", String.valueOf(shopName));
+        MultipartBody.Part simpleNamePart = MultipartBody.Part.createFormData("simpleShopName", String.valueOf(simpleName));
+        MultipartBody.Part fuzerenPart = MultipartBody.Part.createFormData("name", String.valueOf(fuzeren));
+        MultipartBody.Part phonePart = MultipartBody.Part.createFormData("phone", String.valueOf(phone));
+
+        MultipartBody.Part addressPart = MultipartBody.Part.createFormData("address", String.valueOf(address));
+        MultipartBody.Part jianjiePart = MultipartBody.Part.createFormData("description", String.valueOf(jianjie));
+        MultipartBody.Part bankNoPart = MultipartBody.Part.createFormData("bankNo", String.valueOf(cardNo));
+        MultipartBody.Part bankNamePart = MultipartBody.Part.createFormData("bankName", String.valueOf(cardAddress));
+        MultipartBody.Part cardZhuNamePart = MultipartBody.Part.createFormData("openAccountName", String.valueOf(cardZhuName));
+
+        MultipartBody.Part idCardNoPart = MultipartBody.Part.createFormData("idCardNo", String.valueOf(idCardNo));
+
+        MultipartBody.Part idCardPart = MultipartBody.Part.createFormData("idImgFront", "idImgFront.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[0])));
+        MultipartBody.Part idCard2Part = MultipartBody.Part.createFormData("idImgBack", "idImgBack.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[1])));
+        MultipartBody.Part photoPart = MultipartBody.Part.createFormData("photo", "photo.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[2])));
+        MultipartBody.Part businessLicencePart = MultipartBody.Part.createFormData("businessLicence", "businessLicence.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[3])));
+        MultipartBody.Part scene1Part = MultipartBody.Part.createFormData("scene1", "scene1.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[4])));
+
+        MultipartBody.Part zhizhaoNoPart = MultipartBody.Part.createFormData("businessLicenceNo", String.valueOf(zhizhaoNo));
+
+        MultipartBody.Part memberIdPart = MultipartBody.Part.createFormData("memberId", String.valueOf(App.getPassengerId()));
+        MultipartBody.Part typePart = MultipartBody.Part.createFormData("type", String.valueOf(isPersonal ? 0 : 1));
+
+        Observable<Object> observable = ApiManager.getInstance().api
+                .shopApply(shopNamePart, simpleNamePart, fuzerenPart, phonePart, addressPart, jianjiePart, bankNoPart, bankNamePart, cardZhuNamePart, idCardNoPart, idCardPart, idCard2Part, photoPart, businessLicencePart, scene1Part
+                        , zhizhaoNoPart, memberIdPart, typePart)
+                .map(new HttpResultFunc<>(RegisterActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<Object>(RegisterActivity.this, true, false, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        })));
     }
 }
