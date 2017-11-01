@@ -52,7 +52,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="订单详情"
+                    android:text="所有订单"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/send_goods"
+                android:layout_width="0.0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/f7_circle"
+                    android:padding="11dp"
+                    app:srcCompat="@drawable/ic_pay_money" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="待付款"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -101,30 +125,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="预约"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/send_goods"
-                android:layout_width="0.0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/f7_circle"
-                    android:padding="11dp"
-                    app:srcCompat="@drawable/ic_pay_money" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="待我发货"
                     android:textSize="14sp" />
 
             </LinearLayout>

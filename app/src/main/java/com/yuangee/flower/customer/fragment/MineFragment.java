@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.MyOrderActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
@@ -61,22 +62,34 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.order_detail_con)
     void toDetail() {
-        ToastUtil.showMessage(getActivity(), "订单详情");
+        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        intent.putExtra("status",-1);
+        intent.putExtra("bespeak",false);
+        startActivity(intent);
     }
 
     @OnClick(R.id.wait_receive)
     void waitReceive() {
-        ToastUtil.showMessage(getActivity(), "待收货");
+        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        intent.putExtra("status",2);
+        intent.putExtra("bespeak",false);
+        startActivity(intent);
     }
 
     @OnClick(R.id.book)
     void book() {
-        ToastUtil.showMessage(getActivity(), "预约");
+        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        intent.putExtra("status",-1);
+        intent.putExtra("bespeak",true);
+        startActivity(intent);
     }
 
     @OnClick(R.id.send_goods)
     void sendGoods() {
-        ToastUtil.showMessage(getActivity(), "待我发货");
+        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        intent.putExtra("status",0);
+        intent.putExtra("bespeak",true);
+        startActivity(intent);
     }
 
     @OnClick(R.id.to_agreement)
