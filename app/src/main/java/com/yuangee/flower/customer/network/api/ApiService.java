@@ -186,7 +186,7 @@ public interface ApiService {
      * @param memberId 客户id
      * @param shopId   店铺id
      * @param offset
-     * @param Limit
+     * @param limit
      * @return
      */
     @GET("rest/order/findByParams")
@@ -195,7 +195,7 @@ public interface ApiService {
                                                 @Query("memberId") Long memberId,
                                                 @Query("shopId") Long shopId,
                                                 @Query("offset") Long offset,
-                                                @Query("Limit") Long Limit);
+                                                @Query("limit") Long limit);
 
     /**
      * 添加商品到购物车

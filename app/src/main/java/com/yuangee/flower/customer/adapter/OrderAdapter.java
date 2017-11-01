@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.TimeUtil;
@@ -23,10 +25,10 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/3/10.
  */
-public class OrderAdapter extends RecyclerView.Adapter {
+public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder> {
 
     private Context context;
-    private List<Recommend> data;
+    private List<Order> data;
 
     private OnItemClickListener mOnItemClickListener;   //声明监听器接口
 
@@ -55,52 +57,57 @@ public class OrderAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public OrderAdapter.OrderHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = View.inflate(context, R.layout.order_adapter, null);
+        View view = View.inflate(context, R.layout.orders_item, null);
         OrderHolder holder = new OrderHolder(view);
 
-        holder.layoutView = view;    //将布局view保存起来用作点击事件
-
-        holder.relativeLayout = view.findViewById(R.id.rel_layout);
-
-        ImageView imageView = new ImageView(context);
-
-        int width = DisplayUtil.getScreenWidth(context) / 2 - DisplayUtil.dp2px(context, 15);
-
-        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(width, width);
-
-        holder.relativeLayout.addView(imageView, layoutParams);
-
-        holder.imageView = imageView;
+        holder.root = view;    //将布局view保存起来用作点击事件
+        holder.img1 = view.findViewById(R.id.img_1);
+        holder.img2 = view.findViewById(R.id.img_2);
+        holder.img3 = view.findViewById(R.id.img_3);
+        holder.img4 = view.findViewById(R.id.img_4);
+        holder.img5 = view.findViewById(R.id.img_5);
+        holder.leftBtn = view.findViewById(R.id.left_btn);
+        holder.rightBtn = view.findViewById(R.id.right_btn);
+        holder.tvGoodsKind = view.findViewById(R.id.order_goods_kind);
+        holder.tvOrderMoney = view.findViewById(R.id.order_fee);
+        holder.tvOrderStatus = view.findViewById(R.id.order_status);
+        holder.tvOrderTime = view.findViewById(R.id.order_time);
 
         return holder;
     }
 
-    public void setData(List<Recommend> data) {
+    public void setData(List<Order> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
     //设置数据
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(OrderAdapter.OrderHolder holder, final int position) {
 
-        OrderHolder orderHolder = (OrderHolder) holder;
-        final Recommend bean = data.get(position);
+        final Order bean = data.get(position);
+        String kindStr = "共<font color='#52A436'>" + bean.orderWaresList != null ? bean.orderWaresList.size() : 0 +
+                "</font>类商品";
+        holder.tvGoodsKind.setText(kindStr);
+        holder.tvOrderTime.setText("下单时间：" + bean.created);
+        holder.tvOrderStatus.setText(bean.getStatusStr());
+        holder.tvOrderMoney.setText("¥" + bean.payable + "(不包含运费)");
 
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.color.color_f6)
-                .diskCacheStrategy(DiskCacheStrategy.ALL);
-        Glide.with(context)
-                .load(Config.BASE_URL + bean.image)
-                .apply(options)
-                .into(orderHolder.imageView);
+
+//        RequestOptions options = new RequestOptions()
+//                .centerCrop()
+//                .placeholder(R.color.color_f6)
+//                .diskCacheStrategy(DiskCacheStrategy.ALL);
+//        Glide.with(context)
+//                .load(Config.BASE_URL + bean.image)
+//                .apply(options)
+//                .into(orderHolder.imageView);
 
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
-            orderHolder.layoutView.setOnClickListener(new View.OnClickListener() {
+            holder.root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mOnItemClickListener.onItemClick(v, position);
@@ -122,10 +129,18 @@ public class OrderAdapter extends RecyclerView.Adapter {
             super(itemView);
         }
 
-        ImageView imageView;
-        RelativeLayout relativeLayout;
-        View layoutView;
-
+        View root;
+        TextView tvOrderTime;
+        TextView tvOrderStatus;
+        TextView tvGoodsKind;
+        TextView tvOrderMoney;
+        Button rightBtn;
+        Button leftBtn;
+        ImageView img1;
+        ImageView img2;
+        ImageView img3;
+        ImageView img4;
+        ImageView img5;
     }
 
 }
