@@ -15,9 +15,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Order;
+import com.yuangee.flower.customer.entity.OrderWares;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.TimeUtil;
+import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,23 +90,90 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     public void onBindViewHolder(OrderAdapter.OrderHolder holder, final int position) {
 
         final Order bean = data.get(position);
-        String kindStr = "共<font color='#52A436'>" + bean.orderWaresList != null ? bean.orderWaresList.size() : 0 +
-                "</font>类商品";
+        String kindStr = "共<font color='#52A436'>" + bean.orderWaresList != null ? "" + bean.orderWaresList.size() : "0" + "</font>类商品";
         holder.tvGoodsKind.setText(kindStr);
         holder.tvOrderTime.setText("下单时间：" + bean.created);
         holder.tvOrderStatus.setText(bean.getStatusStr());
         holder.tvOrderMoney.setText("¥" + bean.payable + "(不包含运费)");
 
+        if (null != bean.orderWaresList) {
+            for (int i = 0; i < bean.orderWaresList.size(); i++) {
+                OrderWares wares = bean.orderWaresList.get(i);
+                if (i == 0) {
+                    loadImg(holder.img1, wares.image, context);
+                } else if (i == 1) {
+                    loadImg(holder.img2, wares.image, context);
+                } else if (i == 2) {
+                    loadImg(holder.img3, wares.image, context);
+                } else if (i == 3) {
+                    loadImg(holder.img4, wares.image, context);
+                } else if (i == 4) {
+                    loadImg(holder.img5, wares.image, context);
+                }
+            }
+        }
 
-//        RequestOptions options = new RequestOptions()
-//                .centerCrop()
-//                .placeholder(R.color.color_f6)
-//                .diskCacheStrategy(DiskCacheStrategy.ALL);
-//        Glide.with(context)
-//                .load(Config.BASE_URL + bean.image)
-//                .apply(options)
-//                .into(orderHolder.imageView);
-
+        if (bean.status == 0) {
+            holder.leftBtn.setVisibility(View.VISIBLE);
+            holder.rightBtn.setVisibility(View.VISIBLE);
+            holder.leftBtn.setText("去支付");
+            holder.rightBtn.setText("取消订单");
+            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    payOrder(bean);
+                }
+            });
+            holder.rightBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancelOrder(bean);
+                }
+            });
+        } else if (bean.status == 1) {
+            holder.leftBtn.setVisibility(View.VISIBLE);
+            holder.rightBtn.setVisibility(View.GONE);
+            holder.leftBtn.setText("提醒发货");
+            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToastUtil.showMessage(context,"提醒卖家发货成功，商品将很快送到你手中");
+                }
+            });
+        } else if (bean.status == 2) {
+            holder.leftBtn.setVisibility(View.VISIBLE);
+            holder.rightBtn.setVisibility(View.GONE);
+            holder.leftBtn.setText("确认收货");
+            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    confirmOrder(bean);
+                }
+            });
+        } else if (bean.status == 3) {
+            holder.leftBtn.setVisibility(View.GONE);
+            holder.rightBtn.setVisibility(View.GONE);
+        } else if (bean.status == 4) {
+            holder.leftBtn.setVisibility(View.VISIBLE);
+            holder.rightBtn.setVisibility(View.VISIBLE);
+            holder.leftBtn.setText("去支付");
+            holder.rightBtn.setText("取消订单");
+            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    payOrder(bean);
+                }
+            });
+            holder.rightBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancelOrder(bean);
+                }
+            });
+        } else if (bean.status == 5) {
+            holder.leftBtn.setVisibility(View.GONE);
+            holder.rightBtn.setVisibility(View.GONE);
+        }
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
             holder.root.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +183,29 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
                 }
             });
         }
+    }
+
+    private void payOrder(Order order){
+
+    }
+
+    private void cancelOrder(Order order){
+
+    }
+
+    private void confirmOrder(Order order){
+
+    }
+
+    private void loadImg(ImageView imageView, String path, Context context) {
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.color_f6)
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+        Glide.with(context)
+                .load(Config.BASE_URL + path)
+                .apply(options)
+                .into(imageView);
     }
 
     @Override

@@ -125,6 +125,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             }
         });
         swipeRecyclerView.onRefresh();
+        swipeRecyclerView.setLoadMoreEnable(false);
     }
 
 

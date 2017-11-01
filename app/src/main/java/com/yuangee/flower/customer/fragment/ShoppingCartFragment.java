@@ -62,7 +62,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         address.city = "成都市";
         address.area = "温江区";
         address.street = "锦绣大道南段";
-        address.expressId = 1;
+        address.expressId = 73;
         if (address == null) {
             ToastUtil.showMessage(getActivity(), "请选择一个收货地址");
         } else {

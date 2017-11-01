@@ -1,5 +1,6 @@
 package com.yuangee.flower.customer.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,7 +13,11 @@ import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.result.PageResult;
 
 import java.util.List;
 
@@ -90,11 +95,18 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
     private int page = 0;
     private int limlit = 10;
 
-    private void queryOrders(){
-//        Observable<List<Goods>> observable = ApiManager.getInstance().api
-//                .findById(id)
-//                .map(new HttpResultFunc<Member>(SecAddressActivity.this))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
+    private void queryOrders(Integer status, Boolean bespeak, Long memberId, Long shopId) {
+        Observable<PageResult<Order>> observable = ApiManager.getInstance().api
+                .findByParams(status, bespeak, memberId, shopId, (long) page, (long) limlit)
+                .map(new HttpResultFunc<PageResult<Order>>(MyOrderActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(MyOrderActivity.this, true, false, new NoErrSubscriberListener<PageResult<Order>>() {
+            @Override
+            public void onNext(PageResult<Order> orderPageResult) {
+
+            }
+        })));
     }
 }

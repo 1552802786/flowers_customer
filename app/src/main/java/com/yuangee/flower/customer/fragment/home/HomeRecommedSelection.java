@@ -33,7 +33,7 @@ public class HomeRecommedSelection extends StatelessSection {
     private Context mContext;
 
     public HomeRecommedSelection(List<Recommend> recommends, Context mContext, OnItemClickListener mOnItemClickListener) {
-        super(R.layout.home_recommed_header, R.layout.order_adapter);
+        super(R.layout.home_recommed_header, R.layout.recommend_item);
         this.recommends = recommends;
         this.mContext = mContext;
         this.mOnItemClickListener = mOnItemClickListener;
@@ -51,7 +51,7 @@ public class HomeRecommedSelection extends StatelessSection {
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-        HearderHolder headerViewHolder = (HearderHolder) holder;
+
     }
 
     @Override

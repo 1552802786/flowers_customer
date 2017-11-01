@@ -6,6 +6,7 @@ import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.result.BaseResult;
@@ -190,12 +191,12 @@ public interface ApiService {
      * @return
      */
     @GET("rest/order/findByParams")
-    Observable<BaseResult<Object>> findByParams(@Query("status") Integer status,
-                                                @Query("bespeak") Boolean bespeak,
-                                                @Query("memberId") Long memberId,
-                                                @Query("shopId") Long shopId,
-                                                @Query("offset") Long offset,
-                                                @Query("limit") Long limit);
+    Observable<BaseResult<PageResult<Order>>> findByParams(@Query("status") Integer status,
+                                                           @Query("bespeak") Boolean bespeak,
+                                                           @Query("memberId") Long memberId,
+                                                           @Query("shopId") Long shopId,
+                                                           @Query("offset") Long offset,
+                                                           @Query("limit") Long limit);
 
     /**
      * 添加商品到购物车
@@ -262,12 +263,13 @@ public interface ApiService {
      * @param expressId       快递id
      * @return
      */
-    @GET("rest/order/confirmOrderMulti")
-    Observable<BaseResult<Object>> confirmOrderMulti(@Query("memberId") Long memberId,
-                                                     @Query("receiverName") String receiverName,
-                                                     @Query("receiverPhone") String receiverPhone,
-                                                     @Query("receiverAddress") String receiverAddress,
-                                                     @Query("expressId") Long expressId);
+    @FormUrlEncoded
+    @POST("rest/order/confirmOrderMulti")
+    Observable<BaseResult<Object>> confirmOrderMulti(@Field("memberId") Long memberId,
+                                                     @Field("receiverName") String receiverName,
+                                                     @Field("receiverPhone") String receiverPhone,
+                                                     @Field("receiverAddress") String receiverAddress,
+                                                     @Field("expressId") Long expressId);
 
     /**
      * 查询单个用户

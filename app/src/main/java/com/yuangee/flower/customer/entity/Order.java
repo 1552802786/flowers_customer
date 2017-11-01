@@ -1,5 +1,7 @@
 package com.yuangee.flower.customer.entity;
 
+import java.util.List;
+
 /**
  * Created by developerLzh on 2017/11/1 0001.
  */
