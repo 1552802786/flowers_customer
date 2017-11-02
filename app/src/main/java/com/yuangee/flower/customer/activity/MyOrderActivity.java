@@ -89,6 +89,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
         } else if (bespeak) {
             radioAppoint.setChecked(true);
         }
+        initRecyclerView();
     }
 
     @Override
@@ -184,7 +185,8 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
                 if (page == 0) {
                     orders.clear();
                 }
-                adapter.setData(result.rows);
+                orders.addAll(result.rows);
+                adapter.setData(orders);
                 if (result.total == 0) {
                     showEmpty();
                 } else {

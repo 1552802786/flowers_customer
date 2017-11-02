@@ -45,7 +45,7 @@ public class Order {
 
     public Long expressId;//收货地址信息id
 
-    public List<OrderWares> orderWaresList;//商品明细
+    public List<OrderWare> orderWaresList;//商品明细
 
     public List<OrderPay> orderPays;//支付信息
 

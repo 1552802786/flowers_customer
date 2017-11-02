@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -15,10 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Order;
-import com.yuangee.flower.customer.entity.OrderWares;
-import com.yuangee.flower.customer.entity.Recommend;
-import com.yuangee.flower.customer.util.DisplayUtil;
-import com.yuangee.flower.customer.util.TimeUtil;
+import com.yuangee.flower.customer.entity.OrderWare;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -98,17 +94,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
         if (null != bean.orderWaresList) {
             for (int i = 0; i < bean.orderWaresList.size(); i++) {
-                OrderWares wares = bean.orderWaresList.get(i);
+                OrderWare wares = bean.orderWaresList.get(i);
                 if (i == 0) {
-                    loadImg(holder.img1, wares.image, context);
+                    loadImg(holder.img1, wares.wares.image, context);
                 } else if (i == 1) {
-                    loadImg(holder.img2, wares.image, context);
+                    loadImg(holder.img2, wares.wares.image, context);
                 } else if (i == 2) {
-                    loadImg(holder.img3, wares.image, context);
+                    loadImg(holder.img3, wares.wares.image, context);
                 } else if (i == 3) {
-                    loadImg(holder.img4, wares.image, context);
+                    loadImg(holder.img4, wares.wares.image, context);
                 } else if (i == 4) {
-                    loadImg(holder.img5, wares.image, context);
+                    loadImg(holder.img5, wares.wares.image, context);
                 }
             }
         }
