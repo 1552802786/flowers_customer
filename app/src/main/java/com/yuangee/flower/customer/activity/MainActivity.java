@@ -48,6 +48,7 @@ import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.AddCartAnimation;
+import com.yuangee.flower.customer.widget.NoScrollViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     private List<Fragment> fragments;
 
     @BindView(R.id.vp)
-    ViewPager vp;
+    NoScrollViewPager vp;
 
     @BindView(R.id.bnve)
     BottomNavigationViewEx bnve;
