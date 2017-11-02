@@ -100,7 +100,7 @@
 
     <style name="cus_radio_button">
 
-        <item name="android:background">@color/selector_item_radio_color</item>
+        <item name="android:textColor">@color/selector_item_radio_color</item>
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">10dp</item>

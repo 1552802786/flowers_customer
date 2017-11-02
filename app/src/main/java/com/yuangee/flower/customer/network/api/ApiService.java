@@ -318,7 +318,31 @@ public interface ApiService {
     @POST("rest/member/createMemberAddress")
     Observable<BaseResult<Object>> createMemberAddress(@Field("shippingId") Long shippingId,
                                                        @Field("shippingName") String shippingName,
-                                                       @Field("phone") String phone,
+                                                       @Field("shippingPhone") String phone,
+                                                       @Field("pro") String pro,
+                                                       @Field("city") String city,
+                                                       @Field("area") String area,
+                                                       @Field("street") String street,
+                                                       @Field("defaultAddress") Boolean defaultAddress
+    );
+    /**
+     * 创建收货地址
+     *
+     * @param shippingId     收货人id
+     * @param shippingName   收货人名称
+     * @param phone          收货人电话
+     * @param pro            省
+     * @param city           市
+     * @param area           区县
+     * @param street         街道
+     * @param defaultAddress 是否设为默认地址
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("rest/member/updateMemberAddress")
+    Observable<BaseResult<Object>> updateMemberAddress(@Field("shippingId") Long shippingId,
+                                                       @Field("shippingName") String shippingName,
+                                                       @Field("shippingPhone") String phone,
                                                        @Field("pro") String pro,
                                                        @Field("city") String city,
                                                        @Field("area") String area,

@@ -173,8 +173,6 @@ public class MineFragment extends RxLazyFragment {
                 editor.putBoolean("isRecycle", o.isRecycle);
                 editor.putBoolean("inFirst", o.inFirst);
                 editor.putFloat("balance", (float) o.balance);
-                editor.putLong("deathDate", o.memberToken.deathDate);
-                editor.putString("token", o.memberToken.token);
 
                 editor.putBoolean("login", true);
 

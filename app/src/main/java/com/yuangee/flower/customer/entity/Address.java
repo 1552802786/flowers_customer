@@ -45,16 +45,13 @@ public class Address implements Serializable{
     @Property
     public boolean defaultAddress;//是否是默认地址
 
-    @Property
-    public long expressId;
-
     @Transient
     public boolean isSelected;
 
-    @Generated(hash = 348042265)
+    @Generated(hash = 2031935287)
     public Address(long id, long shippingId, String shippingName,
             String shippingPhone, String pro, String city, String area,
-            String street, boolean defaultAddress, long expressId) {
+            String street, boolean defaultAddress) {
         this.id = id;
         this.shippingId = shippingId;
         this.shippingName = shippingName;
@@ -64,11 +61,18 @@ public class Address implements Serializable{
         this.area = area;
         this.street = street;
         this.defaultAddress = defaultAddress;
-        this.expressId = expressId;
     }
 
     @Generated(hash = 388317431)
     public Address() {
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getShippingId() {
@@ -133,22 +137,6 @@ public class Address implements Serializable{
 
     public void setDefaultAddress(boolean defaultAddress) {
         this.defaultAddress = defaultAddress;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getExpressId() {
-        return this.expressId;
-    }
-
-    public void setExpressId(long expressId) {
-        this.expressId = expressId;
     }
 
 }

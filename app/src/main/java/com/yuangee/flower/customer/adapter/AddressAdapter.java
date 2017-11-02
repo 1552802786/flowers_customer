@@ -108,11 +108,10 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressH
             public void onClick(View view) {
                 if (!isManage) {
                     for (int i = 0; i < addressList.size(); i++) {
-                        Address adr = addressList.get(position);
                         if (i == position) {
-                            adr.isSelected = true;
+                            addressList.get(i).isSelected = true;
                         } else {
-                            adr.isSelected = false;
+                            addressList.get(i).isSelected = false;
                         }
                     }
                     notifyDataSetChanged();

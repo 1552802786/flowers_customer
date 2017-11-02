@@ -62,35 +62,69 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0.0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="7"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/total"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:text="合计:3000元"
-                        android:textColor="#ff0000"
-                        android:textSize="16sp" />
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/receive_place"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="收货地址：锦绣大道南段"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/total_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="合计:"
+                            android:textColor="#ff0000"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/total"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="3000元"
+                            android:textColor="#ff0000"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:gravity="center_vertical"
-                        android:drawableRight="@drawable/ic_chevron_right_black_24dp"
-                        android:lines="1"
-                        android:ellipsize="end"/>
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/express"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableRight="@drawable/ic_chevron_right_black_24dp"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:lines="1"
+                            android:text="快递：请选择快递" />
+
+                        <TextView
+                            android:id="@+id/receive_place"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableRight="@drawable/ic_chevron_right_black_24dp"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:lines="1"
+                            android:text="收货地址：请选择收货地" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <TextView

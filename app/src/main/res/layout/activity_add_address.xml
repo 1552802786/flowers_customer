@@ -94,12 +94,13 @@
                 android:id="@+id/pick_consignee_method"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:visibility="visible"
                 android:background="@color/white">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="收货方式"
+                    android:text="默认地址"
                     android:textSize="16sp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="13dp"/>

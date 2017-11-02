@@ -76,7 +76,7 @@ public class EditAddressActivity extends RxBaseActivity {
 
     @OnClick(R.id.pick_consignee_method)
     void pickConsigneeMethod() {
-        showExpressDialog();
+        showBooleanDialog();
     }
 
     @OnClick(R.id.pick_consignee_place_1)
@@ -91,7 +91,11 @@ public class EditAddressActivity extends RxBaseActivity {
 
     @OnClick(R.id.confirm)
     void apply() {
-        createMemberAddress();
+        if (confirm.getText().toString().equals("更新收货地址")) {
+            updateMemberAddress();
+        } else {
+            createMemberAddress();
+        }
     }
 
     @BindView(R.id.person_consignee_phone)
@@ -124,6 +128,12 @@ public class EditAddressActivity extends RxBaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override
@@ -140,11 +150,11 @@ public class EditAddressActivity extends RxBaseActivity {
         } else {
             personConsignee.setText(address.shippingName);
             personConsigneePhone.setText(address.shippingPhone);
+            personConsigneeMethod.setText(address.defaultAddress ? "是" : "否");
             personConsigneePlace1.setText(address.pro + address.city + address.city);
             personConsigneePlace2.setText(address.street);
             confirm.setText("更新收货地址");
         }
-        findByExpressDeliveryAll();
     }
 
     public void showPickerPlace(final TextView tv) {
@@ -357,79 +367,8 @@ public class EditAddressActivity extends RxBaseActivity {
         }
     }
 
-    private List<Express> expressList;
-
-    /**
-     * 查询所有快递
-     */
-    private void findByExpressDeliveryAll() {
-        Observable<List<Express>> observable = ApiManager.getInstance().api
-                .findByExpressDeliveryAll()
-                .map(new HttpResultFunc<List<Express>>(EditAddressActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(EditAddressActivity.this, true, true, new NoErrSubscriberListener<List<Express>>() {
-            @Override
-            public void onNext(List<Express> expresses) {
-                expressList = expresses;
-                for (Express express : expresses) {
-                    if (express.id == address.expressId) {
-                        personConsigneeMethod.setText(express.expressDeliveryName);
-                    }
-                }
-            }
-        })));
-    }
-
-    RadioGroup radioGroup;
-
-    private long expressId = -1;
-    private String expressName = "";
-
-    private void showExpressDialog() {
-        radioGroup = new RadioGroup(this);
-        if (null != expressList && expressList.size() != 0) {
-            for (final Express express : expressList) {
-                RadioButton radioButton = new RadioButton(this);
-                radioButton.setText(express.expressDeliveryName + "(" + express.expressDeliveryMoney + ")");
-                radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            expressId = express.id;
-                            expressName = express.expressDeliveryName;
-                        }
-                    }
-                });
-                if (address.id == express.id) {
-                    radioButton.setChecked(true);
-                }
-                radioGroup.addView(radioButton);
-            }
-        }
-        dialog = new AlertDialog.Builder(EditAddressActivity.this)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        address.id = expressId;
-                        personConsigneeMethod.setText(expressName);
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setView(radioGroup)
-                .create();
-        dialog.show();
-    }
-
     private void createMemberAddress() {
-        if (address.expressId == -1 || StringUtils.isBlank(address.shippingName)
+        if (StringUtils.isBlank(address.shippingName)
                 || StringUtils.isBlank(address.shippingPhone) || StringUtils.isBlank(address.street)
                 || StringUtils.isBlank(address.pro)) {
             ToastUtil.showMessage(EditAddressActivity.this, "请将信息填写完整");
@@ -452,5 +391,68 @@ public class EditAddressActivity extends RxBaseActivity {
                 finish();
             }
         })));
+    }
+
+    private void updateMemberAddress() {
+        if (StringUtils.isBlank(address.shippingName)
+                || StringUtils.isBlank(address.shippingPhone) || StringUtils.isBlank(address.street)
+                || StringUtils.isBlank(address.pro)) {
+            ToastUtil.showMessage(EditAddressActivity.this, "请将信息填写完整");
+            return;
+        }
+        Observable<Object> observable = ApiManager.getInstance().api
+                .updateMemberAddress(App.getPassengerId(), address.shippingName, address.shippingPhone,
+                        address.pro, address.city, address.area, address.street, false)
+                .map(new HttpResultFunc<Object>(EditAddressActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(EditAddressActivity.this, true, true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object expresses) {
+                ToastUtil.showMessage(EditAddressActivity.this, "信息更新成功");
+                Intent intent = new Intent();
+                intent.putExtra("address", address);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        })));
+    }
+
+    private void showBooleanDialog() {
+        RadioGroup radioGroup = new RadioGroup(this);
+        final RadioButton trueBtn = new RadioButton(this);
+        trueBtn.setText("是");
+        RadioButton falseBtn = new RadioButton(this);
+        falseBtn.setText("否");
+        radioGroup.addView(trueBtn);
+        radioGroup.addView(falseBtn);
+        if (address.defaultAddress) {
+            trueBtn.setChecked(true);
+        } else {
+            falseBtn.setChecked(true);
+        }
+        dialog = new AlertDialog.Builder(this)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(trueBtn.isChecked()){
+                            address.defaultAddress = true;
+                        } else {
+                            address.defaultAddress = false;
+                        }
+                        personConsigneeMethod.setText(address.defaultAddress ? "是" : "否");
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setTitle("是否默认")
+                .setView(radioGroup)
+                .create();
+        dialog.show();
     }
 }

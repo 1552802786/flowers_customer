@@ -148,7 +148,6 @@ public class SecAddressActivity extends RxBaseActivity {
     }
 
     private void queryById(long id) {
-        recyclerView.setRefreshing(true);
 
         Observable<Member> observable = ApiManager.getInstance().api
                 .findById(id)
@@ -159,6 +158,7 @@ public class SecAddressActivity extends RxBaseActivity {
         mRxManager.add(observable.subscribe(new MySubscriber<>(SecAddressActivity.this, false, false, new HaveErrSubscriberListener<Member>() {
             @Override
             public void onNext(Member o) {
+                recyclerView.setPullLoadMoreCompleted();
                 SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
 
                 List<Address> addressList = o.memberAddressList;
@@ -187,14 +187,11 @@ public class SecAddressActivity extends RxBaseActivity {
                 editor.putBoolean("isRecycle", o.isRecycle);
                 editor.putBoolean("inFirst", o.inFirst);
                 editor.putFloat("balance", (float) o.balance);
-                editor.putLong("deathDate", o.memberToken.deathDate);
-                editor.putString("token", o.memberToken.token);
 
                 editor.putBoolean("login", true);
 
                 editor.apply();
 
-                recyclerView.setPullLoadMoreCompleted();
                 if (o.memberAddressList == null || o.memberAddressList.size() == 0) {
                     showEmptyLayout(0);
                 } else {
