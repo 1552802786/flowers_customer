@@ -134,6 +134,9 @@ public class SecAddressActivity extends RxBaseActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.i_manage) {
+                    if (adapter.getAddressList().size() == 0) {
+                        return true;
+                    }
                     adapter.setManage(true);
                 }
                 return true;

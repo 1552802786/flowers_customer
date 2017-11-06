@@ -6,6 +6,7 @@ import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.Message;
 import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Type;
@@ -410,7 +411,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/notice/findByMemberId")
-    Observable<BaseResult<List<Express>>> findByExpressDeliveryAll(@Query("memberId") Long memberId);
+    Observable<BaseResult<List<Message>>> findAllMessage(@Query("memberId") Long memberId);
 
     /**
      * 读取通知消息
@@ -429,24 +430,5 @@ public interface ApiService {
      */
     @GET("driver/api/rest/v4/acceptTask")
     Observable<BaseResult<List<BannerBean>>> getBannerData();
-
-    /**
-     * 获取订单信息
-     */
-    @GET("driver/api/rest/v4/acceptTask")
-    Observable<BaseResult<List<Recommend>>> getOrderData(@Query("customerId") long customerId);
-
-    /**
-     * 获取订单信息
-     */
-    @GET("driver/api/rest/v4/acceptTask")
-    Observable<BaseResult<List<Type>>> getTypeData();
-
-    /**
-     * 获取商品信息接口
-     */
-    @GET("driver/api/rest/v4/acceptTask")
-    Observable<BaseResult<List<Goods>>> getGoodsData(@Query("page") int page, @Query("Limit") int Limit);
-
 
 }

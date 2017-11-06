@@ -8,6 +8,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
+import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.util.AppManager;
 import com.yuangee.flower.customer.util.RxManager;
 
@@ -106,7 +107,6 @@ public abstract class RxBaseActivity extends RxAppCompatActivity {
     }
 
     protected void choosePic(int x, int y) {
-        // 进入相册 以下是例子：用不到的api可以不写
         PictureSelector.create(RxBaseActivity.this)
                 .openGallery(PictureMimeType.ofImage())//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
                 .maxSelectNum(1)// 最大图片选择数量 int

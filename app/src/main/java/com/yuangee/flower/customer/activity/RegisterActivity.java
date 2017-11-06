@@ -164,6 +164,11 @@ public class RegisterActivity extends RxBaseActivity {
     @BindView(R.id.zhizhao_no)
     EditText zhizhaoNoEdit;
 
+    @OnClick(R.id.apply_now)
+    void apply() {
+        applyMsg();
+    }
+
     private ImageView currentImg;
 
     private boolean isPersonal;
@@ -227,22 +232,32 @@ public class RegisterActivity extends RxBaseActivity {
     }
 
     private void selectPic(int x, int y) {
+        // 进入相册 以下是例子：用不到的api可以不写
         PictureSelector.create(RegisterActivity.this)
-                .openGallery(PictureMimeType.ofImage())
-                .theme(R.style.picture_default_style)
-                .maxSelectNum(1)
-                .minSelectNum(1)
-                .selectionMode(PictureConfig.MULTIPLE)
-                .previewImage(true)
-                .isCamera(true)
-                .enableCrop(true)
-                .compress(true)
-                .showCropGrid(true)
-                .compressMode(PictureConfig.LUBAN_COMPRESS_MODE)
-                .withAspectRatio(x, y)
-                .previewEggs(true)
-                .hideBottomControls(true)
-                .forResult(PictureConfig.CHOOSE_REQUEST);
+                .openGallery(PictureMimeType.ofImage())//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+                .maxSelectNum(1)// 最大图片选择数量 int
+                .minSelectNum(1)// 最小选择数量 int
+                .imageSpanCount(4)// 每行显示个数 int
+                .selectionMode(PictureConfig.SINGLE)// 多选 or 单选 PictureConfig.MULTIPLE or PictureConfig.SINGLE
+                .isCamera(true)// 是否显示拍照按钮 true or false
+                .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                .sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
+                .setOutputCameraPath("/emdriver")// 自定义拍照保存路径,可不填
+                .enableCrop(true)// 是否裁剪 true or false
+                .compress(true)// 是否压缩 true or false
+                .compressMode(PictureConfig.LUBAN_COMPRESS_MODE)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+                .withAspectRatio(x, y)// int 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                .hideBottomControls(false)// 是否显示uCrop工具栏，默认不显示 true or false
+                .isGif(false)// 是否显示gif图片 true or false
+                .freeStyleCropEnabled(true)// 裁剪框是否可拖拽 true or false
+                .circleDimmedLayer(false)// 是否圆形裁剪 true or false
+                .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
+                .showCropGrid(true)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
+                .openClickSound(false)// 是否开启点击声音 true or false
+                .previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中) true or false
+                .rotateEnabled(true) // 裁剪是否可旋转图片 true or false
+                .scaleEnabled(true)// 裁剪是否可放大缩小图片 true or false
+                .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }
 
     private String[] imgPaths = new String[5];//0:id_card 1:id_card_sec 2:quanshen 3:zhizhao 4:company
@@ -320,7 +335,7 @@ public class RegisterActivity extends RxBaseActivity {
                 StringUtils.isBlank(cardZhuName) ||
                 StringUtils.isBlank(jianjie) ||
                 StringUtils.isBlank(idCardNo) ||
-                (StringUtils.isBlank(zhizhaoNo) && !isPersonal)
+                ((StringUtils.isBlank(zhizhaoNo) && !isPersonal))
                 ) {
             ToastUtil.showMessage(RegisterActivity.this, "请将信息填写完整");
             return;
@@ -351,8 +366,14 @@ public class RegisterActivity extends RxBaseActivity {
         MultipartBody.Part idCardPart = MultipartBody.Part.createFormData("idImgFront", "idImgFront.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[0])));
         MultipartBody.Part idCard2Part = MultipartBody.Part.createFormData("idImgBack", "idImgBack.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[1])));
         MultipartBody.Part photoPart = MultipartBody.Part.createFormData("photo", "photo.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[2])));
-        MultipartBody.Part businessLicencePart = MultipartBody.Part.createFormData("businessLicence", "businessLicence.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[3])));
-        MultipartBody.Part scene1Part = MultipartBody.Part.createFormData("scene1", "scene1.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[4])));
+        MultipartBody.Part businessLicencePart = null;
+        if (StringUtils.isNotBlank(imgPaths[3])) {
+            businessLicencePart = MultipartBody.Part.createFormData("businessLicence", "businessLicence.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[3])));
+        }
+        MultipartBody.Part scene1Part = null;
+        if (StringUtils.isNotBlank(imgPaths[4])) {
+            scene1Part = MultipartBody.Part.createFormData("scene1", "scene1.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPaths[4])));
+        }
 
         MultipartBody.Part zhizhaoNoPart = MultipartBody.Part.createFormData("businessLicenceNo", String.valueOf(zhizhaoNo));
 
@@ -366,10 +387,11 @@ public class RegisterActivity extends RxBaseActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<Object>(RegisterActivity.this, true, false, new NoErrSubscriberListener<Object>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(RegisterActivity.this, true, false, new NoErrSubscriberListener<Object>() {
             @Override
             public void onNext(Object o) {
-
+                ToastUtil.showMessage(RegisterActivity.this, "申请提交成功");
+                finish();
             }
         })));
     }

@@ -93,8 +93,9 @@
                         android:layout_toLeftOf="@+id/ic_right_1"
                         android:background="@null"
                         android:gravity="end"
+                        android:inputType="text"
                         android:textCursorDrawable="@null"
-                        android:hint="个人或公司全程"
+                        android:hint="商铺全称"
                         android:minWidth="80dp"
                         android:text=""
                         android:textSize="14sp" />
@@ -135,7 +136,7 @@
                         android:background="@null"
                         android:gravity="right"
                         android:textCursorDrawable="@null"
-                        android:hint="公司简称或品牌"
+                        android:hint="商铺简称"
                         android:minWidth="80dp"
                         android:text=""
                         android:textSize="14sp" />
@@ -239,6 +240,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="13dp"
                         android:text="联系电话"
+                        android:inputType="phone"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -259,6 +261,7 @@
                         android:gravity="right"
                         android:textCursorDrawable="@null"
                         android:hint="联系电话"
+                        android:inputType="phone"
                         android:minWidth="80dp"
                         android:text=""
                         android:textSize="14sp" />
@@ -357,6 +360,7 @@
                         android:gravity="right"
                         android:textCursorDrawable="@null"
                         android:hint="银行卡号"
+                        android:inputType="number"
                         android:minWidth="80dp"
                         android:text=""
                         android:textSize="14sp" />
@@ -791,6 +795,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/apply_now"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"

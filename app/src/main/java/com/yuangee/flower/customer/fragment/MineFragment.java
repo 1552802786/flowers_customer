@@ -8,9 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.activity.MyOrderActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
@@ -22,6 +27,7 @@ import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.PhoneUtil;
+import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.List;
@@ -50,9 +56,21 @@ public class MineFragment extends RxLazyFragment {
     @BindView(R.id.notification_icon)
     ImageView notificationIcon;
 
+    @BindView(R.id.person_photo)
+    ImageView personPhoto;
+
+    @BindView(R.id.person_name)
+    TextView personName;
+
+    @BindView(R.id.person_vip)
+    TextView personVip;
+
+    @BindView(R.id.person_phone)
+    TextView personPhone;
+
     @OnClick(R.id.notification_icon)
     void toMessage() {
-
+        startActivity(new Intent(getActivity(), MessageActivity.class));
     }
 
     @OnClick(R.id.mine_top)
@@ -63,32 +81,32 @@ public class MineFragment extends RxLazyFragment {
     @OnClick(R.id.order_detail_con)
     void toDetail() {
         Intent intent = new Intent(getActivity(), MyOrderActivity.class);
-        intent.putExtra("status",-1);
-        intent.putExtra("bespeak",false);
+        intent.putExtra("status", -1);
+        intent.putExtra("bespeak", false);
         startActivity(intent);
     }
 
     @OnClick(R.id.wait_receive)
     void waitReceive() {
         Intent intent = new Intent(getActivity(), MyOrderActivity.class);
-        intent.putExtra("status",2);
-        intent.putExtra("bespeak",false);
+        intent.putExtra("status", 2);
+        intent.putExtra("bespeak", false);
         startActivity(intent);
     }
 
     @OnClick(R.id.book)
     void book() {
         Intent intent = new Intent(getActivity(), MyOrderActivity.class);
-        intent.putExtra("status",-1);
-        intent.putExtra("bespeak",true);
+        intent.putExtra("status", -1);
+        intent.putExtra("bespeak", true);
         startActivity(intent);
     }
 
     @OnClick(R.id.send_goods)
     void sendGoods() {
         Intent intent = new Intent(getActivity(), MyOrderActivity.class);
-        intent.putExtra("status",0);
-        intent.putExtra("bespeak",true);
+        intent.putExtra("status", 0);
+        intent.putExtra("bespeak", true);
         startActivity(intent);
     }
 
@@ -138,8 +156,18 @@ public class MineFragment extends RxLazyFragment {
         if (!isPrepared || !isVisible) {
             return;
         }
-        initView();
         isPrepared = false;
+    }
+
+    @Override
+    protected void onVisible() {
+        super.onVisible();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initView();
     }
 
     private void getConsumerInfo(long id) {
@@ -149,12 +177,12 @@ public class MineFragment extends RxLazyFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<Member>(getActivity(), true, true, new HaveErrSubscriberListener<Member>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Member>() {
             @Override
             public void onNext(Member o) {
                 SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
                 List<Address> addressList = o.memberAddressList;
-                if(null != addressList ){
+                if (null != addressList) {
                     DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
                 } else {
                     DbHelper.getInstance().getAddressLongDBManager().deleteAll();
@@ -177,6 +205,24 @@ public class MineFragment extends RxLazyFragment {
                 editor.putBoolean("login", true);
 
                 editor.apply();
+
+                RequestOptions options = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_default_photo)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL);
+                Glide.with(getActivity())
+                        .load(Config.BASE_URL + o.photo)
+                        .apply(options)
+                        .into(personPhoto);
+
+                personName.setText(o.name);
+                personVip.setText("普通会员");
+                if (StringUtils.isNotBlank(o.phone) && o.phone.length() == 11) {
+                    personPhone.setText(o.phone.subSequence(0, 4) + "****" + o.phone.substring(7, 11));
+                } else {
+                    personPhone.setText(o.phone);
+                }
+
             }
 
             @Override

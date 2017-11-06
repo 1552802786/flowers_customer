@@ -201,6 +201,34 @@
             android:layout_height="0.1dp"
             android:background="@color/line_color"/>
 
+        <RelativeLayout
+            android:id="@+id/address_manage"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="收货地址管理"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="13dp"/>
+
+            <ImageView
+                android:id="@+id/ic_right_20"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_chevron" />
+
+
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/line_color"/>
+
     </LinearLayout>
 
     <TextView
@@ -210,12 +238,14 @@
         android:gravity="center_vertical"
         android:layout_marginLeft="13dp"
         android:text="默认收货地址"
+        android:visibility="gone"
         />
 
     <RelativeLayout
         android:id="@+id/pick_consignee"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:visibility="gone"
         android:background="@color/white">
 
         <TextView
@@ -248,10 +278,12 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
+        android:visibility="gone"
         android:background="@color/line_color"/>
     <RelativeLayout
         android:id="@+id/pick_consignee_phone"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="40dp"
         android:background="@color/white">
 
@@ -285,11 +317,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
+        android:visibility="gone"
         android:background="@color/line_color"/>
     <RelativeLayout
         android:id="@+id/pick_consignee_place"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:visibility="gone"
         android:background="@color/white">
 
         <TextView
@@ -327,6 +361,7 @@
         android:id="@+id/pick_consignee_method"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:visibility="gone"
         android:background="@color/white">
 
         <TextView
@@ -359,6 +394,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
+        android:visibility="gone"
         android:background="@color/line_color"/>
 
 </LinearLayout>

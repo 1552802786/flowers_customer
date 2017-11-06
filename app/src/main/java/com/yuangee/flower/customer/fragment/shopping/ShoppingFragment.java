@@ -16,6 +16,7 @@ import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.GoodsActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
+import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.adapter.Type2Adapter;
 import com.yuangee.flower.customer.adapter.Type3Adapter;
@@ -62,6 +63,11 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     @BindView(R.id.id_drawerLayout)
     DrawerLayout myDrawerLayout;
+
+    @OnClick(R.id.notification_icon)
+    void toMessage() {
+        startActivity(new Intent(getActivity(), MessageActivity.class));
+    }
 
     @OnClick(R.id.menu_icon)
     void openDawer() {

@@ -24,14 +24,29 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.StringUtils;
+import com.yuangee.flower.customer.util.ToastUtil;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by developerLzh on 2017/8/22 0022.
@@ -72,6 +87,11 @@ public class PersonalCenterActivity extends RxBaseActivity {
 
     @BindView(R.id.person_consignee_method)
     TextView personConsigneeMethod;
+
+    @OnClick(R.id.address_manage)
+    void addressManage() {
+        startActivity(new Intent(PersonalCenterActivity.this, SecAddressActivity.class));
+    }
 
     private AlertDialog dialog;
 
@@ -161,25 +181,80 @@ public class PersonalCenterActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
+        showMember();
+    }
+
+    private void showMember() {
+        Member member = App.me().getMemberInfo();
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.drawable.ic_default_photo_gray)
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+        Glide.with(this)
+                .load(Config.BASE_URL + member.photo)
+                .apply(options)
+                .into(icPhoto);
+        personName.setText(member.name);
+        personGender.setText(!member.gender ? "男" : "女");
+        personPhone.setText(member.phone);
+        personEmail.setText(member.email);
+    }
+
+    @Override
+    public void initToolBar() {
         toolbar.setTitle("个人中心");
         setSupportActionBar(toolbar);
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override
-    public void initToolBar() {
-
+    public void onBackPressed() {
+        updateMemberInfo();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+    private void updateMemberInfo() {
+        long id = App.getPassengerId();
+        String name = personName.getText().toString();
+        boolean gender = personGender.getText().toString().equals("女");
+        String phone = personPhone.getText().toString();
+        String email = personEmail.getText().toString();
+
+        MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", String.valueOf(id));
+        MultipartBody.Part namePart = MultipartBody.Part.createFormData("name", String.valueOf(name));
+        MultipartBody.Part genderPart = MultipartBody.Part.createFormData("gender", String.valueOf(gender));
+        MultipartBody.Part phonePart = MultipartBody.Part.createFormData("phone", String.valueOf(phone));
+        MultipartBody.Part emailPart = MultipartBody.Part.createFormData("email", String.valueOf(email));
+
+        MultipartBody.Part photoPart = null;
+        if (StringUtils.isNotBlank(secPhoto)) {
+            photoPart = MultipartBody.Part.createFormData("photo", "photo.png", RequestBody.create(MediaType.parse("image/png"), new File(secPhoto)));
         }
-        return super.onOptionsItemSelected(item);
+
+        Observable<Object> observable = ApiManager.getInstance().api
+                .updateMember(idPart, namePart, genderPart, phonePart, emailPart, photoPart)
+                .map(new HttpResultFunc<>(PersonalCenterActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(PersonalCenterActivity.this, true, false, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                ToastUtil.showMessage(PersonalCenterActivity.this, "个人信息更新成功");
+                finish();
+            }
+        })));
+
     }
+
+    private String secPhoto = "";
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -188,13 +263,13 @@ public class PersonalCenterActivity extends RxBaseActivity {
             if (requestCode == PictureConfig.CHOOSE_REQUEST) {
                 List<LocalMedia> images = PictureSelector.obtainMultipleResult(data);
                 if (images != null && images.size() > 0) {
-                    String path = images.get(0).getCutPath();
+                    secPhoto = images.get(0).getCutPath();
                     RequestOptions options = new RequestOptions()
                             .centerCrop()
                             .placeholder(R.drawable.ic_default_photo_gray)
                             .diskCacheStrategy(DiskCacheStrategy.ALL);
                     Glide.with(PersonalCenterActivity.this)
-                            .load(path)
+                            .load(secPhoto)
                             .apply(options)
                             .into(icPhoto);
                 }

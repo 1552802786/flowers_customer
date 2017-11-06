@@ -1,9 +1,12 @@
 package com.yuangee.flower.customer.fragment.reserve;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
@@ -12,11 +15,22 @@ import android.widget.TextView;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.GoodsActivity;
+import com.yuangee.flower.customer.activity.MainActivity;
+import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
+import com.yuangee.flower.customer.adapter.Type2Adapter;
+import com.yuangee.flower.customer.adapter.Type3Adapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
+import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.entity.GenreSub;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
+import com.yuangee.flower.customer.fragment.shopping.ShoppingModel;
+import com.yuangee.flower.customer.fragment.shopping.ShoppingPresenter;
+import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
@@ -53,10 +67,22 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     @BindView(R.id.id_drawerLayout)
     DrawerLayout myDrawerLayout;
 
+    @OnClick(R.id.notification_icon)
+    void toMessage() {
+        startActivity(new Intent(getActivity(), MessageActivity.class));
+    }
+
     @OnClick(R.id.menu_icon)
     void openDawer() {
         myDrawerLayout.openDrawer(Gravity.LEFT);
+        initDrawer();
     }
+
+    @BindView(R.id.type_recycler)
+    RecyclerView typeRecycler;
+
+    @BindView(R.id.detail_type_recycler)
+    RecyclerView detailRecycler;
 
     @OnClick(R.id.tv_av)
     void toSearch() {
@@ -67,18 +93,34 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
 
-    public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
-        this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
-    }
+    private AddAnimateListener addAnimateListener;
 
     ReservePresenter presenter;
 
     GoodsAdapter adapter;
+    Type2Adapter typeAdapter;
+
+    Type3Adapter detailTypeAdapter;
 
     public List<Goods> goodsList;
 
+    private List<Genre> types = new ArrayList<>();
+    private List<GenreSub> detailTypes = new ArrayList<>();
+
     private int page = 0;
     private int limit = 10;
+
+    private String genreName = "";
+    private String genreSubName = "";
+    private String params = "";//关键字
+
+    public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
+        this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
+    }
+
+    public void setAddAnimateListener(AddAnimateListener addAnimateListener) {
+        this.addAnimateListener = addAnimateListener;
+    }
 
     @Override
     public int getLayoutResId() {
@@ -103,16 +145,102 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         isPrepared = false;
     }
 
+    private void initDrawer() {
+
+        typeAdapter = new Type2Adapter(getActivity());
+        typeRecycler.setAdapter(typeAdapter);
+        LinearLayoutManager linManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        typeRecycler.setLayoutManager(linManager);
+        typeAdapter.setOnItemClickListener(new Type2Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                createDetailType(position);
+                detailTypeAdapter.setData(detailTypes);
+                if (types.get(position).clicked) {
+                    genreName = types.get(position).genreName;
+                } else {
+                    genreName = "";
+                }
+            }
+        });
+        createType();
+        typeAdapter.setData(types);
+
+
+        detailTypeAdapter = new Type3Adapter(getActivity());
+        detailRecycler.setAdapter(detailTypeAdapter);
+        GridLayoutManager gridManager = new GridLayoutManager(getActivity(), 3);
+        detailRecycler.setLayoutManager(gridManager);
+        detailTypeAdapter.setOnItemClickListener(new Type3Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                myDrawerLayout.closeDrawer(Gravity.LEFT);
+                if (detailTypes.get(position).clicked) {
+                    genreSubName = detailTypes.get(position).name;
+                } else {
+                    genreSubName = "";
+                }
+            }
+        });
+        myDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                page = 0;
+                presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+        detailTypeAdapter.setData(detailTypes);
+    }
+
+    private void createType() {
+        types.clear();
+        for (Genre genre : MainActivity.genreList) {
+            types.add(genre);
+        }
+    }
+
+    private void createDetailType(int position) {
+        detailTypes.clear();
+        if (MainActivity.genreList.size() > 0) {
+            detailTypes.addAll(MainActivity.genreList.get(position).genreSubs);
+        }
+    }
+
     @Override
     protected void initRecyclerView() {
 
         plRecycler.setFooterViewText("加载中..");
 
-        adapter = new GoodsAdapter(getActivity(), 1,mRxManager);
+        adapter = new GoodsAdapter(getActivity(), 1, mRxManager);
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ToastUtil.showMessage(getActivity(), "您点击了" + position);
+                startActivity(new Intent(getActivity(), GoodsActivity.class));
+            }
+        });
+        adapter.setmOnAddClickListener(new GoodsAdapter.OnAddClickListener() {
+            @Override
+            public void onAddClick(ImageView view, int selectedNum) {
+                if (null != addAnimateListener) {
+                    addAnimateListener.showAddAnimate(view, selectedNum);
+                }
+                //添加完一项后重新获取数据
+//                presenter.getGoodsData(genreName,genreSubName,params,page,limit);
             }
         });
 
@@ -130,7 +258,8 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+
     }
 
     @Override
@@ -140,31 +269,28 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     }
 
     @Override
-    public void showGoods(final List<Goods> list) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        plRecycler.setVisibility(View.VISIBLE);
-                        plRecycler.setRefreshing(false);
-                        plRecycler.setPullLoadMoreCompleted();
-                        if (page == 0) {
-                            goodsList = list;
-                        } else {
-                            goodsList.addAll(list);
-                        }
-                        adapter.setData(goodsList);
-                        if (goodsList.size() > 43) {
-                            plRecycler.setHasMore(false);
-                        } else {
-                            plRecycler.setHasMore(true);
-                        }
-                    }
-                });
-            }
-        }, 1500);
+    public void showGoods(int page, int limit, PageResult<Goods> pageResult) {
+        if (page == 0) {
+            goodsList.clear();
+        }
+        goodsList.addAll(pageResult.rows);
+        for (Goods goods : goodsList) {
+            goods.selectedNum = 1;//默认选中的个数为1
+        }
+        if (goodsList.size() == 0) {
+            showEmptyView(0);
+        } else {
+            hideEmptyView();
+        }
+        plRecycler.setVisibility(View.VISIBLE);
+        plRecycler.setRefreshing(false);
+        plRecycler.setPullLoadMoreCompleted();
+        if (pageResult.total > (page + 1) * limit) {
+            plRecycler.setHasMore(true);
+        } else {
+            plRecycler.setHasMore(false);
+        }
+        adapter.setData(goodsList);
     }
 
     @Override
@@ -179,8 +305,8 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
             emptyView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Intent intent = new Intent(getActivity(), CreateOrderActivity.class);
-//                    startActivity(intent);
+                    page = 0;
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit);
                 }
             });
         } else {
@@ -190,7 +316,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(page, limit);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit);
                 }
             });
         }
@@ -198,7 +324,10 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     @Override
     public void hideEmptyView() {
-
+        plRecycler.setRefreshing(false);
+        plRecycler.setVisibility(View.VISIBLE);
+        plRecycler.setPullLoadMoreCompleted();
+        emptyView.setVisibility(View.GONE);
     }
 
     @Override
@@ -206,13 +335,13 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }
 
     @Override
@@ -223,6 +352,11 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         } else {
             return false;
         }
+    }
+
+    public void findWares(String params) {
+        page = 0;
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }
 
 }

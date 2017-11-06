@@ -12,6 +12,7 @@ import com.youth.banner.transformer.DepthPageTransformer;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.BrowserActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
+import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
@@ -45,6 +46,11 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
 
     @BindView(R.id.banner)
     Banner banner;
+
+    @OnClick(R.id.notification_icon)
+    void toMessage() {
+        startActivity(new Intent(getActivity(), MessageActivity.class));
+    }
 
     private HomePresenter presenter;
 

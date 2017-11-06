@@ -236,7 +236,6 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         rxManager.add(observable.subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<CartItem>() {
             @Override
             public void onNext(CartItem o) {
-                //TODO 添加到购物车成功
                 goods.selectedNum = num;
                 goods.salesVolume -= num;
                 ToastUtil.showMessage(context, "添加到购物车成功");
@@ -248,9 +247,15 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
 
             @Override
             public void onError(int code) {
-                //TODO 添加到购物车失败
             }
         })));
+    }
+
+    /**
+     * 预约商品
+     */
+    private void reserveGoods(){
+
     }
 
 }
