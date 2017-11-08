@@ -155,8 +155,8 @@ public interface ApiService {
      * @return
      */
     @Multipart
-    @POST("rest/wares/findShopByMemberId")
-    Observable<BaseResult<Object>> findShopByMemberId(@Part MultipartBody.Part Id,
+    @POST("rest/wares/updateWares")
+    Observable<BaseResult<Object>> updateWares(@Part MultipartBody.Part Id,
                                                       @Part MultipartBody.Part waresImage,
                                                       @Part MultipartBody.Part genreId,
                                                       @Part MultipartBody.Part genreName,

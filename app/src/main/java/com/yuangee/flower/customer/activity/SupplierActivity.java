@@ -44,7 +44,11 @@ public class SupplierActivity extends RxBaseActivity {
 
     @OnClick(R.id.add_text)
     void toAdd() {
-        startActivity(new Intent(SupplierActivity.this, GoodsActivity.class));
+        Intent intent = new Intent(SupplierActivity.this, GoodsActivity.class);
+        intent.putExtra("shopId", shopId);
+        intent.putExtra("shopName", shopName);
+        intent.putExtra("change", true);
+        startActivity(intent);
     }
 
     @BindView(R.id.good_recycler)
@@ -59,17 +63,19 @@ public class SupplierActivity extends RxBaseActivity {
     private int limit = 10;
 
     private long shopId;
+    private String shopName;
 
     private List<Goods> goodsList;
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_apply_supplier;
+        return R.layout.activity_supplier;
     }
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        shopId = getIntent().getLongExtra("shopId",-1);
+        shopId = getIntent().getLongExtra("shopId", -1);
+        shopName = getIntent().getStringExtra("shopName");
 
         goodsList = new ArrayList<>();
         adapter = new SupplierAdapter(this, mRxManager);
@@ -171,7 +177,7 @@ public class SupplierActivity extends RxBaseActivity {
         emptyView.setVisibility(View.GONE);
     }
 
-    public void back(View view){
+    public void back(View view) {
         onBackPressed();
     }
 }

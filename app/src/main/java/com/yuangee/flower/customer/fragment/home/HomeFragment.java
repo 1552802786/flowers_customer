@@ -187,6 +187,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), SupplierActivity.class);
                     intent.putExtra("shopId", shop.id);
+                    intent.putExtra("shopName", shop.name);
                     startActivity(intent);
                 }
             });

@@ -66,9 +66,14 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
 
     private RxManager rxManager;
 
-    public SupplierAdapter(Context context, RxManager rxManager) {
+    private long shopId;
+    private String shopName;
+
+    public SupplierAdapter(Context context, RxManager rxManager,long shopId,String shopName) {
         this.context = context;
         this.rxManager = rxManager;
+        this.shopId = shopId;
+        this.shopName = shopName;
         data = new ArrayList<>();
     }
 
@@ -130,6 +135,8 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
                 Intent intent = new Intent(context, GoodsActivity.class);
                 intent.putExtra("goods", bean);
                 intent.putExtra("change", true);
+                intent.putExtra("shopId", shopId);
+                intent.putExtra("shopName", shopName);
                 context.startActivity(intent);
             }
         });

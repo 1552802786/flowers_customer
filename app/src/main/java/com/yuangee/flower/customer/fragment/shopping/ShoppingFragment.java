@@ -28,7 +28,6 @@ import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.result.PageResult;
-import com.yuangee.flower.customer.widget.AddCartAnimation;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
