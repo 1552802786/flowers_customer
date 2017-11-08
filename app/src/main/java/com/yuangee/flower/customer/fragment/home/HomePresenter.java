@@ -2,9 +2,11 @@ package com.yuangee.flower.customer.fragment.home;
 
 import android.content.Context;
 
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
+import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.fragment.BasePresenter;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
@@ -74,6 +76,21 @@ public class HomePresenter extends HomeContract.Presenter {
             public void onNext(List<Genre> orderList) {
                 mView.showGenre(orderList);
                 mView.hideEmptyView();
+            }
+
+            @Override
+            public void onError(int code) {
+                mView.showEmptyView(code);
+            }
+        })));
+    }
+
+    @Override
+    void getShaop() {
+        mRxManager.add(mModel.getShop(App.getPassengerId()).subscribe(new MySubscriber<>(context, false, false, new HaveErrSubscriberListener<Shop>() {
+            @Override
+            public void onNext(Shop shop) {
+                mView.showShopIcon(shop);
             }
 
             @Override

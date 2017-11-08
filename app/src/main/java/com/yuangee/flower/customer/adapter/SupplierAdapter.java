@@ -1,6 +1,8 @@
 package com.yuangee.flower.customer.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +16,15 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.GoodsActivity;
+import com.yuangee.flower.customer.activity.LoginActivity;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.RxManager;
 import com.yuangee.flower.customer.util.ToastUtil;
 
@@ -32,14 +38,12 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Administrator on 2016/3/10.
  */
-public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder> {
+public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsHolder> {
 
     private Context context;
     private List<Goods> data;
 
     private OnItemClickListener mOnItemClickListener;   //声明监听器接口
-
-    private int flag = 0;//0代表右侧是加入购物车  1代表右侧是预约
 
     public interface OnItemClickListener {
         /**
@@ -60,20 +64,9 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    public interface OnAddClickListener {
-        void onAddClick(ImageView view, int selectedNum);
-    }
-
-    private OnAddClickListener mOnAddClickListener;
-
-    public void setmOnAddClickListener(OnAddClickListener listener) {
-        this.mOnAddClickListener = listener;
-    }
-
     private RxManager rxManager;
 
-    public GoodsAdapter(Context context, int flag, RxManager rxManager) {
-        this.flag = flag;
+    public SupplierAdapter(Context context, RxManager rxManager) {
         this.context = context;
         this.rxManager = rxManager;
         data = new ArrayList<>();
@@ -82,7 +75,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
     @Override
     public GoodsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = View.inflate(context, R.layout.goods_item, null);
+        View view = View.inflate(context, R.layout.supplier_goods_item, null);
         GoodsHolder holder = new GoodsHolder(view);
 
         holder.layoutView = view;    //将布局view保存起来用作点击事件
@@ -93,12 +86,10 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.goodsColor = view.findViewById(R.id.goods_color);
         holder.goodsSpec = view.findViewById(R.id.goods_spec);
         holder.goodsLeft = view.findViewById(R.id.goods_left);
-        holder.addToCar = view.findViewById(R.id.add_to_car);
         holder.goodsMoney = view.findViewById(R.id.goods_money);
-        holder.numSub = view.findViewById(R.id.num_sub);
-        holder.numAdd = view.findViewById(R.id.num_add);
+        holder.changeGoods = view.findViewById(R.id.change);
+        holder.deleteGoodsp = view.findViewById(R.id.delete);
         holder.goodsNum = view.findViewById(R.id.goods_num);
-        holder.yuYue = view.findViewById(R.id.yu_yue);
 
         return holder;
     }
@@ -108,22 +99,6 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         notifyDataSetChanged();
     }
 
-    public List<Goods> getData() {
-        return data;
-    }
-
-    private void setBtnEnable(GoodsHolder holder, Goods bean) {
-        if (bean.selectedNum == 1) {
-            holder.numSub.setEnabled(false);
-            holder.numAdd.setEnabled(true);
-        } else if (bean.selectedNum == bean.salesVolume) {//商品可售的最大值
-            holder.numSub.setEnabled(true);
-            holder.numAdd.setEnabled(false);
-        } else {
-            holder.numSub.setEnabled(true);
-            holder.numAdd.setEnabled(true);
-        }
-    }
 
     //设置数据
     @Override
@@ -147,49 +122,37 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.goodsLeft.setText("可售量：" + bean.salesVolume);
         holder.goodsNum.setText(bean.selectedNum + "");
 
-        if (flag == 0) {
-            holder.addToCar.setVisibility(View.VISIBLE);
-            holder.yuYue.setVisibility(View.GONE);
-        } else {
-            holder.addToCar.setVisibility(View.GONE);
-            holder.yuYue.setVisibility(View.VISIBLE);
-        }
-
-        setBtnEnable(holder, bean);
-
-        holder.addToCar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long memberId = App.getPassengerId();
-                addToCar(memberId, bean.id, (int) bean.selectedNum, bean, holder, position);
-            }
-        });
-        holder.yuYue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                bean.isAddToCar = true;
-            }
-        });
-
-        holder.numSub.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bean.selectedNum--;
-                setBtnEnable(holder, bean);
-                holder.goodsNum.setText("" + bean.selectedNum);
-            }
-        });
-
-        holder.numAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bean.selectedNum++;
-                setBtnEnable(holder, bean);
-                holder.goodsNum.setText("" + bean.selectedNum);
-            }
-        });
-
         holder.goodsMoney.setText(bean.unitPrice + "/" + bean.unit);
+
+        holder.changeGoods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, GoodsActivity.class);
+                intent.putExtra("goods", bean);
+                intent.putExtra("change", true);
+                context.startActivity(intent);
+            }
+        });
+
+        holder.deleteGoodsp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Observable<Object> observable = ApiManager.getInstance().api
+                        .deleteWares(bean.id)
+                        .map(new HttpResultFunc<>(context))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+
+                rxManager.add(observable.subscribe(new MySubscriber<>(context, true, false, new NoErrSubscriberListener<Object>() {
+                    @Override
+                    public void onNext(Object o) {
+                        data.remove(position);
+                        notifyDataSetChanged();
+                    }
+                })));
+
+            }
+        });
 
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
@@ -222,44 +185,11 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         TextView goodsColor;
         TextView goodsSpec;
         TextView goodsLeft;
-        ImageView addToCar;
         TextView goodsMoney;
-        ImageView numSub;
-        ImageView numAdd;
         TextView goodsNum;
-        TextView yuYue;
-    }
 
-    private void addToCar(long memberId, long waresId, final int num, final Goods goods, final GoodsHolder holder, final int position) {
-        Observable<CartItem> observable = ApiManager.getInstance().api
-                .addCartItem(memberId, waresId, num)
-                .map(new HttpResultFunc<CartItem>(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        rxManager.add(observable.subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<CartItem>() {
-            @Override
-            public void onNext(CartItem o) {
-                goods.selectedNum = num;
-                goods.salesVolume -= num;
-                ToastUtil.showMessage(context, "添加到购物车成功");
-                if (null != mOnAddClickListener) {
-                    mOnAddClickListener.onAddClick(holder.addToCar, (int) goods.selectedNum);
-                }
-                notifyItemChanged(position);
-            }
-
-            @Override
-            public void onError(int code) {
-            }
-        })));
-    }
-
-    /**
-     * 预约商品
-     */
-    private void reserveGoods(){
-
+        TextView changeGoods;
+        TextView deleteGoodsp;
     }
 
 }

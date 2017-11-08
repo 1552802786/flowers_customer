@@ -1,10 +1,12 @@
 package com.yuangee.flower.customer.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by developerLzh on 2017/9/18 0018.
  */
 
-public class Goods {
+public class Goods implements Serializable{
 
     public long id;//商品id
 

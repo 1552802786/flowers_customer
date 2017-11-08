@@ -9,6 +9,7 @@ import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.Message;
 import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.Recommend;
+import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
@@ -95,7 +96,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/wares/findShopByMemberId")
-    Observable<BaseResult<Object>> findShopByMemberId(@Query("memberId") Long memberId);
+    Observable<BaseResult<Shop>> findShopByMemberId(@Query("memberId") Long memberId);
 
     /**
      * 添加商品
@@ -424,6 +425,14 @@ public interface ApiService {
     Observable<BaseResult<Object>> readMemberNotice(@Query("memberId") Long memberId,
                                                     @Query("noticeId") Long noticeId);
 
+
+    /**
+     * 根据商铺id查询商品
+     */
+    @GET("rest/wares/findWares")
+    Observable<BaseResult<PageResult<Goods>>> findWares(@Query("shopId") Long shopId,
+                                                        @Query("offset") int offset,
+                                                        @Query("limit") int limit);
 
     /**
      * 获取banner

@@ -18,6 +18,7 @@ import com.luck.picture.lib.tools.DoubleUtils;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.GridImageAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.FullyGridLayoutManager;
@@ -127,8 +128,15 @@ public class GoodsActivity extends RxBaseActivity {
         return R.layout.activity_goods_detail;
     }
 
+    private boolean change = false;
+    private Goods goods;
+
     @Override
     public void initViews(Bundle savedInstanceState) {
+
+        change = getIntent().getBooleanExtra("change",false);
+        goods = (Goods) getIntent().getSerializableExtra("goods");
+
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
         photoRecycler.setLayoutManager(manager);
         adapter = new GridImageAdapter(this, onAddPicClickListener);

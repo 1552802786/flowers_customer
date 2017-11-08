@@ -6,6 +6,7 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
+import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 
@@ -48,6 +49,14 @@ public class HomeModel implements HomeContract.Model {
     public Observable<List<Recommend>> getRecommend() {
         return ApiManager.getInstance().api.findAllRecommend()
                 .map(new HttpResultFunc<List<Recommend>>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Shop> getShop(long memberId) {
+        return ApiManager.getInstance().api.findShopByMemberId(memberId)
+                .map(new HttpResultFunc<Shop>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

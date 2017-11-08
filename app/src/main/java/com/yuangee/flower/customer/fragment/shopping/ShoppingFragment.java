@@ -227,7 +227,10 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                startActivity(new Intent(getActivity(), GoodsActivity.class));
+                Intent intent = new Intent(getActivity(), GoodsActivity.class);
+                intent.putExtra("goods", adapter.getData().get(position));
+                intent.putExtra("change", false);
+                startActivity(intent);
             }
         });
         adapter.setmOnAddClickListener(new GoodsAdapter.OnAddClickListener() {

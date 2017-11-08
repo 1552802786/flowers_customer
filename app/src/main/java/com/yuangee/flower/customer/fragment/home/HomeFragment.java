@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -13,10 +14,12 @@ import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.BrowserActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
+import com.yuangee.flower.customer.activity.SupplierActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
+import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.util.GlideImageLoader;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
@@ -46,6 +49,9 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
 
     @BindView(R.id.banner)
     Banner banner;
+
+    @BindView(R.id.shop_icon)
+    ImageView shopIcon;
 
     @OnClick(R.id.notification_icon)
     void toMessage() {
@@ -171,6 +177,23 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     }
 
     @Override
+    public void showShopIcon(final Shop shop) {
+        if (shop == null) {
+            shopIcon.setVisibility(View.GONE);
+        } else {
+            shopIcon.setVisibility(View.VISIBLE);
+            shopIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), SupplierActivity.class);
+                    intent.putExtra("shopId", shop.id);
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
+    @Override
     public void showGenre(List<Genre> genres) {
         genreList.addAll(genres);
 
@@ -238,6 +261,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         clearData();
         presenter.getBannerData();
         presenter.getRecommendData();
+        presenter.getShaop();
         swipeRecyclerView.setVisibility(View.VISIBLE);
         mCustomEmptyView.setVisibility(View.GONE);
     }

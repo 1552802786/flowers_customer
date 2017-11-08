@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.fragment.home;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
+import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.fragment.BasePresenter;
 
 import java.util.List;
@@ -28,6 +29,8 @@ public interface HomeContract {
 
         void hideEmptyView();
 
+        void showShopIcon(Shop shop);
+
 //        void showOrHideRow(RecyclerView recyclerView);
     }
 
@@ -37,6 +40,8 @@ public interface HomeContract {
         abstract void getRecommendData();
 
         abstract void getGenreData();
+
+        abstract void getShaop();
     }
 
     interface Model {
@@ -54,5 +59,7 @@ public interface HomeContract {
          * 获取种类数据
          */
         Observable<List<Recommend>> getRecommend();
+
+        Observable<Shop> getShop(long memberId);
     }
 }
