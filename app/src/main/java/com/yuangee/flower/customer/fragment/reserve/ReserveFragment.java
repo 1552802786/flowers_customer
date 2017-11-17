@@ -230,7 +230,10 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                startActivity(new Intent(getActivity(), GoodsActivity.class));
+                Intent intent = new Intent(getActivity(), GoodsActivity.class);
+                intent.putExtra("change",false);
+                intent.putExtra("goods",adapter.getData().get(position));
+                startActivity(intent);
             }
         });
         adapter.setmOnAddClickListener(new GoodsAdapter.OnAddClickListener() {
