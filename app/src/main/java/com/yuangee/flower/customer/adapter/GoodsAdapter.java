@@ -167,7 +167,8 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.yuYue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                bean.isAddToCar = true;
+                long memberId = App.getPassengerId();
+                addToCar(memberId, bean.id, (int) bean.selectedNum, bean, holder, position);
             }
         });
 
