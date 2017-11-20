@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MenuItem;
@@ -23,16 +21,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.luck.picture.lib.*;
+import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.DebugUtil;
-import com.luck.picture.lib.tools.DoubleUtils;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.adapter.GridImageAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.GenreSub;
@@ -42,10 +37,8 @@ import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
-import com.yuangee.flower.customer.widget.FullyGridLayoutManager;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,13 +67,14 @@ public class GoodsActivity extends RxBaseActivity {
             for (int i = 0; i < MainActivity.genreList.size(); i++) {
                 Genre genre = MainActivity.genreList.get(i);
                 RadioButton button = new RadioButton(this);
+                button.setText(genre.genreName);
+                group.addView(button);
+
                 if (goods.genreId == genre.id) {
                     button.setChecked(true);
                 } else {
                     button.setChecked(false);
                 }
-                button.setText(genre.genreName);
-                group.addView(button);
             }
             dialog = new AlertDialog.Builder(this)
                     .setTitle("选择品类")
@@ -93,6 +87,9 @@ public class GoodsActivity extends RxBaseActivity {
                                 if (btn.isChecked()) {
                                     goods.genreId = MainActivity.genreList.get(i1).id;
                                     goods.genreName = MainActivity.genreList.get(i1).genreName;
+                                    goods.genreSubId = 0;
+                                    goods.genreSubName = "";
+                                    genreSub.setText("");
                                     flag = true;
                                     break;
                                 }
@@ -129,13 +126,13 @@ public class GoodsActivity extends RxBaseActivity {
                 if (genre.id == goods.genreId) {
                     for (GenreSub sub : genre.genreSubs) {
                         RadioButton button = new RadioButton(this);
+                        button.setText(sub.name);
+                        group.addView(button);
                         if (goods.genreSubId == sub.id) {
                             button.setChecked(true);
                         } else {
                             button.setChecked(false);
                         }
-                        button.setText(sub.name);
-                        group.addView(button);
                     }
                     dialog = new AlertDialog.Builder(this)
                             .setTitle("选择类别")
@@ -155,7 +152,7 @@ public class GoodsActivity extends RxBaseActivity {
                                     if (!flag) {
                                         ToastUtil.showMessage(GoodsActivity.this, "请选择一个类别");
                                     } else {
-                                        genreSub.setText(goods.genreName);
+                                        genreSub.setText(goods.genreSubName);
                                         dialogInterface.dismiss();
                                     }
                                 }
@@ -169,8 +166,6 @@ public class GoodsActivity extends RxBaseActivity {
                             .setView(group)
                             .create();
                     dialog.show();
-                } else {
-                    ToastUtil.showMessage(this, "请先选择种类");
                 }
             }
         }
@@ -190,12 +185,12 @@ public class GoodsActivity extends RxBaseActivity {
         for (String s : grades) {
             RadioButton btn = new RadioButton(this);
             btn.setText(s);
+            group.addView(btn);
             if (StringUtils.isNotBlank(goods.grade) && goods.grade.equals(s)) {
                 btn.setChecked(true);
             } else {
                 btn.setChecked(false);
             }
-            group.addView(btn);
         }
         dialog = new AlertDialog.Builder(this)
                 .setTitle("选择等级")
@@ -252,12 +247,12 @@ public class GoodsActivity extends RxBaseActivity {
 
     @OnClick(R.id.goods_price)
     void editPrice() {
-        showEditDialog(salesValue, "输入单价");
+        showEditDialog(goodsPrice, "输入单价");
     }
 
     @OnClick(R.id.goods_name)
     void editName() {
-        showEditDialog(salesValue, "输入名称");
+        showEditDialog(goodsName, "输入名称");
     }
 
     @BindView(R.id.genre_first)
@@ -312,6 +307,9 @@ public class GoodsActivity extends RxBaseActivity {
     @BindView(R.id.apply)
     Button apply;
 
+    @BindView(R.id.change_or_add_hint)
+    TextView changeOrAdd;
+
     @OnClick(R.id.apply)
     void apply() {
         goods.grade = grade.getText().toString();
@@ -354,10 +352,10 @@ public class GoodsActivity extends RxBaseActivity {
             if (requestCode == PictureConfig.CHOOSE_REQUEST) {
                 List<LocalMedia> images = PictureSelector.obtainMultipleResult(data);
                 if (images != null && images.size() > 0) {
-                    imgPath = images.get(0).getCutPath();
+                    imgPath = images.get(0).getPath();
                     RequestOptions options = new RequestOptions()
                             .centerCrop()
-                            .placeholder(R.drawable.ic_default_photo_gray)
+                            .placeholder(R.drawable.ic_add_img)
                             .diskCacheStrategy(DiskCacheStrategy.ALL);
                     Glide.with(GoodsActivity.this)
                             .load(imgPath)
@@ -408,6 +406,13 @@ public class GoodsActivity extends RxBaseActivity {
                     .load(Config.BASE_URL + goods.image)
                     .apply(options)
                     .into(goodsImg);
+            if(StringUtils.isNotBlank(goods.image)){
+                changeOrAdd.setText("修改商品图片");
+            } else {
+                changeOrAdd.setText("添加商品图片");
+            }
+        } else {
+            changeOrAdd.setText("修改商品图片");
         }
 
         if (!change) {
@@ -530,7 +535,7 @@ public class GoodsActivity extends RxBaseActivity {
             editName.setInputType(InputType.TYPE_CLASS_PHONE);
         } else if (hint.contains("邮箱")) {
             editName.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        } else if (hint.contains("可售量")) {
+        } else if (hint.contains("可售量") ||hint.contains("单价")) {
             editName.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else {
             editName.setInputType(InputType.TYPE_CLASS_TEXT);

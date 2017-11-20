@@ -78,7 +78,7 @@ public class SupplierActivity extends RxBaseActivity {
         shopName = getIntent().getStringExtra("shopName");
 
         goodsList = new ArrayList<>();
-        adapter = new SupplierAdapter(this, mRxManager);
+        adapter = new SupplierAdapter(this, mRxManager,shopId,shopName);
         goodRecycler.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         goodRecycler.setAdapter(adapter);
         goodRecycler.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {

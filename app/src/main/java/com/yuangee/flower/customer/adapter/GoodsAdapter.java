@@ -233,7 +233,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
 
     private void addToCar(long memberId, long waresId, final int num, final Goods goods, final GoodsHolder holder, final int position) {
         Observable<CartItem> observable = ApiManager.getInstance().api
-                .addCartItem(memberId, waresId, num)
+                .addCartItem(memberId, waresId, num, flag == 1)
                 .map(new HttpResultFunc<CartItem>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -259,7 +259,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
     /**
      * 预约商品
      */
-    private void reserveGoods(){
+    private void reserveGoods() {
 
     }
 

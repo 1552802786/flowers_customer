@@ -1,5 +1,7 @@
 package com.yuangee.flower.customer.fragment;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -35,9 +38,13 @@ import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -68,9 +75,26 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         } else if (expressId == -1) {
             ToastUtil.showMessage(getActivity(), "请选择一个快递方式");
         } else {
-            booking(App.getPassengerId(), address.shippingName, address.shippingPhone,
-                    address.pro + address.city + address.area + address.street, expressId);
+            if (jishiGou.isChecked()) {
+                booking(App.getPassengerId(), address.shippingName, address.shippingPhone,
+                        address.pro + address.city + address.area + address.street, expressId);
+            } else {
+                //TODO timePicker
+                long time = System.currentTimeMillis() + 24 * 60 * 60 * 1000;
+                Calendar calendar = Calendar.getInstance(Locale.CHINA);
+                calendar.setTime(new Date(time));
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        yuyueBooking(App.getPassengerId(), address.shippingName, address.shippingPhone,
+                                address.pro + address.city + address.area + address.street, expressId,
+                                i + "-" + i1 + "-" + i2 + " " + "00:00");
+                    }
+                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                dialog.show();
+            }
         }
+
     }
 
     private long checkId;
@@ -139,6 +163,12 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     @BindView(R.id.express)
     TextView expressTxt;
 
+    @BindView(R.id.jishi_gou)
+    RadioButton jishiGou;
+
+    @BindView(R.id.yuyue_gou)
+    RadioButton yuyueGou;
+
     private ShoppingCartAdapter adapter;
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
@@ -169,6 +199,27 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         }
         initRecyclerView();
         isPrepared = false;
+
+        jishiGou.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    jishiGou.setTextColor(getResources().getColor(R.color.colorAccent));
+                    yuyueGou.setTextColor(getResources().getColor(R.color.txt_normal));
+                    showList(false);
+                }
+            }
+        });
+        yuyueGou.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    jishiGou.setTextColor(getResources().getColor(R.color.txt_normal));
+                    yuyueGou.setTextColor(getResources().getColor(R.color.colorAccent));
+                    showList(true);
+                }
+            }
+        });
     }
 
     private Address address;
@@ -283,14 +334,9 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
             @Override
             public void onNext(QueryCartResult result) {
                 items = result.items;
-                adapter.setData(items);
                 totalText.setText(result.totalPrice + "元");
 
-                if (items.size() == 0) {
-                    showEmptyView(0);
-                } else {
-                    hideEmpty();
-                }
+                showList(yuyueGou.isChecked());
                 shoppingRecycle.setPullLoadMoreCompleted();
             }
 
@@ -302,10 +348,47 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         })));
     }
 
+    private void showList(boolean bespeak) {
+        List<CartItem> lsItems = new ArrayList<>();
+        for (CartItem item : items) {
+            if (item.bespeak == bespeak) {//预约购
+                lsItems.add(item);
+            }
+        }
+        adapter.setData(lsItems);
+        if (lsItems.size() == 0) {
+            showEmptyView(0);
+        } else {
+            hideEmpty();
+        }
+    }
+
     private void booking(long memberId, String receiverName,
                          String receiverPhone, String receiverAddress, long expressId) {
         Observable<Object> observable = ApiManager.getInstance().api
                 .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                ToastUtil.showMessage(getActivity(), "下单成功");
+                startActivity(new Intent(getActivity(), MyOrderActivity.class));
+            }
+
+            @Override
+            public void onError(int code) {
+                //TODO 下单失败
+            }
+        })));
+    }
+
+    private void yuyueBooking(long memberId, String receiverName,
+                              String receiverPhone, String receiverAddress, long expressId, String date) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .bespeakOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, date)
                 .map(new HttpResultFunc<>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

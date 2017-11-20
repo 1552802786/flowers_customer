@@ -157,20 +157,20 @@ public interface ApiService {
     @Multipart
     @POST("rest/wares/updateWares")
     Observable<BaseResult<Object>> updateWares(@Part MultipartBody.Part Id,
-                                                      @Part MultipartBody.Part waresImage,
-                                                      @Part MultipartBody.Part genreId,
-                                                      @Part MultipartBody.Part genreName,
-                                                      @Part MultipartBody.Part genreSubId,
-                                                      @Part MultipartBody.Part genreSubName,
-                                                      @Part MultipartBody.Part name,
-                                                      @Part MultipartBody.Part grade,
-                                                      @Part MultipartBody.Part color,
-                                                      @Part MultipartBody.Part spec,
-                                                      @Part MultipartBody.Part unit,
-                                                      @Part MultipartBody.Part unitPrice,
-                                                      @Part MultipartBody.Part salesVolume,
-                                                      @Part MultipartBody.Part shopId,
-                                                      @Part MultipartBody.Part shopName);
+                                               @Part MultipartBody.Part waresImage,
+                                               @Part MultipartBody.Part genreId,
+                                               @Part MultipartBody.Part genreName,
+                                               @Part MultipartBody.Part genreSubId,
+                                               @Part MultipartBody.Part genreSubName,
+                                               @Part MultipartBody.Part name,
+                                               @Part MultipartBody.Part grade,
+                                               @Part MultipartBody.Part color,
+                                               @Part MultipartBody.Part spec,
+                                               @Part MultipartBody.Part unit,
+                                               @Part MultipartBody.Part unitPrice,
+                                               @Part MultipartBody.Part salesVolume,
+                                               @Part MultipartBody.Part shopId,
+                                               @Part MultipartBody.Part shopName);
 
     /**
      * 删除商品
@@ -211,7 +211,9 @@ public interface ApiService {
     @GET("rest/order/addCartItem")
     Observable<BaseResult<CartItem>> addCartItem(@Query("memberId") Long memberId,
                                                  @Query("waresId") Long waresId,
-                                                 @Query("num") Integer num);
+                                                 @Query("num") Integer num,
+                                                 @Query("bespeak") boolean bespeak
+    );
 
     /**
      * 增加购物车中已有商品数量
@@ -223,17 +225,16 @@ public interface ApiService {
      */
     @GET("rest/order/cartItemAdd")
     Observable<BaseResult<CartItem>> cartItemAdd(@Query("itemId") Long memberId,
-                                               @Query("cartId") Long waresId,
-                                               @Query("num") Integer num);
+                                                 @Query("cartId") Long waresId,
+                                                 @Query("num") Integer num);
 
     /**
      * 减少购物车中已有商品数量
-     *
      */
     @GET("rest/order/cartItemSub")
     Observable<BaseResult<CartItem>> cartItemSub(@Query("itemId") Long itemId,
-                                               @Query("cartId") Long cartId,
-                                               @Query("num") Integer num);
+                                                 @Query("cartId") Long cartId,
+                                                 @Query("num") Integer num);
 
     /**
      * 删除购物车中商品
@@ -272,6 +273,26 @@ public interface ApiService {
                                                      @Field("receiverPhone") String receiverPhone,
                                                      @Field("receiverAddress") String receiverAddress,
                                                      @Field("expressId") Long expressId);
+
+    /**
+     *
+     * @param memberId
+     * @param receiverName
+     * @param receiverPhone
+     * @param receiverAddress
+     * @param expressId
+     * @param bespeakDate 预约日期
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("rest/order/bespeakOrderMulti")
+    Observable<BaseResult<Object>> bespeakOrderMulti(@Field("memberId") Long memberId,
+                                                     @Field("receiverName") String receiverName,
+                                                     @Field("receiverPhone") String receiverPhone,
+                                                     @Field("receiverAddress") String receiverAddress,
+                                                     @Field("expressId") Long expressId,
+                                                     @Field("bespeakDate") String bespeakDate
+                                                     );
 
     /**
      * 查询单个用户
@@ -327,6 +348,7 @@ public interface ApiService {
                                                        @Field("street") String street,
                                                        @Field("defaultAddress") Boolean defaultAddress
     );
+
     /**
      * 创建收货地址
      *

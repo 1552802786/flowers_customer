@@ -94,7 +94,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         holder.goodsMoney = view.findViewById(R.id.goods_money);
         holder.changeGoods = view.findViewById(R.id.change);
         holder.deleteGoodsp = view.findViewById(R.id.delete);
-        holder.goodsNum = view.findViewById(R.id.goods_num);
+//        holder.goodsNum = view.findViewById(R.id.goods_num);
 
         return holder;
     }
@@ -125,7 +125,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         holder.goodsColor.setText("颜色：" + bean.color);
         holder.goodsSpec.setText("规格：" + bean.spec);
         holder.goodsLeft.setText("可售量：" + bean.salesVolume);
-        holder.goodsNum.setText(bean.selectedNum + "");
+//        holder.goodsNum.setText(bean.selectedNum + "");
 
         holder.goodsMoney.setText(bean.unitPrice + "/" + bean.unit);
 
@@ -193,7 +193,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         TextView goodsSpec;
         TextView goodsLeft;
         TextView goodsMoney;
-        TextView goodsNum;
+//        TextView goodsNum;
 
         TextView changeGoods;
         TextView deleteGoodsp;

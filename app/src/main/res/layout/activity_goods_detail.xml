@@ -23,6 +23,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/change_or_add_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -76,7 +77,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_1"
-                        android:text="玫瑰"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -115,7 +116,7 @@
                         android:gravity="right"
                         android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_2"
-                        android:text="情爱玫瑰"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -154,7 +155,7 @@
                         android:layout_marginLeft="80dp"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_3"
-                        android:text="A"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -193,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_4"
-                        android:text="红色"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -232,7 +233,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_5"
-                        android:text="规格"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -271,7 +272,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_6"
-                        android:text="束"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -310,7 +311,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_7"
-                        android:text="20"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -349,7 +350,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_8"
-                        android:text="白玫瑰"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>
@@ -388,7 +389,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_9"
-                        android:text="20"
+                        android:text=""
                         android:textSize="16sp" />
 
                 </RelativeLayout>

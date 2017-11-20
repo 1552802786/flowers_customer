@@ -171,7 +171,7 @@ public class RegisterActivity extends RxBaseActivity {
 
     private ImageView currentImg;
 
-    private boolean isPersonal;
+    private boolean isPersonal = true;
 
     @OnClick(R.id.person_check)
     void personCheck() {

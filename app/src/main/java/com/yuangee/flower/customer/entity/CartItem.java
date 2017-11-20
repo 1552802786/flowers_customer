@@ -11,4 +11,5 @@ public class CartItem {
     public int quantity;
     public double totalPrice;
     public Goods wares;
+    public boolean bespeak;
 }
