@@ -2,6 +2,7 @@ package com.yuangee.flower.customer.network.api;
 
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.CartItem;
+import com.yuangee.flower.customer.entity.Coupon;
 import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
@@ -272,16 +273,16 @@ public interface ApiService {
                                                      @Field("receiverName") String receiverName,
                                                      @Field("receiverPhone") String receiverPhone,
                                                      @Field("receiverAddress") String receiverAddress,
-                                                     @Field("expressId") Long expressId);
+                                                     @Field("expressId") Long expressId,
+                                                     @Field("couponId") Long couponId);
 
     /**
-     *
      * @param memberId
      * @param receiverName
      * @param receiverPhone
      * @param receiverAddress
      * @param expressId
-     * @param bespeakDate 预约日期
+     * @param bespeakDate     预约日期
      * @return
      */
     @FormUrlEncoded
@@ -291,8 +292,9 @@ public interface ApiService {
                                                      @Field("receiverPhone") String receiverPhone,
                                                      @Field("receiverAddress") String receiverAddress,
                                                      @Field("expressId") Long expressId,
-                                                     @Field("bespeakDate") String bespeakDate
-                                                     );
+                                                     @Field("bespeakDate") String bespeakDate,
+                                                     @Field("couponId") Long couponId
+    );
 
     /**
      * 查询单个用户
@@ -443,9 +445,10 @@ public interface ApiService {
      * @param noticeId 通知id
      * @return
      */
-    @GET("rest/notice/readMemberNotice")
-    Observable<BaseResult<Object>> readMemberNotice(@Query("memberId") Long memberId,
-                                                    @Query("noticeId") Long noticeId);
+    @FormUrlEncoded
+    @POST("rest/notice/readMemberNotice")
+    Observable<BaseResult<Object>> readMemberNotice(@Field("memberId") Long memberId,
+                                                    @Field("noticeId") Long noticeId);
 
 
     /**
@@ -459,7 +462,30 @@ public interface ApiService {
     /**
      * 获取banner
      */
-    @GET("driver/api/rest/v4/acceptTask")
+    @GET("rest/activity/findActivityShowAll")
     Observable<BaseResult<List<BannerBean>>> getBannerData();
+
+    /**
+     * 删除用户地址
+     *
+     * @param id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("rest/customer/deleteMemberAddress")
+    Observable<BaseResult<Object>> deleteMemberAddress(@Field("id") Long id
+    );
+
+    /**
+     *
+     * @param orderId
+     * @param status 5取消订单  2发货
+     * @return
+     */
+    @GET("rest/order/updateOrder")
+    Observable<BaseResult<Object>> updateOrder(@Query("orderId") Long orderId,
+                                               @Query("status") Integer status);
+    @GET("rest/activity/findMemberIdByCoupon")
+    Observable<BaseResult<List<Coupon>>> findCoupon(@Query("memberId") Long memberId);
 
 }

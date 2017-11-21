@@ -39,13 +39,23 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 app:srcCompat="@drawable/ic_not_read" />
-
             <TextView
-                android:id="@+id/message_text"
+                android:id="@+id/title_text"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
+                />
+            <TextView
+                android:id="@+id/message_text"
+                android:layout_below="@+id/title_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:text="" />
+
 
         </RelativeLayout>
     </LinearLayout>

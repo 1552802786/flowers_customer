@@ -33,6 +33,7 @@ import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.AppManager;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
@@ -317,5 +318,11 @@ public class PersonalCenterActivity extends RxBaseActivity {
                 .setView(linearLayout)
                 .create();
         dialog.show();
+    }
+
+    public void exit(View view) {
+        AppManager.getAppManager().finishAllActivity();
+        App.me().getSharedPreferences().edit().clear().apply();
+        startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
     }
 }

@@ -322,7 +322,7 @@ public class GoodsActivity extends RxBaseActivity {
         goods.unit = unit.getText().toString();
         goods.name = goodsName.getText().toString();
         try {
-            goods.salesVolume = Double.parseDouble(salesValue.getText().toString());
+            goods.salesVolume = Integer.parseInt(salesValue.getText().toString());
             goods.unitPrice = Double.parseDouble(goodsPrice.getText().toString());
         } catch (NumberFormatException e) {
             ToastUtil.showMessage(GoodsActivity.this, "请填写合法的单价或可售量");
@@ -356,7 +356,7 @@ public class GoodsActivity extends RxBaseActivity {
             if (requestCode == PictureConfig.CHOOSE_REQUEST) {
                 List<LocalMedia> images = PictureSelector.obtainMultipleResult(data);
                 if (images != null && images.size() > 0) {
-                    imgPath = images.get(0).getPath();
+                    imgPath = images.get(0).getCompressPath();
                     RequestOptions options = new RequestOptions()
                             .centerCrop()
                             .placeholder(R.drawable.ic_add_img)
@@ -410,7 +410,7 @@ public class GoodsActivity extends RxBaseActivity {
                     .load(Config.BASE_URL + goods.image)
                     .apply(options)
                     .into(goodsImg);
-            if(StringUtils.isNotBlank(goods.image)){
+            if (StringUtils.isNotBlank(goods.image)) {
                 changeOrAdd.setText("修改商品图片");
             } else {
                 changeOrAdd.setText("添加商品图片");
@@ -500,9 +500,9 @@ public class GoodsActivity extends RxBaseActivity {
         MultipartBody.Part shopIdPart = MultipartBody.Part.createFormData("shopId", String.valueOf(shopId));
         MultipartBody.Part shopNamePart = MultipartBody.Part.createFormData("shopName", String.valueOf(shopName));
 
-        if(apply.getText().toString().contains("创建")){
+        if (apply.getText().toString().contains("创建")) {
             Observable<Object> observable = ApiManager.getInstance().api
-                    .createWares(waresImagePart,genreIdPart,genreNamePart,genreSubIdPart,genreSubNamePart,namePart,gradePart,colorPart,specPart,unitPart,unitPricePart,salesVolumePart,shopIdPart,shopNamePart)
+                    .createWares(waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart)
                     .map(new HttpResultFunc<>(GoodsActivity.this))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -516,7 +516,7 @@ public class GoodsActivity extends RxBaseActivity {
             })));
         } else {
             Observable<Object> observable = ApiManager.getInstance().api
-                    .updateWares(idPart,waresImagePart,genreIdPart,genreNamePart,genreSubIdPart,genreSubNamePart,namePart,gradePart,colorPart,specPart,unitPart,unitPricePart,salesVolumePart,shopIdPart,shopNamePart)
+                    .updateWares(idPart, waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart)
                     .map(new HttpResultFunc<>(GoodsActivity.this))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -539,7 +539,7 @@ public class GoodsActivity extends RxBaseActivity {
             editName.setInputType(InputType.TYPE_CLASS_PHONE);
         } else if (hint.contains("邮箱")) {
             editName.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        } else if (hint.contains("可售量") ||hint.contains("单价")) {
+        } else if (hint.contains("可售量") || hint.contains("单价")) {
             editName.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else {
             editName.setInputType(InputType.TYPE_CLASS_TEXT);

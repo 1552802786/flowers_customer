@@ -38,17 +38,17 @@ public class HomePresenter extends HomeContract.Presenter {
 
     @Override
     public void getBannerData() {
-        mView.showBanner(createBanner());
-//        mRxManager.add(mModel.getBannerData().subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<BannerBean>>() {
-//            @Override
-//            public void onNext(List<BannerBean> bannerBeanList) {
-//                mView.showBanner(bannerBeanList);
-//            }
-//
-//            @Override
-//            public void onError(int code) {
-//            }
-//        })));
+//        mView.showBanner(createBanner());
+        mRxManager.add(mModel.getBannerData().subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<List<BannerBean>>() {
+            @Override
+            public void onNext(List<BannerBean> bannerBeanList) {
+                mView.showBanner(bannerBeanList);
+            }
+
+            @Override
+            public void onError(int code) {
+            }
+        })));
     }
 
     @Override

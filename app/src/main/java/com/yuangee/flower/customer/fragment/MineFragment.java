@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -68,6 +70,12 @@ public class MineFragment extends RxLazyFragment {
     @BindView(R.id.person_phone)
     TextView personPhone;
 
+    @BindView(R.id.wait_fahuo)
+    LinearLayout waitFahuo;
+
+    @BindView(R.id.fahuo_con)
+    LinearLayout fahuoCon;
+
     @OnClick(R.id.notification_icon)
     void toMessage() {
         startActivity(new Intent(getActivity(), MessageActivity.class));
@@ -105,8 +113,8 @@ public class MineFragment extends RxLazyFragment {
     @OnClick(R.id.send_goods)
     void sendGoods() {
         Intent intent = new Intent(getActivity(), MyOrderActivity.class);
-        intent.putExtra("status", 0);
-        intent.putExtra("bespeak", true);
+        intent.putExtra("status", 1);
+        intent.putExtra("bespeak", false);
         startActivity(intent);
     }
 
@@ -192,6 +200,7 @@ public class MineFragment extends RxLazyFragment {
                 editor.putString("name", o.name);
                 editor.putString("userName", o.userName);
                 editor.putString("passWord", o.passWord);
+                editor.putLong("shopId", o.shop.id);
                 editor.putString("phone", o.phone);
                 editor.putString("email", o.email);
                 editor.putString("photo", o.photo);
@@ -221,6 +230,21 @@ public class MineFragment extends RxLazyFragment {
                     personPhone.setText(o.phone.subSequence(0, 4) + "****" + o.phone.substring(7, 11));
                 } else {
                     personPhone.setText(o.phone);
+                }
+                if (o.shop == null) {
+                    fahuoCon.setVisibility(View.GONE);
+                } else {
+                    fahuoCon.setVisibility(View.VISIBLE);
+                    fahuoCon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+                            intent.putExtra("status", -1);
+                            intent.putExtra("bespeak", false);
+                            intent.putExtra("isShop", true);
+                            startActivity(intent);
+                        }
+                    });
                 }
 
             }

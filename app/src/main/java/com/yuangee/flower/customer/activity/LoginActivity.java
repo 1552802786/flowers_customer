@@ -132,6 +132,7 @@ public class LoginActivity extends RxBaseActivity {
                 editor.putFloat("balance", (float) o.balance);
                 editor.putLong("deathDate", o.memberToken.deathDate);
                 editor.putString("token", o.memberToken.token);
+                editor.putLong("shopId", o.shop.id);
 
                 editor.putBoolean("login", true);
 

@@ -397,4 +397,18 @@
         android:visibility="gone"
         android:background="@color/line_color"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:onClick="exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/corners_color_accent_small"
+        android:layout_margin="10dp"
+        android:text="注销"
+        android:textColor="@color/white"/>
+
 </LinearLayout>

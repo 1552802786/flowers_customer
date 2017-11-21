@@ -1,6 +1,8 @@
 package com.yuangee.flower.customer.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +13,24 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.OrderWare;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.RxManager;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2016/3/10.
@@ -29,6 +41,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     private List<Order> data;
 
     private OnItemClickListener mOnItemClickListener;   //声明监听器接口
+    private OnRefresh onRefresh;   //声明监听器接口
+
+    private RxManager rxManager;
 
     public interface OnItemClickListener {
         /**
@@ -40,6 +55,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         void onItemClick(View view, int position);
     }
 
+    public interface OnRefresh {
+        void onRefresh();
+    }
+
+    public void setOnRefresh(OnRefresh onRefresh) {
+        this.onRefresh = onRefresh;
+    }
+
     /**
      * 通过adapter设置监听器
      *
@@ -49,8 +72,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    public OrderAdapter(Context context) {
+    public OrderAdapter(Context context, RxManager rxManager) {
         this.context = context;
+        this.rxManager = rxManager;
         data = new ArrayList<>();
     }
 
@@ -133,7 +157,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
             holder.leftBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtil.showMessage(context,"提醒卖家发货成功，商品将很快送到你手中");
+                    ToastUtil.showMessage(context, "提醒卖家发货成功，商品将很快送到你手中");
                 }
             });
         } else if (bean.status == 2) {
@@ -181,15 +205,50 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         }
     }
 
-    private void payOrder(Order order){
+    private void payOrder(Order order) {
+    }
+
+    private void cancelOrder(final Order order) {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("温馨提示")
+                .setMessage("您确定要取消订单吗？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        updateOrderStatus(order.id,5);
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    private void confirmOrder(Order order) {
 
     }
 
-    private void cancelOrder(Order order){
+    private void updateOrderStatus(long orderId, int status) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .updateOrder(orderId, status)
+                .map(new HttpResultFunc<Object>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        rxManager.add(observable.subscribe(new MySubscriber<Object>(context, true,
+                true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                if (onRefresh != null) {
+                    onRefresh.onRefresh();
+                }
+            }
+        })));
 
-    }
-
-    private void confirmOrder(Order order){
 
     }
 

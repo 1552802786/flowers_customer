@@ -8,12 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.EditAddressActivity;
 import com.yuangee.flower.customer.entity.Address;
+import com.yuangee.flower.customer.entity.CartItem;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.RxManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by developerLzh on 2017/10/27 0027.
@@ -27,8 +37,11 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressH
 
     private boolean isManage = false;
 
-    public AddressAdapter(Context context) {
+    private RxManager rxManager;
+
+    public AddressAdapter(Context context, RxManager rxManager) {
         this.context = context;
+        this.rxManager = rxManager;
         addressList = new ArrayList<>();
     }
 
@@ -42,11 +55,11 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressH
         notifyDataSetChanged();
     }
 
-    public boolean getIsManage(){
+    public boolean getIsManage() {
         return isManage;
     }
 
-    public List<Address> getAddressList(){
+    public List<Address> getAddressList() {
         return addressList;
     }
 
@@ -91,7 +104,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressH
         holder.icDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO delete place
+                deleteAddress(address.id, position);
             }
         });
 
@@ -138,5 +151,22 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressH
         ImageView icDelete;
         ImageView icEdit;
         ImageView icCheckBox;
+    }
+
+    private void deleteAddress(long id, final int position) {
+        Observable<Object> observable = ApiManager.getInstance().api
+                .deleteMemberAddress(id)
+                .map(new HttpResultFunc<>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        rxManager.add(observable.subscribe(new MySubscriber<Object>(context, true,
+                true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                addressList.remove(position);
+                notifyDataSetChanged();
+            }
+        })));
+
     }
 }

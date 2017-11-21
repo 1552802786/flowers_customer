@@ -17,6 +17,8 @@ import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.RxManager;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Holder> 
         holder.icRead = view.findViewById(R.id.ic_read);
         holder.messageText = view.findViewById(R.id.message_text);
         holder.textDate = view.findViewById(R.id.text_date);
+        holder.titleText = view.findViewById(R.id.title_text);
 
         return holder;
     }
@@ -66,6 +69,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Holder> 
         final Message msg = messages.get(position);
         holder.textDate.setText(msg.created);
         holder.messageText.setText(msg.contentMore);
+        holder.titleText.setText(msg.content);
         holder.icRead.setVisibility(msg.isRead ? View.GONE : View.VISIBLE);
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,14 +105,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Holder> 
 
     class Holder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.text_date)
         TextView textDate;
 
-        @BindView(R.id.ic_read)
         ImageView icRead;
 
-        @BindView(R.id.message_text)
         TextView messageText;
+
+        TextView titleText;
 
         View rootView;
 

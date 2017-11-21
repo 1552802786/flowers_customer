@@ -61,6 +61,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
 
     private Integer status;
     private Boolean bespeak;//是否预约
+    private boolean isShop = false;
     private Long memberId = App.getPassengerId();
     private Long shopId = null;
 
@@ -74,20 +75,27 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
         orders = new ArrayList<>();
         status = getIntent().getIntExtra("status", -1);
         bespeak = getIntent().getBooleanExtra("bespeak", false);
+        isShop = getIntent().getBooleanExtra("isShop", false);
+        if (isShop) {
+            shopId = App.me().getSharedPreferences().getLong("shopId", -1);
+            if (shopId == -1) {
+                shopId = null;
+            }
+        }
         radioAll.setOnCheckedChangeListener(this);
         radioAppoint.setOnCheckedChangeListener(this);
         radioNotPay.setOnCheckedChangeListener(this);
         radioWaitReceiving.setOnCheckedChangeListener(this);
 
-        if (status == -1) {
+        if (bespeak) {
+            radioAppoint.setChecked(true);
+        } else if (status == -1) {
             status = null;
             radioAll.setChecked(true);
         } else if (status == 0) {
             radioNotPay.setChecked(true);
         } else if (status == 2) {
             radioWaitReceiving.setChecked(true);
-        } else if (bespeak) {
-            radioAppoint.setChecked(true);
         }
         initRecyclerView();
     }
@@ -110,7 +118,14 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
     @Override
     public void initRecyclerView() {
         orders = new ArrayList<>();
-        adapter = new OrderAdapter(this);
+        adapter = new OrderAdapter(this, mRxManager);
+        adapter.setOnRefresh(new OrderAdapter.OnRefresh() {
+            @Override
+            public void onRefresh() {
+                recyclerView.setRefreshing(true);
+                queryOrders(status, bespeak, memberId, shopId);
+            }
+        });
         recyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
 

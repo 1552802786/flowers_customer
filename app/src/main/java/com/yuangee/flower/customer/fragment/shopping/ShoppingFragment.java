@@ -36,6 +36,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
+
 /**
  * Created by developerLzh on 2017/8/21 0021.
  */
@@ -136,12 +138,12 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         if (!isPrepared || !isVisible) {
             return;
         }
+        myDrawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
         initRecyclerView();
         isPrepared = false;
     }
 
     private void initDrawer() {
-
         typeAdapter = new Type2Adapter(getActivity());
         typeRecycler.setAdapter(typeAdapter);
         LinearLayoutManager linManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

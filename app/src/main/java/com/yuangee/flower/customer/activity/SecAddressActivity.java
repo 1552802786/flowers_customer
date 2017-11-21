@@ -76,7 +76,7 @@ public class SecAddressActivity extends RxBaseActivity {
         selectedAddr = (Address) getIntent().getSerializableExtra("address");
 
         recyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new AddressAdapter(this);
+        adapter = new AddressAdapter(this,mRxManager);
 
         recyclerView.setHasMore(false);
         recyclerView.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {

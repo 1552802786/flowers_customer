@@ -183,6 +183,11 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     ReserveFragment reserveFragment;
     MineFragment mineFragment;
 
+    public void setBudge(int number){
+        this.selectedNum = number;
+        addBadgeAt(2, this.selectedNum);
+    }
+
     private void initData() {
         fragments = new ArrayList<>(5);
         items = new SparseIntArray(5);
@@ -199,6 +204,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
         reserveFragment = new ReserveFragment();
         reserveFragment.setToSpecifiedFragmentListener(this);
+        reserveFragment.setAddAnimateListener(this);
 
         mineFragment = new MineFragment();
 

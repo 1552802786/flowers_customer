@@ -40,6 +40,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
+
 /**
  * Created by developerLzh on 2017/8/21 0021.
  */
@@ -140,12 +142,12 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         if (!isPrepared || !isVisible) {
             return;
         }
+        myDrawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
         initRecyclerView();
         isPrepared = false;
     }
 
     private void initDrawer() {
-
         typeAdapter = new Type2Adapter(getActivity());
         typeRecycler.setAdapter(typeAdapter);
         LinearLayoutManager linManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -230,8 +232,8 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), GoodsActivity.class);
-                intent.putExtra("change",false);
-                intent.putExtra("goods",adapter.getData().get(position));
+                intent.putExtra("change", false);
+                intent.putExtra("goods", adapter.getData().get(position));
                 startActivity(intent);
             }
         });

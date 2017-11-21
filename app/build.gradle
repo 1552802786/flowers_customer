@@ -66,6 +66,8 @@ dependencies {
 
     compile 'com.wuxiaolong.pullloadmorerecyclerview:library:1.1.2'
 
+    compile 'net.cachapa.expandablelayout:expandablelayout:2.3'
+
     compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.1'
 
     // badge

@@ -32,7 +32,7 @@ public class Goods implements Serializable{
 
     public double unitPrice;//单价
 
-    public double salesVolume;//可售量
+    public int salesVolume;//可售量
 
     public long shopId;//商铺id
 
