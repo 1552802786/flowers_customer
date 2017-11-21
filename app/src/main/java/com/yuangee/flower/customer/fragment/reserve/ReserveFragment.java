@@ -140,7 +140,6 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         if (!isPrepared || !isVisible) {
             return;
         }
-        myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initRecyclerView();
         isPrepared = false;
     }

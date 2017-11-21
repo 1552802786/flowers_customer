@@ -35,6 +35,7 @@ import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
@@ -63,6 +64,7 @@ public class GoodsActivity extends RxBaseActivity {
     @OnClick(R.id.genre_first)
     void choiceFirst() {
         final RadioGroup group = new RadioGroup(this);
+        group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
         if (null != MainActivity.genreList && MainActivity.genreList.size() != 0) {
             for (int i = 0; i < MainActivity.genreList.size(); i++) {
                 Genre genre = MainActivity.genreList.get(i);
@@ -120,6 +122,7 @@ public class GoodsActivity extends RxBaseActivity {
     @OnClick(R.id.genre_sub)
     void choiceSub() {
         final RadioGroup group = new RadioGroup(this);
+        group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
         if (0 != goods.genreId) {
             for (int i = 0; i < MainActivity.genreList.size(); i++) {
                 final Genre genre = MainActivity.genreList.get(i);
@@ -182,6 +185,7 @@ public class GoodsActivity extends RxBaseActivity {
         grades.add("C");
         grades.add("D");
         final RadioGroup group = new RadioGroup(this);
+        group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
         for (String s : grades) {
             RadioButton btn = new RadioButton(this);
             btn.setText(s);

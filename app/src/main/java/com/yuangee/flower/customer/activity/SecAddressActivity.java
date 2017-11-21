@@ -117,6 +117,11 @@ public class SecAddressActivity extends RxBaseActivity {
         }
     }
 
+    private void showRecycler(){
+        customEmptyView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void initToolBar() {
         mToolbar.setTitle("个人中心");
@@ -151,7 +156,7 @@ public class SecAddressActivity extends RxBaseActivity {
     }
 
     private void queryById(long id) {
-
+        recyclerView.setRefreshing(true);
         Observable<Member> observable = ApiManager.getInstance().api
                 .findById(id)
                 .map(new HttpResultFunc<Member>(SecAddressActivity.this))
@@ -169,8 +174,10 @@ public class SecAddressActivity extends RxBaseActivity {
                 if (null != addressList) {
                     DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
                     for (Address address : addressList) {
-                        if (address.id == selectedAddr.id) {
-                            address.isSelected = true;
+                        if (selectedAddr != null) {
+                            if (address.id == selectedAddr.id) {
+                                address.isSelected = true;
+                            }
                         }
                     }
                 } else {
@@ -198,6 +205,7 @@ public class SecAddressActivity extends RxBaseActivity {
                 if (o.memberAddressList == null || o.memberAddressList.size() == 0) {
                     showEmptyLayout(0);
                 } else {
+                    showRecycler();
                     adapter.setAddressList(o.memberAddressList);
                 }
             }

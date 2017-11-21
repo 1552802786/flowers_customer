@@ -39,6 +39,7 @@ import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.permission.RxPermissions;
 import com.yuangee.flower.customer.picker.AddressInitTask;
+import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
@@ -421,6 +422,7 @@ public class EditAddressActivity extends RxBaseActivity {
 
     private void showBooleanDialog() {
         RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setPadding(DisplayUtil.dp2px(this, 20), DisplayUtil.dp2px(this, 10), 0, 0);
         final RadioButton trueBtn = new RadioButton(this);
         trueBtn.setText("是");
         RadioButton falseBtn = new RadioButton(this);

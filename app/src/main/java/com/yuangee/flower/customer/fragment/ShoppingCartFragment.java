@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -33,6 +34,7 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.QueryCartResult;
+import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
@@ -102,11 +104,12 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     @OnClick(R.id.express)
     void showExpressDialog() {
         radioGroup = new RadioGroup(getActivity());
+        radioGroup.setPadding(DisplayUtil.dp2px(getActivity(), 20), DisplayUtil.dp2px(getActivity(), 10), 0, 0);
         checkId = expressId;
         if (null != expressList && expressList.size() != 0) {
             for (final Express express : expressList) {
                 RadioButton radioButton = new RadioButton(getActivity());
-                radioButton.setText(express.expressDeliveryName + "(" + express.expressDeliveryMoney + ")");
+                radioButton.setText(express.expressDeliveryName + "(" + express.expressDeliveryMoney + "元起)");
                 radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -334,7 +337,6 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
             @Override
             public void onNext(QueryCartResult result) {
                 items = result.items;
-                totalText.setText(result.totalPrice + "元");
 
                 showList(yuyueGou.isChecked());
                 shoppingRecycle.setPullLoadMoreCompleted();
@@ -350,11 +352,14 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
     private void showList(boolean bespeak) {
         List<CartItem> lsItems = new ArrayList<>();
+        double money = 0.0;
         for (CartItem item : items) {
             if (item.bespeak == bespeak) {//预约购
                 lsItems.add(item);
+                money += item.totalPrice;
             }
         }
+        totalText.setText(money + "元");
         adapter.setData(lsItems);
         if (lsItems.size() == 0) {
             showEmptyView(0);

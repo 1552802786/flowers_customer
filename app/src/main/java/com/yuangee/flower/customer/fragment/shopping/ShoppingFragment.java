@@ -136,7 +136,6 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         if (!isPrepared || !isVisible) {
             return;
         }
-        myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initRecyclerView();
         isPrepared = false;
     }
