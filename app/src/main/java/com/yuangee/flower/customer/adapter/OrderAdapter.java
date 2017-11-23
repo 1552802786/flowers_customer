@@ -2,17 +2,25 @@ package com.yuangee.flower.customer.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alipay.sdk.app.PayTask;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.JsonElement;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
@@ -23,6 +31,9 @@ import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.RxManager;
 import com.yuangee.flower.customer.util.ToastUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +68,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
     public interface OnRefresh {
         void onRefresh();
+    }
+    public interface OnStartZfbPay {
+        void pay(String s);
+    }
+    private OnStartZfbPay zfbPay;
+
+    public void setZfbPay(OnStartZfbPay zfbPay) {
+        this.zfbPay = zfbPay;
     }
 
     public void setOnRefresh(OnRefresh onRefresh) {
@@ -205,7 +224,30 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         }
     }
 
-    private void payOrder(Order order) {
+    private void payOrder(final Order order) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setMessage("请选择支付方式")
+                .setPositiveButton("支付宝支付", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (order.bespeak) {
+                            payYuyueZfb(order.id);
+                        } else {
+                            payJishiZfb(order.id);
+                        }
+                    }
+                })
+                .setNegativeButton("微信支付", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (order.bespeak) {
+                            payYuyueWx(order.id);
+                        } else {
+                            payYuyueZfb(order.id);
+                        }
+                    }
+                }).create();
+        alertDialog.show();
     }
 
     private void cancelOrder(final Order order) {
@@ -215,7 +257,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        updateOrderStatus(order.id,5);
+                        updateOrderStatus(order.id, 5);
                         dialogInterface.dismiss();
                     }
                 })
@@ -231,6 +273,99 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
     private void confirmOrder(Order order) {
 
+    }
+
+    private void payJishiWx(Long orderId) {
+        Observable<JsonElement> observable = ApiManager.getInstance().api
+                .payJishiSingleWx(orderId)
+                .map(new HttpResultFunc<JsonElement>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        rxManager.add(observable.subscribe(new MySubscriber<JsonElement>(context, true,
+                false, new NoErrSubscriberListener<JsonElement>() {
+            @Override
+            public void onNext(JsonElement jsonElement) {
+                detailWxPay(jsonElement);
+            }
+        })));
+    }
+
+    private void payYuyueWx(Long orderId) {
+        Observable<JsonElement> observable = ApiManager.getInstance().api
+                .payYuyueSingleWx(orderId)
+                .map(new HttpResultFunc<JsonElement>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        rxManager.add(observable.subscribe(new MySubscriber<JsonElement>(context, true,
+                false, new NoErrSubscriberListener<JsonElement>() {
+            @Override
+            public void onNext(JsonElement jsonElement) {
+                detailWxPay(jsonElement);
+            }
+        })));
+    }
+
+    private void detailWxPay(JsonElement jsonElement) {
+        try {
+            JSONObject json = new JSONObject(jsonElement.toString());
+            if (null != json && !json.has("retcode")) {
+                PayReq req = new PayReq();
+                req.appId = json.getString("appid");
+                req.partnerId = json.getString("partnerid");
+                req.prepayId = json.getString("prepayid");
+                req.nonceStr = json.getString("noncestr");
+                req.timeStamp = json.getString("timestamp");
+                req.packageValue = json.getString("package");
+                req.sign = json.getString("sign");
+                req.extData = "app data"; // optional
+                Log.e("wxPay", "正常调起支付");
+
+                IWXAPI api = WXAPIFactory.createWXAPI(context, req.appId);
+
+                api.sendReq(req);
+            } else {
+                Log.d("PAY_GET", "返回错误" + json.getString("retmsg"));
+                Toast.makeText(context, "返回错误：" + json.getString("retmsg"), Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void payJishiZfb(Long orderId){
+        Observable<String> observable = ApiManager.getInstance().api
+                .payJishiSingleZfb(orderId)
+                .map(new HttpResultFunc<String>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        rxManager.add(observable.subscribe(new MySubscriber<String>(context, true,
+                false, new NoErrSubscriberListener<String>() {
+            @Override
+            public void onNext(String s) {
+                detailZfb(s);
+            }
+        })));
+    }
+
+    private void payYuyueZfb(Long orderId){
+        Observable<String> observable = ApiManager.getInstance().api
+                .payYuyueSingleZfb(orderId)
+                .map(new HttpResultFunc<String>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        rxManager.add(observable.subscribe(new MySubscriber<String>(context, true,
+                false, new NoErrSubscriberListener<String>() {
+            @Override
+            public void onNext(String s) {
+                detailZfb(s);
+            }
+        })));
+    }
+
+    private void detailZfb(final String s){
+        if(null != zfbPay){
+            zfbPay.pay(s);
+        }
     }
 
     private void updateOrderStatus(long orderId, int status) {

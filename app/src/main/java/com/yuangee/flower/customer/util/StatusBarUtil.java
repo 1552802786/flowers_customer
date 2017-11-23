@@ -34,18 +34,18 @@ public class StatusBarUtil {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void setTransStatusBar(Activity context) {
         //sdk版本大于22，即LOLLIPOP方法时才执行该方法
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = context.getWindow();
-            //设置透明状态栏,这样才能让 ContentView 向上
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            ViewGroup mContentView = (ViewGroup) context.findViewById(Window.ID_ANDROID_CONTENT);    //获取根布局
-            View mChildView = mContentView.getChildAt(0);
-            if (mChildView != null) {
-                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 使其为系统 View 预留空间.
-                ViewCompat.setFitsSystemWindows(mChildView, true);
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = context.getWindow();
+//            //设置透明状态栏,这样才能让 ContentView 向上
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//
+//            ViewGroup mContentView = (ViewGroup) context.findViewById(Window.ID_ANDROID_CONTENT);    //获取根布局
+//            View mChildView = mContentView.getChildAt(0);
+//            if (mChildView != null) {
+//                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 使其为系统 View 预留空间.
+//                ViewCompat.setFitsSystemWindows(mChildView, true);
+//            }
+//        }
     }
 
     /**

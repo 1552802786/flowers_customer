@@ -9,6 +9,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -32,11 +34,10 @@ public class SplashActivity extends RxBaseActivity {
     @BindView(R.id.root_view)
     LinearLayout rootView;
 
-    @BindView(R.id.image_view)
-    ImageView imageView;
-
     @Override
     public int getLayoutId() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         return R.layout.activity_splash;
     }
 
@@ -60,7 +61,7 @@ public class SplashActivity extends RxBaseActivity {
             public boolean handleMessage(Message message) {
                 switch (message.what) {
                     case 0:
-                        if(!App.me().getSharedPreferences().getBoolean("login",false)){
+                        if (!App.me().getSharedPreferences().getBoolean("login", false)) {
                             startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                         } else {
                             startActivity(new Intent(SplashActivity.this, MainActivity.class));

@@ -1,12 +1,15 @@
 package com.yuangee.flower.customer.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
+import com.alipay.sdk.app.PayTask;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
@@ -115,8 +118,12 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
         });
     }
 
+    Handler handler;
+
     @Override
     public void initRecyclerView() {
+        handler = new Handler();
+
         orders = new ArrayList<>();
         adapter = new OrderAdapter(this, mRxManager);
         adapter.setOnRefresh(new OrderAdapter.OnRefresh() {
@@ -124,6 +131,24 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
             public void onRefresh() {
                 recyclerView.setRefreshing(true);
                 queryOrders(status, bespeak, memberId, shopId);
+            }
+        });
+        adapter.setZfbPay(new OrderAdapter.OnStartZfbPay() {
+            @Override
+            public void pay(final String s) {
+                new Thread() {
+                    public void run() {
+
+                        PayTask alipay = new PayTask(MyOrderActivity.this);
+                        String result = alipay
+                                .pay(s, true);
+
+                        Message msg = new Message();
+                        msg.what = 0;
+                        msg.obj = result;
+                        handler.sendMessage(msg);
+                    }
+                }.start();
             }
         });
         recyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

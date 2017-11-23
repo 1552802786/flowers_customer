@@ -69,8 +69,8 @@ public class HomeRecommedSelection extends StatelessSection {
                 .placeholder(R.color.color_f6)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         Glide.with(mContext)
-//                .load(Config.BASE_URL + bean.image)
-                .load("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg")
+                .load(Config.BASE_URL + bean.image)
+//                .load("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg")
                 .apply(options)
                 .into(orderHolder.imageView);
 

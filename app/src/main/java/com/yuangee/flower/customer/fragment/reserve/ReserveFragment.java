@@ -89,7 +89,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     @OnClick(R.id.tv_av)
     void toSearch() {
         if (toSpecifiedFragmentListener != null) {
-            toSpecifiedFragmentListener.toFragment(-1);
+            toSpecifiedFragmentListener.toFragment(-2);
         }
     }
 

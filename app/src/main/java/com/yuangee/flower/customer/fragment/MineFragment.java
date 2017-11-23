@@ -28,6 +28,7 @@ import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.util.GlideCircleTransform;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
@@ -218,6 +219,7 @@ public class MineFragment extends RxLazyFragment {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
                         .placeholder(R.drawable.ic_default_photo)
+                        .transform(new GlideCircleTransform())
                         .diskCacheStrategy(DiskCacheStrategy.ALL);
                 Glide.with(getActivity())
                         .load(Config.BASE_URL + o.photo)

@@ -126,7 +126,11 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                     searchFrame.setVisibility(View.GONE);
                     String params = textView.getText().toString();
                     if (null != shoppingFragment) {
-                        bnve.setCurrentItem(1);
+                        if (position == -1) {
+                            bnve.setCurrentItem(1);
+                        } else {
+                            bnve.setCurrentItem(3);
+                        }
                         shoppingFragment.findWares(params);
                     }
                     return true;
@@ -183,7 +187,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     ReserveFragment reserveFragment;
     MineFragment mineFragment;
 
-    public void setBudge(int number){
+    public void setBudge(int number) {
         this.selectedNum = number;
         addBadgeAt(2, this.selectedNum);
     }
@@ -269,6 +273,8 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         });
     }
 
+    private int position;
+
     /**
      * 0-4代表viewPager中的fragment -1代表显示searchFrame
      *
@@ -276,7 +282,8 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
      */
     @Override
     public void toFragment(int position) {
-        if (position == -1) {
+        if (position == -1 || position == -2) {
+            this.position = position;
             searchFrame.setVisibility(View.VISIBLE);
             editSuggest.requestFocus();
             InputMethodManager inputManager = (InputMethodManager) editSuggest.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

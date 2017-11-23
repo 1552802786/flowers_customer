@@ -1,7 +1,7 @@
 package com.yuangee.flower.customer;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
 import com.facebook.stetho.Stetho;
 import com.yuangee.flower.customer.db.DbHelper;
@@ -12,7 +12,7 @@ import com.yuangee.flower.customer.db.DbHelper;
  * <p/>
  * 哔哩哔哩动画App
  */
-public class FlowerApp extends Application {
+public class FlowerApp extends MultiDexApplication {
 
     public static FlowerApp mInstance;
 

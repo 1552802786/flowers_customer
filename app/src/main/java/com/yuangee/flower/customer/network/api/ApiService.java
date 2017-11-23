@@ -1,5 +1,6 @@
 package com.yuangee.flower.customer.network.api;
 
+import com.google.gson.JsonElement;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Coupon;
@@ -487,5 +488,21 @@ public interface ApiService {
                                                @Query("status") Integer status);
     @GET("rest/activity/findMemberIdByCoupon")
     Observable<BaseResult<List<Coupon>>> findCoupon(@Query("memberId") Long memberId);
+
+    @FormUrlEncoded
+    @POST("rest/pay/immediate/order/alipay")
+    Observable<BaseResult<String>> payJishiSingleZfb(@Field("orderId") Long orderId);
+
+    @FormUrlEncoded
+    @POST("rest/pay/immediate/order/wxpay")
+    Observable<BaseResult<JsonElement>> payJishiSingleWx(@Field("orderId") Long orderId);
+
+    @FormUrlEncoded
+    @POST("rest/pay/reservation/order/alipay")
+    Observable<BaseResult<String>> payYuyueSingleZfb(@Field("orderId") Long orderId);
+
+    @FormUrlEncoded
+    @POST("rest/pay/reservation/order/wxpay")
+    Observable<BaseResult<JsonElement>> payYuyueSingleWx(@Field("orderId") Long orderId);
 
 }

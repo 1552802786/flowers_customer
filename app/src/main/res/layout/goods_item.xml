@@ -9,12 +9,12 @@
     <ImageView
         android:id="@+id/goods_img"
         android:layout_width="100dp"
-        android:layout_height="150dp" />
+        android:layout_height="110dp" />
 
     <LinearLayout
         android:id="@+id/param_con"
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
+        android:layout_height="110dp"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/goods_img"
         android:gravity="center_vertical"
@@ -63,14 +63,14 @@
 
     <FrameLayout
         android:layout_width="40dp"
-        android:layout_height="150dp"
+        android:layout_height="110dp"
         android:id="@+id/right_con"
         android:layout_alignParentRight="true">
 
         <ImageView
             android:id="@+id/add_to_car"
             android:layout_width="40dp"
-            android:layout_height="150dp"
+            android:layout_height="110dp"
             android:background="@null"
             android:padding="5dp"
             android:visibility="visible"
@@ -79,7 +79,7 @@
         <TextView
             android:id="@+id/yu_yue"
             android:layout_width="40dp"
-            android:layout_height="150dp"
+            android:layout_height="110dp"
             android:padding="5dp"
             android:gravity="center"
             android:visibility="gone"
@@ -90,13 +90,13 @@
     <View
         android:id="@+id/line1"
         android:layout_width="0.1dp"
-        android:layout_height="150dp"
+        android:layout_height="110dp"
         android:layout_toLeftOf="@+id/right_con"
         android:background="@color/line_color" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
+        android:layout_height="110dp"
         android:layout_toLeftOf="@+id/line1">
 
         <TextView
