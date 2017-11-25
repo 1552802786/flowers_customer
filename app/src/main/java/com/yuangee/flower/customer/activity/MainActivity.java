@@ -276,7 +276,9 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     private int position;
 
     /**
-     * 0-4代表viewPager中的fragment -1代表显示searchFrame
+     * 0-4代表viewPager中的fragment
+     * -1代表显示searchFrame回到购物fragment
+     * -2代表显示searchFrame回到预约fragment
      *
      * @param position
      */
@@ -290,6 +292,20 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
             inputManager.showSoftInput(editSuggest, 0);
         } else {
             vp.setCurrentItem(position);
+        }
+    }
+
+    /**
+     * 从首页点击类型或者点击推荐跳转到购物fragment
+     * @param genre
+     * @param genreSub
+     * @param params
+     */
+    @Override
+    public void toShoppingByParams(String genre, String genreSub, String params) {
+        vp.setCurrentItem(1);
+        if (null != shoppingFragment) {
+            shoppingFragment.findWares(genre, genreSub, params);
         }
     }
 

@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textColor="@color/white"
-        android:textSize="18sp"/>
+        android:textSize="16sp"/>
 
     <View
         android:layout_width="1dp"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textColor="@color/white"
-        android:textSize="18sp"/>
+        android:textSize="16sp"/>
     <View
         android:layout_width="1dp"
         android:layout_height="10dp"
@@ -58,6 +58,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:textColor="@color/white"
-        android:textSize="18sp"/>
+        android:textSize="16sp"/>
 
 </LinearLayout>

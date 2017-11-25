@@ -469,7 +469,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         } else {
             showEmptyView(0);
         }
-        totalText.setText("" + totalPrice);
+        totalText.setText("" + totalPrice +"元");
         couponAdapter.setOrderMoney(totalPrice);
     }
 

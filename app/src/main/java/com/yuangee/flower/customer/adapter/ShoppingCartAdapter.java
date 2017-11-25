@@ -138,25 +138,25 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             holder.numAdd.setEnabled(true);
         }
 
-        if(bean.quantity <= 1){
+        if (bean.quantity <= 1) {
             holder.numSub.setEnabled(false);
         } else {
-            holder.numSub.setEnabled(false);
+            holder.numSub.setEnabled(true);
         }
 
         holder.numSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.goodsNum.setText(""+(bean.quantity - 1));
-                cartItemAdd(bean.id, bean.cartId, 1, position);
+                holder.goodsNum.setText("" + (bean.quantity - 1));
+                cartItemSub(bean.id, bean.cartId, 1, position);
             }
         });
 
         holder.numAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.goodsNum.setText(""+(bean.quantity + 1));
-                cartItemSub(bean.id, bean.cartId, 1, position);
+                holder.goodsNum.setText("" + (bean.quantity + 1));
+                cartItemAdd(bean.id, bean.cartId, 1, position);
             }
         });
 

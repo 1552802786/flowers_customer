@@ -155,18 +155,25 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         mSectionedAdapter.addSection(new HomeBigGenreSelection(genreList, getActivity(), new StatelessSection.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                if (null != toSpecifiedFragmentListener) {
+                    Genre genre = genreList.get(position);
+                    toSpecifiedFragmentListener.toShoppingByParams(genre.genreName, null, null);
+                }
             }
         }));
 
         mSectionedAdapter.addSection(new HomeRecommedSelection(recommends, getActivity(), new StatelessSection.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                if (null != toSpecifiedFragmentListener) {
+                    Recommend recommend = recommends.get(position);
+                    toSpecifiedFragmentListener.toShoppingByParams(null, null, recommend.keywords);
+                }
             }
         }));
 
         mSectionedAdapter.notifyDataSetChanged();
+
     }
 
 

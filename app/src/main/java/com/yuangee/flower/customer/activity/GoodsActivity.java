@@ -241,7 +241,59 @@ public class GoodsActivity extends RxBaseActivity {
 
     @OnClick(R.id.unit)
     void editUnit() {
-        showEditDialog(unit, "输入单位");
+        final List<String> units = new ArrayList<>();
+        units.add("束");
+        units.add("扎");
+        units.add("支");
+        units.add("卷");
+        units.add("本");
+        units.add("箱");
+        units.add("个");
+        units.add("套");
+        units.add("件");
+        final RadioGroup group = new RadioGroup(this);
+        group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
+        for (String s : units) {
+            RadioButton btn = new RadioButton(this);
+            btn.setText(s);
+            group.addView(btn);
+            if (StringUtils.isNotBlank(goods.unit) && goods.unit.equals(s)) {
+                btn.setChecked(true);
+            } else {
+                btn.setChecked(false);
+            }
+        }
+        dialog = new AlertDialog.Builder(this)
+                .setTitle("选择单位")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        boolean flag = false;
+                        for (int i1 = 0; i1 < units.size(); i1++) {
+                            RadioButton btn = (RadioButton) group.getChildAt(i1);
+                            if (btn.isChecked()) {
+                                goods.unit = units.get(i1);
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (!flag) {
+                            ToastUtil.showMessage(GoodsActivity.this, "请选择一个单位");
+                        } else {
+                            unit.setText(goods.unit);
+                            dialogInterface.dismiss();
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setView(group)
+                .create();
+        dialog.show();
     }
 
     @OnClick(R.id.sales_value)
@@ -404,7 +456,7 @@ public class GoodsActivity extends RxBaseActivity {
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
-                    .placeholder(R.drawable.ic_add_img)
+                    .placeholder(change ? R.drawable.ic_add_img : R.color.color_f6)
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
             Glide.with(GoodsActivity.this)
                     .load(Config.BASE_URL + goods.image)
@@ -420,15 +472,17 @@ public class GoodsActivity extends RxBaseActivity {
         }
 
         if (!change) {
-            icRight1.setVisibility(View.GONE);
-            icRight2.setVisibility(View.GONE);
-            icRight3.setVisibility(View.GONE);
-            icRight4.setVisibility(View.GONE);
-            icRight5.setVisibility(View.GONE);
-            icRight6.setVisibility(View.GONE);
-            icRight7.setVisibility(View.GONE);
-            icRight8.setVisibility(View.GONE);
-            icRight9.setVisibility(View.GONE);
+            icRight1.setVisibility(View.INVISIBLE);
+            icRight2.setVisibility(View.INVISIBLE);
+            icRight3.setVisibility(View.INVISIBLE);
+            icRight4.setVisibility(View.INVISIBLE);
+            icRight5.setVisibility(View.INVISIBLE);
+            icRight6.setVisibility(View.INVISIBLE);
+            icRight7.setVisibility(View.INVISIBLE);
+            icRight8.setVisibility(View.INVISIBLE);
+            icRight9.setVisibility(View.INVISIBLE);
+
+            changeOrAdd.setVisibility(View.GONE);
 
             genreFirst.setEnabled(false);
             genreSub.setEnabled(false);
@@ -443,6 +497,7 @@ public class GoodsActivity extends RxBaseActivity {
 
             apply.setVisibility(View.GONE);
         } else {
+            changeOrAdd.setVisibility(View.VISIBLE);
             if (goods == null) {
                 apply.setText("创建商品");
             } else {

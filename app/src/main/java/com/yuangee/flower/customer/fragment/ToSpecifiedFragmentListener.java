@@ -6,4 +6,5 @@ package com.yuangee.flower.customer.fragment;
 
 public interface ToSpecifiedFragmentListener {
     void toFragment(int position);
+    void toShoppingByParams(String genre,String genreSub,String params);
 }

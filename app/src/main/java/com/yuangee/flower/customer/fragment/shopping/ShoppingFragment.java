@@ -356,7 +356,11 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     public void findWares(String params) {
         page = 0;
-        this.params = params;
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+    }
+
+    public void findWares(String genreName,String genreSubName,String params){
+        page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }
 
