@@ -275,7 +275,9 @@ public interface ApiService {
                                                      @Field("receiverPhone") String receiverPhone,
                                                      @Field("receiverAddress") String receiverAddress,
                                                      @Field("expressId") Long expressId,
-                                                     @Field("couponId") Long couponId);
+                                                     @Field("couponId") Long couponId,
+                                                     @Field("cartItemIds") Long[] cartItemIds
+    );
 
     /**
      * @param memberId
@@ -294,7 +296,8 @@ public interface ApiService {
                                                      @Field("receiverAddress") String receiverAddress,
                                                      @Field("expressId") Long expressId,
                                                      @Field("bespeakDate") String bespeakDate,
-                                                     @Field("couponId") Long couponId
+                                                     @Field("couponId") Long couponId,
+                                                     @Field("cartItemIds") Long[] cartItemIds
     );
 
     /**

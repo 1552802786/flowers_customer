@@ -12,4 +12,5 @@ public class CartItem {
     public double totalPrice;
     public Goods wares;
     public boolean bespeak;
+    public boolean selected;//是否选中
 }

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -54,7 +56,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
      * 增删后总金钱的变化
      */
     public interface OnMoneyChangedListener {
-        void onMoneyChange();
+        void onMoneyChange(double money);
     }
 
     /**
@@ -94,6 +96,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.numSub = view.findViewById(R.id.num_sub);
         holder.numAdd = view.findViewById(R.id.num_add);
         holder.goodsNum = view.findViewById(R.id.goods_num);
+        holder.selectedRadio = view.findViewById(R.id.selected);
 
         return holder;
     }
@@ -123,6 +126,23 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.goodsMoney.setText("总计：" + bean.totalPrice + "元");
 
         holder.goodsNum.setText(bean.quantity + "");
+
+        holder.selectedRadio.setChecked(bean.selected);
+
+        holder.selectedRadio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    bean.selected = true;
+                } else {
+                    bean.selected = false;
+                }
+            }
+        });
+
+        if (null != onMoneyChangedListener) {
+            changeMoney();
+        }
 
         holder.removeFromCar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +220,19 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         ImageView numSub;
         ImageView numAdd;
         TextView goodsNum;
+        RadioButton selectedRadio;
+    }
+
+    private void changeMoney() {
+        double money = 0.0;
+        for (CartItem datum : data) {
+            if (datum.selected) {
+                money += datum.totalPrice;
+            }
+        }
+        if (onMoneyChangedListener != null) {
+            onMoneyChangedListener.onMoneyChange(money);
+        }
     }
 
     private void cartItemAdd(long itemId, long cartId, int num, final int position) {
@@ -214,9 +247,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             public void onNext(CartItem o) {
                 data.set(position, o);
                 notifyItemChanged(position);
-                if (onMoneyChangedListener != null) {
-                    onMoneyChangedListener.onMoneyChange();
-                }
+                changeMoney();
             }
 
             @Override
@@ -243,9 +274,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                     data.set(position, o);
                     notifyItemChanged(position);
                 }
-                if (onMoneyChangedListener != null) {
-                    onMoneyChangedListener.onMoneyChange();
-                }
+                changeMoney();
             }
 
             @Override
@@ -267,9 +296,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             public void onNext(Object o) {
                 data.remove(position);
                 notifyDataSetChanged();
-                if (onMoneyChangedListener != null) {
-                    onMoneyChangedListener.onMoneyChange();
-                }
+                changeMoney();
             }
 
             @Override

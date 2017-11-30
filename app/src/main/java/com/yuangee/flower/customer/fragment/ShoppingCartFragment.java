@@ -171,6 +171,9 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     @BindView(R.id.coupon_text)
     TextView couponText;
 
+    @BindView(R.id.select_all)
+    RadioButton selectAll;
+
     @OnClick(R.id.close_expand_img)
     void closeExpandImg() {
         expandableLayout.collapse();
@@ -234,6 +237,22 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                     yuyueGou.setTextColor(getResources().getColor(R.color.colorAccent));
                     showList(true);
                 }
+            }
+        });
+        //全选
+        selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    for (CartItem cartItem : adapter.getList()) {
+                        cartItem.selected = true;
+                    }
+                } else {
+                    for (CartItem cartItem : adapter.getList()) {
+                        cartItem.selected = false;
+                    }
+                }
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -394,7 +413,9 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
             goodsNum += item.quantity;
             if (item.bespeak == bespeak) {//预约购
                 lsItems.add(item);
-                money += item.totalPrice;
+                if (item.selected) {
+                    money += item.totalPrice;
+                }
             }
         }
         ((MainActivity) getActivity()).setBudge(goodsNum);
@@ -410,8 +431,16 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
     private void booking(final long memberId, String receiverName,
                          String receiverPhone, String receiverAddress, long expressId, Long couponId) {
+
+        List<Long> longs = new ArrayList<>();
+        for (CartItem cartItem : adapter.getList()) {
+            if (cartItem.selected) {
+                longs.add(cartItem.id);
+            }
+        }
+
         Observable<Object> observable = ApiManager.getInstance().api
-                .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId)
+                .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId, (Long[]) longs.toArray())
                 .map(new HttpResultFunc<>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -435,8 +464,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
     private void yuyueBooking(final long memberId, String receiverName,
                               String receiverPhone, String receiverAddress, long expressId, String date, Long couponId) {
+        List<Long> longs = new ArrayList<>();
+        for (CartItem cartItem : adapter.getList()) {
+            if (cartItem.selected) {
+                longs.add(cartItem.id);
+            }
+        }
+
         Observable<Object> observable = ApiManager.getInstance().api
-                .bespeakOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, date, couponId)
+                .bespeakOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, date, couponId, (Long[]) longs.toArray())
                 .map(new HttpResultFunc<>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -459,18 +495,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     }
 
     @Override
-    public void onMoneyChange() {
+    public void onMoneyChange(double money) {
         List<CartItem> items = adapter.getList();
-        double totalPrice = 0.0;
         if (items.size() != 0) {
-            for (CartItem item : items) {
-                totalPrice += item.totalPrice;
-            }
+
         } else {
             showEmptyView(0);
         }
-        totalText.setText("" + totalPrice +"元");
-        couponAdapter.setOrderMoney(totalPrice);
+        totalText.setText("" + money + "元");
+        couponAdapter.setOrderMoney(money);
     }
 
     @Override

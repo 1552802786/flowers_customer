@@ -84,6 +84,12 @@
             android:layout_marginBottom="45dp"
             android:orientation="vertical">
 
+            <RadioButton
+                android:id="@+id/select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="全选"/>
+
             <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
                 android:id="@+id/shopping_car_recycler"
                 android:layout_width="match_parent"
