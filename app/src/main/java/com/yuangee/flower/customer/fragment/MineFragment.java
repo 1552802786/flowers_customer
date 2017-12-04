@@ -112,10 +112,10 @@ public class MineFragment extends RxLazyFragment {
         startActivity(intent);
     }
 
-    @OnClick(R.id.send_goods)
-    void sendGoods() {
+    @OnClick(R.id.wait_pay)
+    void waitPay() {
         Intent intent = new Intent(getActivity(), MyOrderActivity.class);
-        intent.putExtra("status", 1);
+        intent.putExtra("status", 0);
         intent.putExtra("bespeak", false);
         startActivity(intent);
     }

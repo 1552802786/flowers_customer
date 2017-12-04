@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical"
-                    android:text="3000元"
+                    android:text=""
                     android:textColor="#ff0000"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -218,7 +218,7 @@
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:background="@color/colorGray"
+            android:background="@color/colorPrimary"
             android:gravity="center"
             android:text=""
             android:textColor="@color/white"

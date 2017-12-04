@@ -34,7 +34,7 @@ public class WXPayEntryActivity extends RxBaseActivity implements IWXAPIEventHan
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        payResult = (TextView) findViewById(R.id.pay_result);
+        payResult =  findViewById(R.id.pay_result);
 
 //        fromResource = App.me().getSharedPreferences().getString("wxPayFrom", "");
 

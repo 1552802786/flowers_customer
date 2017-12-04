@@ -184,7 +184,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/wares/deleteWares")
-    Observable<BaseResult<Object>> deleteWares(@Query("deleteWares") Long Id);
+    Observable<BaseResult<Object>> deleteWares(@Query("id") Long Id);
 
     /**
      * 根据条件分页查询订单

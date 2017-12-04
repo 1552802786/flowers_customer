@@ -8,8 +8,8 @@ android {
         applicationId "com.yuangee.flower.customer"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
@@ -68,6 +68,8 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
 
     compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.1'
+
+    compile 'co.lujun:androidtagview:1.1.4'
 
     // badge
     compile 'q.rorbin:badgeview:1.1.0'

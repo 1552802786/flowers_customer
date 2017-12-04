@@ -58,7 +58,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/send_goods"
+                android:id="@+id/wait_pay"
                 android:layout_width="0.0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

@@ -1,5 +1,7 @@
 package com.yuangee.flower.customer.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
@@ -17,10 +20,12 @@ import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.OrderAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.Order;
+import com.yuangee.flower.customer.entity.PayResult;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
@@ -122,8 +127,8 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
 
     @Override
     public void initRecyclerView() {
-        handler = new Handler();
 
+        initHandler();
         orders = new ArrayList<>();
         adapter = new OrderAdapter(this, mRxManager);
         adapter.setOnRefresh(new OrderAdapter.OnRefresh() {
@@ -167,8 +172,84 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         queryOrders(status, bespeak, memberId, shopId);
         recyclerView.setRefreshing(true);
+    }
+
+    private void initHandler() {
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message message) {
+                switch (message.what) {
+                    case 0:
+                        Context context = MyOrderActivity.this;
+                        PayResult result = new PayResult((String) message.obj);
+                        if (result.resultStatus.equals("9000")) {
+                            Toast.makeText(context, getString(R.string.pay_succeed),
+                                    Toast.LENGTH_SHORT).show();
+
+                            queryOrders(status, bespeak, memberId, shopId);
+
+                        } else if (result.resultStatus.equals("4000")) {
+
+                            Toast.makeText(context, getString(R.string.system_exception),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("4001")) {
+
+                            Toast.makeText(context, getString(R.string.data_format_error),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("4003")) {
+
+                            Toast.makeText(context, getString(R.string.can_not_use_zfb),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("4004")) {
+
+                            Toast.makeText(context, getString(R.string.remove_bind),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("4005")) {
+
+                            Toast.makeText(context, getString(R.string.bind_fail),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("4006")) {
+
+                            Toast.makeText(context, getString(R.string.pay_fail),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("4010")) {
+
+                            Toast.makeText(context, getString(R.string.re_bind),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("6000")) {
+
+                            Toast.makeText(context, getString(R.string.upgrade),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("6001")) {
+
+                            Toast.makeText(context, getString(R.string.cancel_pay),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else if (result.resultStatus.equals("7001")) {
+
+                            Toast.makeText(context, getString(R.string.web_pay_fail),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -251,5 +332,23 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
     private void hideEmpty() {
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        String str = data.getExtras().getString("pay_result");
+        if (str.equalsIgnoreCase("success")) {
+            queryOrders(status, bespeak, memberId, shopId);
+            ToastUtil.showMessage(MyOrderActivity.this, "支付成功");
+
+// 结果result_data为成功时，去商户后台查询一下再展示成功
+        } else if (str.equalsIgnoreCase("fail")) {
+            ToastUtil.showMessage(MyOrderActivity.this, "支付失败！");
+        } else if (str.equalsIgnoreCase("cancel")) {
+            ToastUtil.showMessage(MyOrderActivity.this, "你已取消了本次订单的支付！");
+        }
     }
 }

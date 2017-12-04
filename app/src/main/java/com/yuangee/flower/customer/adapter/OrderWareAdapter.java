@@ -33,6 +33,11 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
         orderWares = new ArrayList<>();
     }
 
+    public void setOrderWares(List<OrderWare> orderWares) {
+        this.orderWares = orderWares;
+        notifyDataSetChanged();
+    }
+
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_ware_item, parent, false);
@@ -76,7 +81,7 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
             goodsName = itemView.findViewById(R.id.goods_name);
             goodsPrice = itemView.findViewById(R.id.goods_price);
             goodsTotalFee = itemView.findViewById(R.id.total_fee);
-            goodsNum = itemView.findViewById(R.id.goods_num);
+            goodsNum = itemView.findViewById(R.id.goods_number);
         }
     }
 }

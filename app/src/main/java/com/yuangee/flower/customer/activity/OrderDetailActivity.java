@@ -2,12 +2,14 @@ package com.yuangee.flower.customer.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.yuangee.flower.customer.adapter.OrderWareAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.OrderWare;
+import com.yuangee.flower.customer.entity.PayResult;
 import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -47,7 +50,10 @@ import rx.schedulers.Schedulers;
 
 public class OrderDetailActivity extends RxBaseActivity {
 
-    @BindView(R.id.good_recycler)
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.goods_recycler)
     RecyclerView recyclerView;
 
     @BindView(R.id.total_fee)
@@ -68,6 +74,9 @@ public class OrderDetailActivity extends RxBaseActivity {
     @BindView(R.id.right_btn)
     TextView rightBtn;
 
+    @BindView(R.id.total)
+    TextView hejiFee;
+
     private Order order;
     OrderWareAdapter adapter;
 
@@ -79,6 +88,21 @@ public class OrderDetailActivity extends RxBaseActivity {
     Handler handler;
 
     @Override
+    public void initToolBar() {
+        mToolbar.setTitle(order.getStatusStr());
+        setSupportActionBar(mToolbar);
+        if (null != getSupportActionBar()) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
     public void initViews(Bundle savedInstanceState) {
         order = (Order) getIntent().getSerializableExtra("order");
         if (null == order) {
@@ -88,6 +112,7 @@ public class OrderDetailActivity extends RxBaseActivity {
         initHandler();
         adapter = new OrderWareAdapter(this);
         recyclerView.setAdapter(adapter);
+        adapter.setOrderWares(order.orderWaresList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         double totalMoney = 0.0;
@@ -98,7 +123,12 @@ public class OrderDetailActivity extends RxBaseActivity {
         shouxuFei.setText("¥" + order.customerBrokerage);
         yunFei.setText("¥" + order.expressDeliveryMoney);
         couponFee.setText("¥" + order.couponMoney);
+        hejiFee.setText("" + (totalMoney + order.customerBrokerage + order.expressDeliveryMoney - order.couponMoney) + "元");
 
+        initBtn();
+    }
+
+    private void initBtn() {
         if (order.status == 0) {
             leftBtn.setVisibility(View.VISIBLE);
             rightBtn.setVisibility(View.VISIBLE);
@@ -166,14 +196,16 @@ public class OrderDetailActivity extends RxBaseActivity {
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message message) {
-                switch (message.what){
+                switch (message.what) {
                     case 0:
                         Context context = OrderDetailActivity.this;
                         PayResult result = new PayResult((String) message.obj);
                         if (result.resultStatus.equals("9000")) {
                             Toast.makeText(context, getString(R.string.pay_succeed),
                                     Toast.LENGTH_SHORT).show();
-                            PayCentreActivity.this.finish();
+
+                            order.status = Order.ORDER_STATUS_WAIT;
+                            initBtn();
 
                         } else if (result.resultStatus.equals("4000")) {
 
@@ -370,7 +402,7 @@ public class OrderDetailActivity extends RxBaseActivity {
                 true, new NoErrSubscriberListener<Object>() {
             @Override
             public void onNext(Object o) {
-                ToastUtil.showMessage(OrderDetailActivity.this,"状态更新成功");
+                ToastUtil.showMessage(OrderDetailActivity.this, "操作成功");
                 finish();
             }
         })));
@@ -402,5 +434,24 @@ public class OrderDetailActivity extends RxBaseActivity {
                     }
                 }).create();
         alertDialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        String str = data.getExtras().getString("pay_result");
+        if (str.equalsIgnoreCase("success")) {
+            order.status = Order.ORDER_STATUS_WAIT;
+            initBtn();
+            ToastUtil.showMessage(OrderDetailActivity.this, "支付成功");
+
+// 结果result_data为成功时，去商户后台查询一下再展示成功
+        } else if (str.equalsIgnoreCase("fail")) {
+            ToastUtil.showMessage(OrderDetailActivity.this, "支付失败！");
+        } else if (str.equalsIgnoreCase("cancel")) {
+            ToastUtil.showMessage(OrderDetailActivity.this, "你已取消了本次订单的支付！");
+        }
     }
 }

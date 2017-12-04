@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
@@ -56,6 +58,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import co.lujun.androidtagview.TagContainerLayout;
+import co.lujun.androidtagview.TagView;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 import rx.Observable;
@@ -89,8 +93,8 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     @BindView(R.id.cancel_action)
     TextView cancelAction;
 
-    @BindView(R.id.search_suggest)
-    RecyclerView searchResultSuggest;
+    @BindView(R.id.tag_container)
+    TagContainerLayout tagContainerLayout;
 
     @BindView(R.id.activity_main)
     RelativeLayout rootView;
@@ -135,6 +139,30 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                             reserveFragment.findWares(params);
                         }
                     }
+                    String str = App.me().getSharedPreferences().getString("history", "");
+                    SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
+                    if (StringUtils.isBlank(str)) {
+                        editor.putString("history", params);
+                    } else {
+                        boolean exist = false;
+                        if (str.contains(",")) {
+                            String[] array = str.split(",");
+                            for (String s : array) {
+                                if (s.equals(params)) {
+                                    exist = true;
+                                }
+                            }
+                        } else {
+                            if (str.equals(params)) {
+                                exist = true;
+                            }
+                        }
+                        if (!exist) {
+                            str += "," + params;
+                            editor.putString("history", str);
+                        }
+                    }
+                    editor.apply();
                     return true;
                 }
                 return false;
@@ -288,12 +316,45 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public void toFragment(int position) {
         if (position == -1 || position == -2) {
             this.position = position;
+            tagContainerLayout.removeAllTags();
+            showTag();
             searchFrame.setVisibility(View.VISIBLE);
             editSuggest.requestFocus();
             InputMethodManager inputManager = (InputMethodManager) editSuggest.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.showSoftInput(editSuggest, 0);
         } else {
             vp.setCurrentItem(position);
+        }
+    }
+
+    private void showTag() {
+        String str = App.me().getSharedPreferences().getString("history", "");
+        if (StringUtils.isNotBlank(str)) {
+            if (str.contains(",")) {
+                String[] array = str.split(",");
+                for (String s : array) {
+                    tagContainerLayout.addTag(s);
+                }
+            } else {
+                tagContainerLayout.addTag(str);
+            }
+            tagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
+                @Override
+                public void onTagClick(int position, String text) {
+                    editSuggest.setText(text);
+                    editSuggest.setSelection(text.length());
+                }
+
+                @Override
+                public void onTagLongClick(int position, String text) {
+
+                }
+
+                @Override
+                public void onTagCrossClick(int position) {
+
+                }
+            });
         }
     }
 

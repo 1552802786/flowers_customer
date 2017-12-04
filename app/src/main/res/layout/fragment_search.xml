@@ -60,9 +60,26 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/search_suggest"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="历史记录："
+        android:layout_margin="10dp"/>
+
+    <co.lujun.androidtagview.TagContainerLayout
+        android:id="@+id/tag_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        app:container_enable_drag="false"
+        app:horizontal_interval="10dp"
+        app:tag_clickable="true"
+        app:tag_corner_radius="2dp"
+        app:vertical_interval="10dp"
+        app:container_background_color="@color/white"
+        app:container_border_radius="0dp"
+        app:container_border_width="0dp"
+        />
 
 </LinearLayout>

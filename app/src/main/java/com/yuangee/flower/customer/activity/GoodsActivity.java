@@ -599,8 +599,10 @@ public class GoodsActivity extends RxBaseActivity {
             editName.setInputType(InputType.TYPE_CLASS_PHONE);
         } else if (hint.contains("邮箱")) {
             editName.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        } else if (hint.contains("可售量") || hint.contains("单价")) {
+        } else if (hint.contains("可售量")) {
             editName.setInputType(InputType.TYPE_CLASS_NUMBER);
+        } else if (hint.contains("单价")) {
+            editName.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         } else {
             editName.setInputType(InputType.TYPE_CLASS_TEXT);
         }

@@ -2,6 +2,7 @@ package com.yuangee.flower.customer.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.OrderDetailActivity;
 import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.OrderWare;
 import com.yuangee.flower.customer.entity.ZfbResult;
@@ -52,7 +54,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     private Context context;
     private List<Order> data;
 
-    private OnItemClickListener mOnItemClickListener;   //声明监听器接口
     private OnRefresh onRefresh;   //声明监听器接口
 
     private RxManager rxManager;
@@ -70,9 +71,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     public interface OnRefresh {
         void onRefresh();
     }
+
     public interface OnStartZfbPay {
         void pay(String s);
     }
+
     private OnStartZfbPay zfbPay;
 
     public void setZfbPay(OnStartZfbPay zfbPay) {
@@ -81,15 +84,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
     public void setOnRefresh(OnRefresh onRefresh) {
         this.onRefresh = onRefresh;
-    }
-
-    /**
-     * 通过adapter设置监听器
-     *
-     * @param mOnItemClickListener 监听器的接口类型
-     */
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
-        this.mOnItemClickListener = mOnItemClickListener;
     }
 
     public OrderAdapter(Context context, RxManager rxManager) {
@@ -215,14 +209,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
             holder.rightBtn.setVisibility(View.GONE);
         }
         //给该item设置一个监听器
-        if (mOnItemClickListener != null) {
             holder.root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(v, position);
+                    Intent intent = new Intent(context, OrderDetailActivity.class);
+                    intent.putExtra("order", bean);
+                    context.startActivity(intent);
                 }
             });
-        }
     }
 
     private void payOrder(final Order order) {
@@ -333,7 +327,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         }
     }
 
-    private void payJishiZfb(Long orderId){
+    private void payJishiZfb(Long orderId) {
         Observable<ZfbResult> observable = ApiManager.getInstance().api
                 .payJishiSingleZfb(orderId)
                 .map(new HttpResultFunc<ZfbResult>(context))
@@ -348,7 +342,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         })));
     }
 
-    private void payYuyueZfb(Long orderId){
+    private void payYuyueZfb(Long orderId) {
         Observable<ZfbResult> observable = ApiManager.getInstance().api
                 .payYuyueSingleZfb(orderId)
                 .map(new HttpResultFunc<ZfbResult>(context))
@@ -363,8 +357,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         })));
     }
 
-    private void detailZfb(final String s){
-        if(null != zfbPay){
+    private void detailZfb(final String s) {
+        if (null != zfbPay) {
             zfbPay.pay(s);
         }
     }

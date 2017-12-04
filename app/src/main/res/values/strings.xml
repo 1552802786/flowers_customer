@@ -35,4 +35,20 @@
     <string name="LItem">项</string>
     <string name="Detail">详情</string>
     <string name="FileSize">文件大小 : </string>
+
+    <string name="system_exception">系统异常</string>
+    <string name="data_format_error">数据格式不正确</string>
+    <string name="can_not_use_zfb">您绑定的支付宝账户被冻结或不允许支付</string>
+    <string name="remove_bind">您已解除绑定</string>
+    <string name="bind_fail">绑定失败或没有绑定</string>
+    <string name="re_bind">请重新绑定账户</string>
+    <string name="upgrade">支付服务正在进行升级操作</string>
+    <string name="cancel_pay">您取消了支付操作</string>
+
+    <string name="pay_succeed">支付成功!</string>
+
+    <string name="pay_fail">支付失败!</string>
+    <string name="web_pay_fail">网页支付失败</string>
 </resources>
+
+
