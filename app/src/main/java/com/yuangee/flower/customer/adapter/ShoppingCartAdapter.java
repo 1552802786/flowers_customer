@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -220,7 +221,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         ImageView numSub;
         ImageView numAdd;
         TextView goodsNum;
-        RadioButton selectedRadio;
+        CheckBox selectedRadio;
     }
 
     private void changeMoney() {

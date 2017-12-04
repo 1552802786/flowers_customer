@@ -29,6 +29,7 @@ import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.GlideCircleTransform;
+import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
@@ -180,42 +181,9 @@ public class MineFragment extends RxLazyFragment {
     }
 
     private void getConsumerInfo(long id) {
-        Observable<Member> observable = ApiManager.getInstance().api
-                .findById(id)
-                .map(new HttpResultFunc<Member>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Member>() {
+        PersonUtil.getMemberInfo(mRxManager, getActivity(), id, new PersonUtil.OnGetMember() {
             @Override
-            public void onNext(Member o) {
-                SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
-                List<Address> addressList = o.memberAddressList;
-                if (null != addressList) {
-                    DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
-                } else {
-                    DbHelper.getInstance().getAddressLongDBManager().deleteAll();
-                }
-
-                editor.putLong("id", o.id);
-                editor.putString("name", o.name);
-                editor.putString("userName", o.userName);
-                editor.putString("passWord", o.passWord);
-                editor.putLong("shopId", o.shop.id);
-                editor.putString("phone", o.phone);
-                editor.putString("email", o.email);
-                editor.putString("photo", o.photo);
-                editor.putBoolean("gender", o.gender);
-                editor.putString("type", o.type);
-                editor.putBoolean("inBlacklist", o.inBlacklist);
-                editor.putBoolean("isRecycle", o.isRecycle);
-                editor.putBoolean("inFirst", o.inFirst);
-                editor.putFloat("balance", (float) o.balance);
-
-                editor.putBoolean("login", true);
-
-                editor.apply();
-
+            public void onSuccess(Member o) {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
                         .placeholder(R.drawable.ic_default_photo)
@@ -248,14 +216,14 @@ public class MineFragment extends RxLazyFragment {
                         }
                     });
                 }
-
             }
 
             @Override
-            public void onError(int code) {
+            public void onFailed() {
 
             }
-        })));
+        });
+
     }
 
     private void initView() {

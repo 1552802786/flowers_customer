@@ -8,9 +8,11 @@ import android.util.Log;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.MemberToken;
+import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.util.CommonUtil;
 
 import java.io.File;
+import java.util.List;
 
 
 public class App {
@@ -112,40 +114,14 @@ public class App {
     }
 
     public Member getMemberInfo() {
-        SharedPreferences sp = App.me().getSharedPreferences();
-        long id = sp.getLong("id", -1);
-        String name = sp.getString("name", "");
-        String userName = sp.getString("userName", "");
-        String passWord = sp.getString("passWord", "");
-        String phone = sp.getString("phone", "");
-        String email = sp.getString("email", "");
-        boolean gender = sp.getBoolean("gender", false);
-        String type = sp.getString("type", "");
-        boolean inBlacklist = sp.getBoolean("inBlacklist", false);
-        boolean isRecycle = sp.getBoolean("isRecycle", false);
-        boolean inFirst = sp.getBoolean("inFirst", false);
-        double balance = sp.getFloat("balance", (float) 0.0);
-        long deathDate = sp.getLong("deathDate", 0);
-        String token = sp.getString("token", "");
-
-        Member member = new Member();
-        member.id = id;
-        member.name = name;
-        member.userName = userName;
-        member.passWord = passWord;
-        member.phone = phone;
-        member.email = email;
-        member.gender = gender;
-        member.type = type;
-        member.inBlacklist = inBlacklist;
-        member.isRecycle = isRecycle;
-        member.inFirst = inFirst;
-        member.balance = balance;
-        member.memberToken = new MemberToken();
-        member.memberToken.token = token;
-        member.memberToken.deathDate = deathDate;
+        Member member = DbHelper.getInstance().getMemberLongDBManager().load(getPassengerId());
+        member.listCoupon = DbHelper.getInstance().getCouponLongDBManager().loadAll();
+        member.expressDelivery = DbHelper.getInstance().getExpressLongDBManager().loadAll();
+        List<Shop> shops = DbHelper.getInstance().getShopLongDBManager().loadAll();
+        if (null != shops && shops.size() != 0) {
+            member.shop = shops.get(0);
+        }
         member.memberAddressList = DbHelper.getInstance().getAddressLongDBManager().loadAll();
-
         return member;
     }
 

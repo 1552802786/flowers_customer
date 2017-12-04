@@ -38,8 +38,10 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ViewHolder
         this.coupons = coupons;
         notifyDataSetChanged();
     }
+
     private double orderMoney;
-    public void setOrderMoney(double orderMoney){
+
+    public void setOrderMoney(double orderMoney) {
         this.orderMoney = orderMoney;
         buttons.clear();
         notifyDataSetChanged();
@@ -58,12 +60,18 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ViewHolder
         final Coupon coupon = coupons.get(position);
 
         String moneyText = coupon.money + "元优惠券";
+        if (coupon.couponFullMoney > 0) {
+            holder.couponFullMoney.setVisibility(View.VISIBLE);
+            holder.couponFullMoney.setText("(满" + coupon.couponFullMoney + "元可使用)");
+        } else {
+            holder.couponFullMoney.setVisibility(View.GONE);
+        }
         String timeText = "截止日期：" + coupon.becomeDueTime;
 
         holder.couponMoney.setText(moneyText);
         holder.couponTime.setText(timeText);
 
-        if(orderMoney > coupon.couponFullMoney){
+        if (orderMoney > coupon.couponFullMoney) {
             buttons.add(holder.button);
             holder.root.setBackgroundColor(context.getResources().getColor(R.color.white));
             holder.root.setEnabled(true);
@@ -103,6 +111,7 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ViewHolder
         RadioButton button;
         TextView couponMoney;
         TextView couponTime;
+        TextView couponFullMoney;
         View root;
 
         public ViewHolder(View itemView) {
@@ -111,6 +120,7 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ViewHolder
             button = itemView.findViewById(R.id.coupon_button);
             couponMoney = itemView.findViewById(R.id.coupon_money);
             couponTime = itemView.findViewById(R.id.coupon_time);
+            couponFullMoney = itemView.findViewById(R.id.coupon_full_money);
         }
     }
 }

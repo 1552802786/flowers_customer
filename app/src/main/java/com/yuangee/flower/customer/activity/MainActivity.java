@@ -30,6 +30,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.fragment.AddAnimateListener;
@@ -128,10 +129,11 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                     if (null != shoppingFragment) {
                         if (position == -1) {
                             bnve.setCurrentItem(1);
+                            shoppingFragment.findWares(params);
                         } else {
                             bnve.setCurrentItem(3);
+                            reserveFragment.findWares(params);
                         }
-                        shoppingFragment.findWares(params);
                     }
                     return true;
                 }
@@ -297,6 +299,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
     /**
      * 从首页点击类型或者点击推荐跳转到购物fragment
+     *
      * @param genre
      * @param genreSub
      * @param params
@@ -367,5 +370,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         }
     }
 
-    public static List<Genre> genreList = new ArrayList<>();
+    public static List<Genre> getGenre() {
+        return DbHelper.getInstance().getGenreLongDBManager().loadAll();
+    }
 }

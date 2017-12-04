@@ -10,9 +10,12 @@ import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.Message;
 import com.yuangee.flower.customer.entity.Order;
+import com.yuangee.flower.customer.entity.PersonResult;
 import com.yuangee.flower.customer.entity.Recommend;
+import com.yuangee.flower.customer.entity.Setting;
 import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.entity.Type;
+import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.result.QueryCartResult;
@@ -307,7 +310,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/member/findById")
-    Observable<BaseResult<Member>> findById(@Query("id") Long id);
+    Observable<BaseResult<PersonResult>> findById(@Query("id") Long id);
 
     /**
      * 修改用户信息
@@ -494,7 +497,7 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("rest/pay/immediate/order/alipay")
-    Observable<BaseResult<String>> payJishiSingleZfb(@Field("orderId") Long orderId);
+    Observable<BaseResult<ZfbResult>> payJishiSingleZfb(@Field("orderId") Long orderId);
 
     @FormUrlEncoded
     @POST("rest/pay/immediate/order/wxpay")
@@ -502,10 +505,18 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("rest/pay/reservation/order/alipay")
-    Observable<BaseResult<String>> payYuyueSingleZfb(@Field("orderId") Long orderId);
+    Observable<BaseResult<ZfbResult>> payYuyueSingleZfb(@Field("orderId") Long orderId);
 
     @FormUrlEncoded
     @POST("rest/pay/reservation/order/wxpay")
     Observable<BaseResult<JsonElement>> payYuyueSingleWx(@Field("orderId") Long orderId);
+
+
+    /**
+     * 系统配置
+     * @return
+     */
+    @GET("rest/rest/system/conf")
+    Observable<BaseResult<Setting>> getSetting();
 
 }

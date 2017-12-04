@@ -84,7 +84,7 @@
             android:layout_marginBottom="45dp"
             android:orientation="vertical">
 
-            <RadioButton
+            <CheckBox
                 android:id="@+id/select_all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

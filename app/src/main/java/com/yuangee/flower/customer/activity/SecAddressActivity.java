@@ -22,6 +22,7 @@ import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.List;
@@ -157,20 +158,11 @@ public class SecAddressActivity extends RxBaseActivity {
 
     private void queryById(long id) {
         recyclerView.setRefreshing(true);
-        Observable<Member> observable = ApiManager.getInstance().api
-                .findById(id)
-                .map(new HttpResultFunc<Member>(SecAddressActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(SecAddressActivity.this, false, false, new HaveErrSubscriberListener<Member>() {
+        PersonUtil.getMemberInfo(mRxManager, SecAddressActivity.this, id, new PersonUtil.OnGetMember() {
             @Override
-            public void onNext(Member o) {
+            public void onSuccess(Member member) {
                 recyclerView.setPullLoadMoreCompleted();
-                SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
-
-                List<Address> addressList = o.memberAddressList;
-
+                List<Address> addressList = member.memberAddressList;
                 if (null != addressList) {
                     DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
                     for (Address address : addressList) {
@@ -184,38 +176,22 @@ public class SecAddressActivity extends RxBaseActivity {
                     DbHelper.getInstance().getAddressLongDBManager().deleteAll();
                 }
 
-                editor.putLong("id", o.id);
-                editor.putString("name", o.name);
-                editor.putString("userName", o.userName);
-                editor.putString("passWord", o.passWord);
-                editor.putString("phone", o.phone);
-                editor.putString("email", o.email);
-                editor.putString("photo", o.photo);
-                editor.putBoolean("gender", o.gender);
-                editor.putString("type", o.type);
-                editor.putBoolean("inBlacklist", o.inBlacklist);
-                editor.putBoolean("isRecycle", o.isRecycle);
-                editor.putBoolean("inFirst", o.inFirst);
-                editor.putFloat("balance", (float) o.balance);
-
-                editor.putBoolean("login", true);
-
-                editor.apply();
-
-                if (o.memberAddressList == null || o.memberAddressList.size() == 0) {
+                if (member.memberAddressList == null || member.memberAddressList.size() == 0) {
                     showEmptyLayout(0);
                 } else {
                     showRecycler();
-                    adapter.setAddressList(o.memberAddressList);
+                    adapter.setAddressList(member.memberAddressList);
                 }
+
             }
 
             @Override
-            public void onError(int code) {
+            public void onFailed() {
                 recyclerView.setPullLoadMoreCompleted();
-                showEmptyLayout(code);
+                showEmptyLayout(-1);
             }
-        })));
+        });
+
     }
 
     @Override

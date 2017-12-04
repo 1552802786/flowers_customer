@@ -1,21 +1,16 @@
 package com.yuangee.flower.customer.fragment;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
@@ -30,17 +25,18 @@ import com.yuangee.flower.customer.adapter.CouponAdapter;
 import com.yuangee.flower.customer.adapter.KuaidiAdapter;
 import com.yuangee.flower.customer.adapter.ShoppingCartAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
+import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Address;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Coupon;
+import com.yuangee.flower.customer.entity.DestineTime;
 import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
-import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.QueryCartResult;
-import com.yuangee.flower.customer.util.DisplayUtil;
+import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
@@ -51,11 +47,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import cn.qqtheme.framework.picker.DatePicker;
+import cn.qqtheme.framework.util.ConvertUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -76,6 +72,8 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
     @BindView(R.id.apply)
     TextView apply;
+
+    private String yuyueTimeStr;
 
     @OnClick(R.id.apply)
     void apply() {
@@ -100,20 +98,14 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                             address.pro + address.city + address.area + address.street, expressId,
                             coupon == null ? null : coupon.id);
                 } else {
-                    //TODO timePicker
-                    long time = System.currentTimeMillis() + 24 * 60 * 60 * 1000;
-                    Calendar calendar = Calendar.getInstance(Locale.CHINA);
-                    calendar.setTime(new Date(time));
-                    DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                            yuyueBooking(App.getPassengerId(), address.shippingName, address.shippingPhone,
-                                    address.pro + address.city + address.area + address.street, expressId,
-                                    i + "-" + i1 + "-" + i2 + " " + "00:00",
-                                    coupon == null ? null : coupon.id);
-                        }
-                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-                    dialog.show();
+                    if (StringUtils.isBlank(yuyueTimeStr)) {
+                        ToastUtil.showMessage(getActivity(), "请选择预约时间");
+                        return;
+                    }
+                    yuyueBooking(App.getPassengerId(), address.shippingName, address.shippingPhone,
+                            address.pro + address.city + address.area + address.street, expressId,
+                            yuyueTimeStr,
+                            coupon == null ? null : coupon.id);
                 }
             }
         }
@@ -172,7 +164,58 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     TextView couponText;
 
     @BindView(R.id.select_all)
-    RadioButton selectAll;
+    CheckBox selectAll;
+
+    @BindView(R.id.yuyue_time_con)
+    RelativeLayout yuyueTimeCon;
+
+    @BindView(R.id.yuyue_time)
+    TextView yuyueTime;
+
+    @OnClick(R.id.yuyue_time)
+    void showTimePicker() {
+        List<DestineTime> destineTimeLs = DbHelper.getInstance().getDestineTimeLongDBManager().loadAll();
+        DestineTime destineTime = null;
+        if (null != destineTimeLs && destineTimeLs.size() != 0) {
+            destineTime = destineTimeLs.get(0);
+        }
+        long startDate = System.currentTimeMillis() + 24L * 60L * 60L * 1000L;//默认当前的后一天
+        long endDate = System.currentTimeMillis() + (90L * 24L * 60L * 60L * 1000L);//默认三个月后
+        if (null != destineTime) {
+            if (destineTime.getValue()) {
+                startDate = System.currentTimeMillis() + destineTime.start * 24 * 60 * 60 * 1000;
+                endDate = System.currentTimeMillis() + destineTime.end * 24 * 60 * 60 * 1000;
+            }
+        }
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new Date(startDate));
+        int startYear = calendar.get(Calendar.YEAR);
+        int startMonth = calendar.get(Calendar.MONTH) + 1;
+        int startDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        calendar.setTime(new Date(endDate));
+        int endYear = calendar.get(Calendar.YEAR);
+        int endMonth = calendar.get(Calendar.MONTH) + 1;
+        int endDay = calendar.get(Calendar.DAY_OF_MONTH);
+        DatePicker picker = new DatePicker(getActivity());
+        picker.setCanceledOnTouchOutside(true);
+        picker.setUseWeight(true);
+        picker.setTopPadding(ConvertUtils.toPx(getActivity(), 10));
+        picker.setRangeEnd(endYear, endMonth, endDay);
+        picker.setRangeStart(startYear, startMonth, startDay);
+        picker.setSelectedItem(startYear, startMonth, startDay);
+        picker.setResetWhileWheel(false);
+        picker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
+            @Override
+            public void onDatePicked(String year, String month, String day) {
+                yuyueTimeStr = year + "-" + month + "-" + day;
+                yuyueTime.setTextColor(getResources().getColor(R.color.txt_black));
+                yuyueTime.setText(year + "年" + month + "月" + day + "日");
+            }
+        });
+        picker.show();
+    }
 
     @OnClick(R.id.close_expand_img)
     void closeExpandImg() {
@@ -225,6 +268,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 if (b) {
                     jishiGou.setTextColor(getResources().getColor(R.color.colorAccent));
                     yuyueGou.setTextColor(getResources().getColor(R.color.txt_normal));
+                    yuyueTimeCon.setVisibility(View.GONE);
                     showList(false);
                 }
             }
@@ -235,6 +279,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 if (b) {
                     jishiGou.setTextColor(getResources().getColor(R.color.txt_normal));
                     yuyueGou.setTextColor(getResources().getColor(R.color.colorAccent));
+                    yuyueTimeCon.setVisibility(View.VISIBLE);
                     showList(true);
                 }
             }
@@ -336,8 +381,30 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     @Override
     protected void onVisible() {
         super.onVisible();
+
+        selectAll.setChecked(false);
+
         queryCart(App.getPassengerId());
-        findByExpressDeliveryAll();
+
+        PersonUtil.getMemberInfo(mRxManager, getActivity(), App.getPassengerId(), new PersonUtil.OnGetMember() {
+            @Override
+            public void onSuccess(Member member) {
+                kuaidiAdapter.setExpressList(member.expressDelivery);
+
+                List<Coupon> coupons = member.listCoupon;
+                if (null != coupons && coupons.size() != 0) {
+                    couponText.setVisibility(View.VISIBLE);
+                    couponAdapter.setCoupons(coupons);
+                } else {
+                    couponText.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        });
     }
 
     public void showEmptyView(int tag) {
@@ -439,8 +506,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
             }
         }
 
+        if (longs.size() == 0) {
+            ToastUtil.showMessage(getActivity(), "请选择至少一项商品");
+            return;
+        }
+
+        Long[] longArray = new Long[longs.size()];
+
         Observable<Object> observable = ApiManager.getInstance().api
-                .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId, (Long[]) longs.toArray())
+                .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId, longs.toArray(longArray))
                 .map(new HttpResultFunc<>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -452,7 +526,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 startActivity(new Intent(getActivity(), MyOrderActivity.class));
                 expandableLayout.collapse();
                 apply.setText("提交订单");
-                queryCart(memberId);
+                onVisible();
             }
 
             @Override
@@ -471,8 +545,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
             }
         }
 
+        if (longs.size() == 0) {
+            ToastUtil.showMessage(getActivity(), "请选择至少一项商品");
+            return;
+        }
+
+        Long[] longArray = new Long[longs.size()];
+
         Observable<Object> observable = ApiManager.getInstance().api
-                .bespeakOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, date, couponId, (Long[]) longs.toArray())
+                .bespeakOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, date, couponId, longs.toArray(longArray))
                 .map(new HttpResultFunc<>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -484,7 +565,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 startActivity(new Intent(getActivity(), MyOrderActivity.class));
                 expandableLayout.collapse();
                 apply.setText("提交订单");
-                queryCart(memberId);
+                onVisible();
             }
 
             @Override
@@ -514,45 +595,6 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 setShippingMsg();
             }
         }
-    }
-
-    /**
-     * 查询所有快递
-     */
-    private void findByExpressDeliveryAll() {
-        queryCoupon(App.getPassengerId());
-        Observable<List<Express>> observable = ApiManager.getInstance().api
-                .findByExpressDeliveryAll()
-                .map(new HttpResultFunc<List<Express>>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new NoErrSubscriberListener<List<Express>>() {
-            @Override
-            public void onNext(List<Express> expresses) {
-                kuaidiAdapter.setExpressList(expresses);
-            }
-        })));
-    }
-
-    private void queryCoupon(long memberId) {
-        Observable<List<Coupon>> observable = ApiManager.getInstance().api
-                .findCoupon(memberId)
-                .map(new HttpResultFunc<List<Coupon>>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new NoErrSubscriberListener<List<Coupon>>() {
-            @Override
-            public void onNext(List<Coupon> coupons) {
-                if (null != coupons && coupons.size() != 0) {
-                    couponText.setVisibility(View.VISIBLE);
-                    couponAdapter.setCoupons(coupons);
-                } else {
-                    couponText.setVisibility(View.GONE);
-                }
-            }
-        })));
     }
 
     private long expressId = -1;

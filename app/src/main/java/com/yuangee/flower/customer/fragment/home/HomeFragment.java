@@ -205,8 +205,6 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     public void showGenre(List<Genre> genres) {
         genreList.addAll(genres);
 
-        MainActivity.genreList = genreList;
-
         finishTask();
 
     }

@@ -14,14 +14,24 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.Setting;
+import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.permission.RxPermissions;
+import com.yuangee.flower.customer.util.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by developerLzh on 2017/4/19.
@@ -72,7 +82,7 @@ public class SplashActivity extends RxBaseActivity {
                 return false;
             }
         });
-        handler.sendEmptyMessageDelayed(0, 2000);
+        handler.sendEmptyMessageDelayed(0, 1000);
     }
 
     private void showDialog() {
@@ -105,5 +115,26 @@ public class SplashActivity extends RxBaseActivity {
                         }
                     }
                 });
+    }
+
+    private void getSetting() {
+        Observable<Setting> observable = ApiManager.getInstance().api.getSetting()
+                .map(new HttpResultFunc<Setting>(SplashActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(this, false,
+                false, new HaveErrSubscriberListener<Setting>() {
+            @Override
+            public void onNext(Setting setting) {
+                delayToLogin();
+            }
+
+            @Override
+            public void onError(int code) {
+                ToastUtil.showMessage(SplashActivity.this,"配置信息获取失败");
+                delayToLogin();
+            }
+        })));
     }
 }

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -63,11 +64,13 @@ public class GoodsActivity extends RxBaseActivity {
 
     @OnClick(R.id.genre_first)
     void choiceFirst() {
+        ScrollView scrollView = new ScrollView(GoodsActivity.this);
         final RadioGroup group = new RadioGroup(this);
+        scrollView.addView(group);
         group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
-        if (null != MainActivity.genreList && MainActivity.genreList.size() != 0) {
-            for (int i = 0; i < MainActivity.genreList.size(); i++) {
-                Genre genre = MainActivity.genreList.get(i);
+        if (null != MainActivity.getGenre() && MainActivity.getGenre().size() != 0) {
+            for (int i = 0; i < MainActivity.getGenre().size(); i++) {
+                Genre genre = MainActivity.getGenre().get(i);
                 RadioButton button = new RadioButton(this);
                 button.setText(genre.genreName);
                 group.addView(button);
@@ -84,11 +87,11 @@ public class GoodsActivity extends RxBaseActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             boolean flag = false;
-                            for (int i1 = 0; i1 < MainActivity.genreList.size(); i1++) {
+                            for (int i1 = 0; i1 < MainActivity.getGenre().size(); i1++) {
                                 RadioButton btn = (RadioButton) group.getChildAt(i1);
                                 if (btn.isChecked()) {
-                                    goods.genreId = MainActivity.genreList.get(i1).id;
-                                    goods.genreName = MainActivity.genreList.get(i1).genreName;
+                                    goods.genreId = MainActivity.getGenre().get(i1).id;
+                                    goods.genreName = MainActivity.getGenre().get(i1).genreName;
                                     goods.genreSubId = 0;
                                     goods.genreSubName = "";
                                     genreSub.setText("");
@@ -110,7 +113,7 @@ public class GoodsActivity extends RxBaseActivity {
                             dialogInterface.dismiss();
                         }
                     })
-                    .setView(group)
+                    .setView(scrollView)
                     .create();
             dialog.show();
         } else {
@@ -121,11 +124,13 @@ public class GoodsActivity extends RxBaseActivity {
 
     @OnClick(R.id.genre_sub)
     void choiceSub() {
+        ScrollView scrollView = new ScrollView(GoodsActivity.this);
         final RadioGroup group = new RadioGroup(this);
+        scrollView.addView(group);
         group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
         if (0 != goods.genreId) {
-            for (int i = 0; i < MainActivity.genreList.size(); i++) {
-                final Genre genre = MainActivity.genreList.get(i);
+            for (int i = 0; i < MainActivity.getGenre().size(); i++) {
+                final Genre genre = MainActivity.getGenre().get(i);
                 if (genre.id == goods.genreId) {
                     for (GenreSub sub : genre.genreSubs) {
                         RadioButton button = new RadioButton(this);
@@ -166,7 +171,7 @@ public class GoodsActivity extends RxBaseActivity {
 
                                 }
                             })
-                            .setView(group)
+                            .setView(scrollView)
                             .create();
                     dialog.show();
                 }
@@ -484,16 +489,16 @@ public class GoodsActivity extends RxBaseActivity {
 
             changeOrAdd.setVisibility(View.GONE);
 
-            genreFirst.setEnabled(false);
-            genreSub.setEnabled(false);
-            grade.setEnabled(false);
-            color.setEnabled(false);
-            spec.setEnabled(false);
-            unit.setEnabled(false);
-            salesValue.setEnabled(false);
-            goodsImg.setEnabled(false);
-            goodsPrice.setEnabled(false);
-            goodsName.setEnabled(false);
+            genreFirst.setClickable(false);
+            genreSub.setClickable(false);
+            grade.setClickable(false);
+            color.setClickable(false);
+            spec.setClickable(false);
+            unit.setClickable(false);
+            salesValue.setClickable(false);
+            goodsImg.setClickable(false);
+            goodsPrice.setClickable(false);
+            goodsName.setClickable(false);
 
             apply.setVisibility(View.GONE);
         } else {

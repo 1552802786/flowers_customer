@@ -26,6 +26,7 @@ import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.OrderWare;
+import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
@@ -243,7 +244,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
                         if (order.bespeak) {
                             payYuyueWx(order.id);
                         } else {
-                            payYuyueZfb(order.id);
+                            payJishiWx(order.id);
                         }
                     }
                 }).create();
@@ -333,31 +334,31 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     }
 
     private void payJishiZfb(Long orderId){
-        Observable<String> observable = ApiManager.getInstance().api
+        Observable<ZfbResult> observable = ApiManager.getInstance().api
                 .payJishiSingleZfb(orderId)
-                .map(new HttpResultFunc<String>(context))
+                .map(new HttpResultFunc<ZfbResult>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        rxManager.add(observable.subscribe(new MySubscriber<String>(context, true,
-                false, new NoErrSubscriberListener<String>() {
+        rxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(context, true,
+                false, new NoErrSubscriberListener<ZfbResult>() {
             @Override
-            public void onNext(String s) {
-                detailZfb(s);
+            public void onNext(ZfbResult s) {
+                detailZfb(s.orderInfo);
             }
         })));
     }
 
     private void payYuyueZfb(Long orderId){
-        Observable<String> observable = ApiManager.getInstance().api
+        Observable<ZfbResult> observable = ApiManager.getInstance().api
                 .payYuyueSingleZfb(orderId)
-                .map(new HttpResultFunc<String>(context))
+                .map(new HttpResultFunc<ZfbResult>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        rxManager.add(observable.subscribe(new MySubscriber<String>(context, true,
-                false, new NoErrSubscriberListener<String>() {
+        rxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(context, true,
+                false, new NoErrSubscriberListener<ZfbResult>() {
             @Override
-            public void onNext(String s) {
-                detailZfb(s);
+            public void onNext(ZfbResult s) {
+                detailZfb(s.orderInfo);
             }
         })));
     }

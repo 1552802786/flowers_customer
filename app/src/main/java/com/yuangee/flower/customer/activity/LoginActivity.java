@@ -24,6 +24,7 @@ import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StatusBarUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
@@ -112,29 +113,11 @@ public class LoginActivity extends RxBaseActivity {
             public void onNext(Member o) {
                 SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
 
-                List<Address> addressList = o.memberAddressList;
-                if(null != addressList ){
-                    DbHelper.getInstance().getAddressLongDBManager().insertOrReplaceInTx(addressList);
-                } else {
-                    DbHelper.getInstance().getAddressLongDBManager().deleteAll();
-                }
-
                 editor.putLong("id", o.id);
-                editor.putString("name", o.name);
-                editor.putString("userName", o.userName);
-                editor.putString("passWord", o.passWord);
-                editor.putString("phone", o.phone);
-                editor.putString("email", o.email);
-                editor.putString("photo", o.photo);
-                editor.putBoolean("gender", o.gender);
-                editor.putString("type", o.type);
-                editor.putBoolean("inBlacklist", o.inBlacklist);
-                editor.putBoolean("isRecycle", o.isRecycle);
-                editor.putBoolean("inFirst", o.inFirst);
-                editor.putFloat("balance", (float) o.balance);
-                editor.putLong("deathDate", o.memberToken.deathDate);
-                editor.putString("token", o.memberToken.token);
-                editor.putLong("shopId", o.shop.id);
+                if (null != o.memberToken) {
+                    editor.putLong("deathDate", o.memberToken.deathDate);
+                    editor.putString("token", o.memberToken.token);
+                }
 
                 editor.putBoolean("login", true);
 
@@ -142,8 +125,18 @@ public class LoginActivity extends RxBaseActivity {
 
                 ApiManager.getInstance().addHeader();//添加统一请求头
 
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finishActivity();
+                PersonUtil.getMemberInfo(mRxManager, LoginActivity.this, App.getPassengerId(), new PersonUtil.OnGetMember() {
+                    @Override
+                    public void onSuccess(Member member) {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finishActivity();
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        ToastUtil.showMessage(LoginActivity.this, "获取会员信息失败");
+                    }
+                });
             }
         })));
     }

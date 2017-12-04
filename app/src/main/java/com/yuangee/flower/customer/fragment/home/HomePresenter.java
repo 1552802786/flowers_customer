@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.fragment.home;
 import android.content.Context;
 
 import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Recommend;
@@ -74,6 +75,9 @@ public class HomePresenter extends HomeContract.Presenter {
         mRxManager.add(mModel.getAllGenre().subscribe(new MySubscriber<>(context, false, false, new HaveErrSubscriberListener<List<Genre>>() {
             @Override
             public void onNext(List<Genre> orderList) {
+                DbHelper.getInstance().getGenreLongDBManager().deleteAll();
+                DbHelper.getInstance().getGenreSubLongDBManager().deleteAll();
+                DbHelper.getInstance().getGenreLongDBManager().insertInTx(orderList);
                 mView.showGenre(orderList);
                 mView.hideEmptyView();
             }

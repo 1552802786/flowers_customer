@@ -1,12 +1,13 @@
 package com.yuangee.flower.customer.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by developerLzh on 2017/11/1 0001.
  */
 
-public class Order {
+public class Order implements Serializable{
 
     public static final int ORDER_STATUS_NOTPAY = 0;//未支付
     public static final int ORDER_STATUS_WAIT = 1;//已支付,未发货
@@ -47,13 +48,11 @@ public class Order {
 
     public List<OrderWare> orderWaresList;//商品明细
 
-    public List<OrderPay> orderPays;//支付信息
-
-    public List<OrderStatus> orderStatusList;//订单状态记录
-
     public static final long serialVersionUID = 1L;
 
     public Double expressDeliveryMoney;//快递费
+
+    public Double couponMoney;//快递费
 
     public Double customerBrokerage;//收取客户手续费
 

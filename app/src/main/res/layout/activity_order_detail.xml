@@ -14,8 +14,8 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
-            android:id="@+id/shopping_car_recycler"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/goods_recycler"
             android:layout_width="match_parent"
             android:layout_height="0.0dp"
             android:layout_weight="1" />
@@ -42,21 +42,21 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/shouhuoren_"
+            android:id="@+id/total_fee_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="收  货  人:"
+            android:text="商品总额:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
         <TextView
-            android:id="@+id/shouhuo_name"
+            android:id="@+id/total_fee"
             android:layout_toLeftOf="@+id/ic_row_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_toRightOf="@+id/shouhuoren_"
-            android:text="请选择收货人"
+            android:layout_toRightOf="@+id/total_fee_text"
+            android:text=""
             android:gravity="right"/>
 
         <ImageView
@@ -75,21 +75,21 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/shouhuoren_phone"
+            android:id="@+id/shouxu_fei"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="收货电话:"
+            android:text="手续费:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
         <TextView
-            android:id="@+id/shouhuo_phone"
+            android:id="@+id/shouxu_fee"
             android:layout_toLeftOf="@+id/ic_row_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_toRightOf="@+id/shouhuoren_phone"
-            android:text="请选择收货电话"
+            android:layout_toRightOf="@+id/shouxu_fei"
+            android:text=""
             android:gravity="right"/>
 
         <ImageView
@@ -108,21 +108,21 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/shouhuoren_addr"
+            android:id="@+id/yun_fei_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="收货地址:"
+            android:text="运费:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
         <TextView
-            android:id="@+id/shouhuo_addr"
+            android:id="@+id/yun_fee"
             android:layout_toLeftOf="@+id/ic_row_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_toRightOf="@+id/shouhuoren_addr"
-            android:text="请选择收货地址"
+            android:layout_toRightOf="@+id/yun_fei_text"
+            android:text=""
             android:gravity="right"/>
 
         <ImageView
@@ -141,21 +141,21 @@
         android:layout_height="wrap_content"
         android:padding="5dp">
         <TextView
-            android:id="@+id/shouhuoren_method"
+            android:id="@+id/coupon_fee_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="配送方式:"
+            android:text="优惠券抵扣:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
         <TextView
-            android:id="@+id/shouhuo_method"
+            android:id="@+id/coupon_fee"
             android:layout_toLeftOf="@+id/ic_row_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_toRightOf="@+id/shouhuoren_method"
-            android:text="请选择收货地址"
+            android:layout_toRightOf="@+id/coupon_fee_text"
+            android:text=""
             android:gravity="right"/>
 
         <ImageView
@@ -211,45 +211,26 @@
                     android:textSize="18sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/express"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_chevron_right_black_24dp"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:text="快递：请选择快递" />
-
-                <TextView
-                    android:id="@+id/receive_place"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_chevron_right_black_24dp"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:text="收货地址：请选择收货地" />
-            </LinearLayout>
-
         </LinearLayout>
 
         <TextView
-            android:id="@+id/apply"
+            android:id="@+id/left_btn"
+            android:layout_width="0.0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@color/colorGray"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/right_btn"
             android:layout_width="0.0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:background="#ff0000"
             android:gravity="center"
-            android:text="提交订单"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="16sp" />
     </LinearLayout>

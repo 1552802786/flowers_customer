@@ -216,7 +216,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
         mRxManager.add(observable.subscribe(new MySubscriber<>(MyOrderActivity.this, true, false, new HaveErrSubscriberListener<PageResult<Order>>() {
             @Override
             public void onNext(PageResult<Order> result) {
-                if (result.total <= (page + 1) * limit) {
+                if (result.total > (page + 1) * limit) {
                     recyclerView.setHasMore(true);
                 } else {
                     recyclerView.setHasMore(false);

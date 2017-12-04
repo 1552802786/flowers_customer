@@ -210,15 +210,15 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     private void createType() {
         types.clear();
-        for (Genre genre : MainActivity.genreList) {
+        for (Genre genre : MainActivity.getGenre()) {
             types.add(genre);
         }
     }
 
     private void createDetailType(int position) {
         detailTypes.clear();
-        if (MainActivity.genreList.size() > 0) {
-            detailTypes.addAll(MainActivity.genreList.get(position).genreSubs);
+        if (MainActivity.getGenre().size() > 0) {
+            detailTypes.addAll(MainActivity.getGenre().get(position).genreSubs);
         }
     }
 
