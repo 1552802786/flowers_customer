@@ -56,6 +56,10 @@ public class Order implements Serializable{
 
     public Double customerBrokerage;//收取客户手续费
 
+
+    public Double peihuoFee;//收取客户手续费
+    public Double baozhuangFee;//收取客户手续费
+
     public Double shopIncome;//供货商收益,没用字段
 
     public Double platformRevenue;//平台收益,没用字段

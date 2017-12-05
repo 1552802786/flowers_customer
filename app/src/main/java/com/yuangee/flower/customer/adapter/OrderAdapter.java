@@ -128,7 +128,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         holder.tvGoodsKind.setText(kindStr);
         holder.tvOrderTime.setText("下单时间：" + bean.created);
         holder.tvOrderStatus.setText(bean.getStatusStr());
-        holder.tvOrderMoney.setText("¥" + bean.payable + "(不包含运费)");
+        holder.tvOrderMoney.setText("¥" + bean.payable);
 
         if (null != bean.orderWaresList) {
             for (int i = 0; i < bean.orderWaresList.size(); i++) {

@@ -32,12 +32,9 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.ToastUtil;
-import com.yuangee.flower.customer.widget.SwipeRecyclerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -76,6 +73,12 @@ public class OrderDetailActivity extends RxBaseActivity {
 
     @BindView(R.id.total)
     TextView hejiFee;
+
+    @BindView(R.id.peihuo_fee)
+    TextView peihuoFee;
+
+    @BindView(R.id.baozhuang_fee)
+    TextView baozhuangFee;
 
     private Order order;
     OrderWareAdapter adapter;
@@ -122,8 +125,13 @@ public class OrderDetailActivity extends RxBaseActivity {
         totalFee.setText("¥" + totalMoney);
         shouxuFei.setText("¥" + order.customerBrokerage);
         yunFei.setText("¥" + order.expressDeliveryMoney);
+
+        peihuoFee.setText("¥" + order.peihuoFee);
+        baozhuangFee.setText("¥" + order.baozhuangFee);
+
         couponFee.setText("¥" + order.couponMoney);
-        hejiFee.setText("" + (totalMoney + order.customerBrokerage + order.expressDeliveryMoney - order.couponMoney) + "元");
+        hejiFee.setText("" + (totalMoney + order.peihuoFee + order.baozhuangFee+
+                order.customerBrokerage + order.expressDeliveryMoney - order.couponMoney) + "元");
 
         initBtn();
     }

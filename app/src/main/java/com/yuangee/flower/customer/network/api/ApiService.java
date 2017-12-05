@@ -19,6 +19,7 @@ import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.result.QueryCartResult;
+import com.yuangee.flower.customer.result.SuppStatus;
 
 import java.util.List;
 
@@ -480,18 +481,17 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("rest/customer/deleteMemberAddress")
-    Observable<BaseResult<Object>> deleteMemberAddress(@Field("id") Long id
-    );
+    Observable<BaseResult<Object>> deleteMemberAddress(@Field("id") Long id);
 
     /**
-     *
      * @param orderId
-     * @param status 5取消订单  2发货
+     * @param status  5取消订单  2发货
      * @return
      */
     @GET("rest/order/updateOrder")
     Observable<BaseResult<Object>> updateOrder(@Query("orderId") Long orderId,
                                                @Query("status") Integer status);
+
     @GET("rest/activity/findMemberIdByCoupon")
     Observable<BaseResult<List<Coupon>>> findCoupon(@Query("memberId") Long memberId);
 
@@ -514,9 +514,20 @@ public interface ApiService {
 
     /**
      * 系统配置
+     *
      * @return
      */
     @GET("rest/rest/system/conf")
     Observable<BaseResult<Setting>> getSetting();
+
+    @GET("rest/shop/findMemberIdByShopApply")
+    Observable<BaseResult<SuppStatus>> getSuppStatus(@Query("memberId")Long memberId);
+
+    @FormUrlEncoded
+    @POST("rest/system/createFeedback")
+    Observable<BaseResult<Object>> feedback(@Field("memberName") String  memberName,
+                                            @Field("memberPhone") String  memberPhone,
+                                            @Field("content") String  content
+                                            );
 
 }

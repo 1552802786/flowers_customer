@@ -22,12 +22,12 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="0.3dp"
             android:background="@color/line_color" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="0.3dp"
             android:background="@color/line_color" />
     </LinearLayout>
 
@@ -39,13 +39,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="3dp">
 
         <TextView
             android:id="@+id/total_fee_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="3dp"
             android:text="商品总额:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
@@ -72,14 +72,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="3dp">
 
         <TextView
             android:id="@+id/shouxu_fei"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="手续费:"
+            android:layout_marginLeft="3dp"
+            android:text="平台服务费:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
         <TextView
@@ -105,13 +105,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="3dp">
 
         <TextView
             android:id="@+id/yun_fei_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="3dp"
             android:text="运费:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
@@ -139,12 +139,80 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="3dp">
+
+        <TextView
+            android:id="@+id/peihuo_fei_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="配货费:"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/peihuo_fee"
+            android:layout_toLeftOf="@+id/ic_row_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_toRightOf="@+id/peihuo_fei_text"
+            android:text=""
+            android:gravity="right"/>
+
+        <ImageView
+            android:id="@+id/ic_row_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp">
+
+        <TextView
+            android:id="@+id/baozhuang_fei_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="包装费:"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/baozhuang_fee"
+            android:layout_toLeftOf="@+id/ic_row_6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_toRightOf="@+id/baozhuang_fei_text"
+            android:text=""
+            android:gravity="right"/>
+
+        <ImageView
+            android:id="@+id/ic_row_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp">
         <TextView
             android:id="@+id/coupon_fee_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="3dp"
             android:text="优惠券抵扣:"
             android:textColor="@color/black"
             android:textSize="16sp"/>
@@ -179,7 +247,7 @@
 
         <LinearLayout
             android:layout_width="0.0dp"
-            android:layout_height="45dp"
+            android:layout_height="43dp"
             android:layout_weight="7"
             android:gravity="center_vertical"
             android:orientation="horizontal">

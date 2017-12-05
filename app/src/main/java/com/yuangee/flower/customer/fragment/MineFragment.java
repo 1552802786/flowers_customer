@@ -17,10 +17,12 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.FeedbackActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.activity.MyOrderActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
+import com.yuangee.flower.customer.activity.SupplierActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Address;
@@ -28,6 +30,8 @@ import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.result.SuppStatus;
 import com.yuangee.flower.customer.util.GlideCircleTransform;
 import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.PhoneUtil;
@@ -39,6 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -77,6 +82,12 @@ public class MineFragment extends RxLazyFragment {
 
     @BindView(R.id.fahuo_con)
     LinearLayout fahuoCon;
+
+    @BindView(R.id.be_supplier)
+    LinearLayout beSupplier;
+
+    @BindView(R.id.supplier_text)
+    TextView supplierText;
 
     @OnClick(R.id.notification_icon)
     void toMessage() {
@@ -135,14 +146,9 @@ public class MineFragment extends RxLazyFragment {
         ToastUtil.showMessage(getActivity(), "运费规则");
     }
 
-    @OnClick(R.id.be_supplier)
-    void beSupplier() {
-        startActivity(new Intent(getActivity(), RegisterActivity.class));
-    }
-
     @OnClick(R.id.feedback)
     void feedback() {
-        ToastUtil.showMessage(getActivity(), "意见反馈");
+        startActivity(new Intent(getActivity(), FeedbackActivity.class));
     }
 
     @OnClick(R.id.call_service)
@@ -228,5 +234,48 @@ public class MineFragment extends RxLazyFragment {
 
     private void initView() {
         getConsumerInfo(App.getPassengerId());
+        getSuppStatus();
+    }
+
+    private void getSuppStatus() {
+        Observable<SuppStatus> observable = ApiManager.getInstance().api.getSuppStatus(App.getPassengerId())
+                .map(new HttpResultFunc<SuppStatus>(getActivity()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true,
+                new NoErrSubscriberListener<SuppStatus>() {
+                    @Override
+                    public void onNext(SuppStatus status) {
+                        //TODO 区分状态
+                        if (status.status == 0) {
+                            supplierText.setText("申请成为供货商");
+                            beSupplier.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivity(new Intent(getActivity(), RegisterActivity.class));
+                                }
+                            });
+                        } else if (status.status == 1) {
+                            supplierText.setText("申请成为供货商");
+                            beSupplier.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ToastUtil.showMessage(getActivity(), "您已经提交过申请，正在审核中..");
+                                }
+                            });
+                        } else if (status.status == 2) {
+                            supplierText.setText("我的店铺");
+                            beSupplier.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivity(new Intent(getActivity(), SupplierActivity.class));
+                                }
+                            });
+                        } else if (status.status == 3) {
+
+                        }
+                    }
+                })));
     }
 }
