@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
@@ -81,6 +83,26 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     @BindView(R.id.detail_type_recycler)
     RecyclerView detailRecycler;
+
+    @OnClick(R.id.reset_sub)
+    void resetSub() {
+        for (GenreSub detailType : detailTypes) {
+            detailType.clicked = false;
+        }
+        detailTypeAdapter.setData(detailTypes);
+        genreSubName = "";
+
+        for (Genre type : types) {
+            type.clicked = false;
+        }
+        typeAdapter.setData(types);
+        genreName = "";
+    }
+
+    @OnClick(R.id.sure)
+    void sure() {
+        myDrawerLayout.closeDrawer(Gravity.LEFT);
+    }
 
     @OnClick(R.id.tv_av)
     void toSearch() {
@@ -171,11 +193,22 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         detailTypeAdapter.setOnItemClickListener(new Type3Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                myDrawerLayout.closeDrawer(Gravity.LEFT);
-                if (detailTypes.get(position).clicked) {
-                    genreSubName = detailTypes.get(position).name;
+                GenreSub bean = detailTypes.get(position);
+                if (bean.clicked) {
+                    bean.clicked = false;
                 } else {
-                    genreSubName = "";
+                    bean.clicked = true;
+                }
+                detailTypeAdapter.notifyItemChanged(position);
+                genreSubName = "";
+                for (GenreSub detailType : detailTypes) {
+                    if (detailType.clicked) {
+                        if (StringUtils.isBlank(genreSubName)) {
+                            genreSubName = detailType.name;
+                        } else {
+                            genreSubName += "," + detailType.name;
+                        }
+                    }
                 }
             }
         });
@@ -206,9 +239,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     private void createType() {
         types.clear();
-        for (Genre genre : MainActivity.getGenre()) {
-            types.add(genre);
-        }
+        types.addAll(MainActivity.getGenre());
     }
 
     private void createDetailType(int position) {
@@ -359,7 +390,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }
 
-    public void findWares(String genreName,String genreSubName,String params){
+    public void findWares(String genreName, String genreSubName, String params) {
         page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit);
     }

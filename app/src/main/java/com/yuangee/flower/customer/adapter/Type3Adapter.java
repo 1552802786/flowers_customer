@@ -86,20 +86,7 @@ public class Type3Adapter extends RecyclerView.Adapter {
             orderHolder.layoutView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for (int i = 0; i < data.size(); i++) {
-                        GenreSub type = data.get(i);
-                        if (i == position) {
-                            if (type.clicked) {
-                                type.clicked = false;
-                            } else {
-                                type.clicked = true;
-                            }
-                        } else {
-                            type.clicked = false;
-                        }
-                    }
-                    notifyDataSetChanged();
-                    mOnItemClickListener.onItemClick(v, position);
+                    mOnItemClickListener.onItemClick(v,position);
                 }
             });
         }

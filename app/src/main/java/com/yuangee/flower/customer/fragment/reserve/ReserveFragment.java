@@ -31,6 +31,7 @@ import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingModel;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingPresenter;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
@@ -85,6 +86,26 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     @BindView(R.id.detail_type_recycler)
     RecyclerView detailRecycler;
+
+    @OnClick(R.id.reset_sub)
+    void resetSub() {
+        for (GenreSub detailType : detailTypes) {
+            detailType.clicked = false;
+        }
+        detailTypeAdapter.setData(detailTypes);
+        genreSubName = "";
+
+        for (Genre type : types) {
+            type.clicked = false;
+        }
+        typeAdapter.setData(types);
+        genreName = "";
+    }
+
+    @OnClick(R.id.sure)
+    void sure() {
+        myDrawerLayout.closeDrawer(Gravity.LEFT);
+    }
 
     @OnClick(R.id.tv_av)
     void toSearch() {
@@ -175,11 +196,22 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         detailTypeAdapter.setOnItemClickListener(new Type3Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                myDrawerLayout.closeDrawer(Gravity.LEFT);
-                if (detailTypes.get(position).clicked) {
-                    genreSubName = detailTypes.get(position).name;
+                GenreSub bean = detailTypes.get(position);
+                if (bean.clicked) {
+                    bean.clicked = false;
                 } else {
-                    genreSubName = "";
+                    bean.clicked = true;
+                }
+                detailTypeAdapter.notifyItemChanged(position);
+                genreSubName = "";
+                for (GenreSub detailType : detailTypes) {
+                    if (detailType.clicked) {
+                        if (StringUtils.isBlank(genreSubName)) {
+                            genreSubName = detailType.name;
+                        } else {
+                            genreSubName += "," + detailType.name;
+                        }
+                    }
                 }
             }
         });
@@ -210,9 +242,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     private void createType() {
         types.clear();
-        for (Genre genre : MainActivity.getGenre()) {
-            types.add(genre);
-        }
+        types.addAll(MainActivity.getGenre());
     }
 
     private void createDetailType(int position) {
