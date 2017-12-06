@@ -6,6 +6,7 @@ import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -56,7 +57,10 @@ public class Member {
     @Property
     public double balance;
 
-//    @ToMany(referencedJoinProperty = "memberId")  考虑到只需要保存一个会员的信息，所以没用一对多关联
+    @Property
+    public String customServicePhone;
+
+    //    @ToMany(referencedJoinProperty = "memberId")  考虑到只需要保存一个会员的信息，所以没用一对多关联
     @Transient
     public List<Address> memberAddressList;//客户的收货地址
 
@@ -72,11 +76,11 @@ public class Member {
     @Transient
     public MemberToken memberToken;//token
 
-    @Generated(hash = 388917339)
-    public Member(long id, String name, String userName, String passWord,
-            String phone, String email, String photo, boolean gender,
-            String address, String type, boolean inBlacklist, boolean isRecycle,
-            boolean inFirst, double balance) {
+    @Generated(hash = 844222844)
+    public Member(long id, String name, String userName, String passWord, String phone,
+            String email, String photo, boolean gender, String address, String type,
+            boolean inBlacklist, boolean isRecycle, boolean inFirst, double balance,
+            String customServicePhone) {
         this.id = id;
         this.name = name;
         this.userName = userName;
@@ -91,6 +95,7 @@ public class Member {
         this.isRecycle = isRecycle;
         this.inFirst = inFirst;
         this.balance = balance;
+        this.customServicePhone = customServicePhone;
     }
 
     @Generated(hash = 367284327)
@@ -207,6 +212,14 @@ public class Member {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public String getCustomServicePhone() {
+        return this.customServicePhone;
+    }
+
+    public void setCustomServicePhone(String customServicePhone) {
+        this.customServicePhone = customServicePhone;
     }
 
 }

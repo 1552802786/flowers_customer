@@ -153,7 +153,13 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.call_service)
     void callService() {
-        PhoneUtil.call(getActivity(), "15102875535");
+//        PhoneUtil.call(getActivity(), "15102875535");
+        String phone = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId()).customServicePhone;
+        if(StringUtils.isNotBlank(phone)){
+            PhoneUtil.call(getActivity(),phone);
+        } else {
+            ToastUtil.showMessage(getActivity(),"无效的电话号码");
+        }
     }
 
     @Override
@@ -173,6 +179,7 @@ public class MineFragment extends RxLazyFragment {
             return;
         }
         isPrepared = false;
+//        initView();
     }
 
     @Override
@@ -238,7 +245,8 @@ public class MineFragment extends RxLazyFragment {
     }
 
     private void getSuppStatus() {
-        Observable<SuppStatus> observable = ApiManager.getInstance().api.getSuppStatus(App.getPassengerId())
+        Observable<SuppStatus> observable = ApiManager.getInstance()
+                .api.getSuppStatus(App.getPassengerId())
                 .map(new HttpResultFunc<SuppStatus>(getActivity()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
@@ -247,8 +255,7 @@ public class MineFragment extends RxLazyFragment {
                 new NoErrSubscriberListener<SuppStatus>() {
                     @Override
                     public void onNext(SuppStatus status) {
-                        //TODO 区分状态
-                        if (status.status == 0) {
+                        if (status == null) {
                             supplierText.setText("申请成为供货商");
                             beSupplier.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -256,24 +263,32 @@ public class MineFragment extends RxLazyFragment {
                                     startActivity(new Intent(getActivity(), RegisterActivity.class));
                                 }
                             });
-                        } else if (status.status == 1) {
-                            supplierText.setText("申请成为供货商");
-                            beSupplier.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    ToastUtil.showMessage(getActivity(), "您已经提交过申请，正在审核中..");
-                                }
-                            });
-                        } else if (status.status == 2) {
-                            supplierText.setText("我的店铺");
-                            beSupplier.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    startActivity(new Intent(getActivity(), SupplierActivity.class));
-                                }
-                            });
-                        } else if (status.status == 3) {
-
+                        } else {
+                            if (status.status == 0) {
+                                supplierText.setText("申请成为供货商");
+                                beSupplier.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        ToastUtil.showMessage(getActivity(), "您已经提交过申请，正在审核中..");
+                                    }
+                                });
+                            } else if (status.status == 1) {
+                                supplierText.setText("我的店铺");
+                                beSupplier.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(getActivity(), SupplierActivity.class));
+                                    }
+                                });
+                            } else {
+                                supplierText.setText("申请成为供货商");
+                                beSupplier.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(getActivity(), RegisterActivity.class));
+                                    }
+                                });
+                            }
                         }
                     }
                 })));

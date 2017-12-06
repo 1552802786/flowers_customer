@@ -7,6 +7,8 @@ package com.yuangee.flower.customer.entity;
 public class PersonResult {
     public long currentServerTime;//currentServerTime系统当前时间
 
+    public String customServicePhone;//服务电话
+
     public UpdateWares updateWares;//(商家修改商品时间设置 value：是true否false开启；start：开始时间 end:结束时间；)
 
     public AuctionTime auctionTime;//(竞拍时间设置 value：是true否false开启；start：开始时间；end:结束时间；)

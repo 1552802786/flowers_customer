@@ -69,12 +69,12 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="45dp"
                         android:layout_marginRight="45dp"
-                        android:background="@drawable/corners_bg_white_stroke"
-                        android:drawableLeft="@drawable/ic_search_gray_24dp"
+                        android:background="@drawable/corners_alpha_white"
+                        android:drawableLeft="@drawable/ic_search_white_24dp"
                         android:gravity="center_vertical"
                         android:paddingLeft="8dp"
                         android:text="  搜索"
-                        android:textColor="@color/colorGray"
+                        android:textColor="@color/white"
                         android:textSize="16sp" />
 
                     <ImageView

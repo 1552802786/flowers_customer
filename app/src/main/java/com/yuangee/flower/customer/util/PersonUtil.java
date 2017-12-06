@@ -67,6 +67,7 @@ public class PersonUtil {
                 DbHelper.getInstance().getAddressLongDBManager().deleteAll();
                 DbHelper.getInstance().getCouponLongDBManager().deleteAll();
                 if (null != result.member) {
+                    result.member.customServicePhone = result.customServicePhone;
                     DbHelper.getInstance().getMemberLongDBManager().insert(result.member);
                     if (null != result.member.shop) {
                         DbHelper.getInstance().getShopLongDBManager().insert(result.member.shop);

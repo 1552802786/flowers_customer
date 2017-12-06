@@ -10,11 +10,11 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.DepthPageTransformer;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.activity.BrowserActivity;
-import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.activity.SupplierActivity;
+import com.yuangee.flower.customer.activity.WebActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
@@ -217,7 +217,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         List<String> urls = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         for (BannerBean bannerBean : bannerBeanList) {
-            urls.add(bannerBean.imageUrl);
+            urls.add(Config.BASE_URL + bannerBean.imageUrl);
             titles.add(bannerBean.title);
         }
         banner.setBannerAnimation(DepthPageTransformer.class);
@@ -282,7 +282,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     @Override
     public void OnBannerClick(int position) {
         String url = bannerBeanList.get(position).linkUrl;
-        Intent intent = new Intent(getActivity(), BrowserActivity.class);
+        Intent intent = new Intent(getActivity(), WebActivity.class);
         intent.putExtra("url", url);
         intent.putExtra("title", "活动详情");
         startActivity(intent);

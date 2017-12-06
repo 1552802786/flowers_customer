@@ -321,8 +321,26 @@ public class PersonalCenterActivity extends RxBaseActivity {
     }
 
     public void exit(View view) {
-        AppManager.getAppManager().finishAllActivity();
-        App.me().getSharedPreferences().edit().clear().apply();
-        startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
+        dialog = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("确定退出吗？")
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        AppManager.getAppManager().finishAllActivity();
+                        App.me().getSharedPreferences().edit().clear().apply();
+                        startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
+                    }
+                })
+                .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+
     }
 }
