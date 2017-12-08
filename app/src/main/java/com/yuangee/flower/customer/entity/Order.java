@@ -1,5 +1,7 @@
 package com.yuangee.flower.customer.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -57,8 +59,11 @@ public class Order implements Serializable{
     public double customerBrokerage;//收取客户手续费
 
 
+    @SerializedName("preparePrice")
     public double peihuoFee;//配货费
-    public double baozhuangFee;//手续费
+
+    @SerializedName("packPrice")
+    public double baozhuangFee;//包装费
 
     public double shopIncome;//供货商收益,没用字段
 
