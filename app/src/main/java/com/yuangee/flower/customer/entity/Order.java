@@ -24,7 +24,7 @@ public class Order implements Serializable{
 
     public String created;//创建时间
 
-    public Double payable; //应付
+    public double payable; //应付
 
     public String memo;//b备注
 
@@ -34,7 +34,7 @@ public class Order implements Serializable{
 
     public String bespeakDate;//预约时间
 
-    public Double bespeakMoney;//预约金额
+    public double bespeakMoney;//预约金额
 
     public String receiverName;//收货人名字
 
@@ -50,21 +50,21 @@ public class Order implements Serializable{
 
     public static final long serialVersionUID = 1L;
 
-    public Double expressDeliveryMoney;//快递费
+    public double expressDeliveryMoney;//快递费
 
-    public Double couponMoney;//快递费
+    public double couponMoney;//快递费
 
-    public Double customerBrokerage;//收取客户手续费
+    public double customerBrokerage;//收取客户手续费
 
 
-    public Double peihuoFee;//收取客户手续费
-    public Double baozhuangFee;//收取客户手续费
+    public double peihuoFee;//配货费
+    public double baozhuangFee;//手续费
 
-    public Double shopIncome;//供货商收益,没用字段
+    public double shopIncome;//供货商收益,没用字段
 
-    public Double platformRevenue;//平台收益,没用字段
+    public double platformRevenue;//平台收益,没用字段
 
-    public  Double realPay;//实付
+    public  double realPay;//实付
 
     public Long memberId;//客户id
 
