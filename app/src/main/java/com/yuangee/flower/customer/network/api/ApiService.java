@@ -93,7 +93,8 @@ public interface ApiService {
                                                         @Query("genreSubName") String genreSubName,
                                                         @Query("params") String params,
                                                         @Query("offset") Long offset,
-                                                        @Query("limit") Long Limit);
+                                                        @Query("limit") Long Limit,
+                                                        @Query("shopId")Long shopId);
 
     /**
      * 根据用户id查询店铺信息

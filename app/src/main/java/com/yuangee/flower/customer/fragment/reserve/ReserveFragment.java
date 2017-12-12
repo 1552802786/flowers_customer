@@ -133,6 +133,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     private int page = 0;
     private int limit = 10;
 
+    private Long shopId = null;
     private String genreName = "";
     private String genreSubName = "";
     private String params = "";//关键字
@@ -229,7 +230,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
             @Override
             public void onDrawerClosed(View drawerView) {
                 page = 0;
-                presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+                presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
             }
 
             @Override
@@ -292,7 +293,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
 
     }
 
@@ -340,7 +341,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
                 }
             });
         } else {
@@ -350,7 +351,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
                 }
             });
         }
@@ -369,13 +370,13 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
     @Override
@@ -390,7 +391,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     public void findWares(String params) {
         page = 0;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
 }

@@ -14,7 +14,7 @@ import rx.Observable;
 
 public interface ReserveContract {
     interface View {
-        void showGoods(int page,int limit, PageResult<Goods> goodsList);
+        void showGoods(int page, int limit, PageResult<Goods> goodsList);
 
         /**
          * @param tag 0代表正常返回但没数据  1代表请求异常
@@ -26,13 +26,14 @@ public interface ReserveContract {
     }
 
     abstract class Presenter extends BasePresenter {
-        abstract void getGoodsData(String genreName, String genreSubName, String params, int page, int limit);
+        abstract void getGoodsData(String genreName, String genreSubName, String params, int page, int limit, Long shopId);
     }
 
     interface Model {
         /**
          * 获取banner数据
          */
-        Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName, String params, long page, long limit);
+        Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName,
+                                                   String params, long page, long limit, Long shopId);
     }
 }

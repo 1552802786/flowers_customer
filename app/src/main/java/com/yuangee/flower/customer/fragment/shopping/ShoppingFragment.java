@@ -130,6 +130,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     private int page = 0;
     private int limit = 10;
 
+    private Long shopId = null;
     private String genreName = "";
     private String genreSubName = "";
     private String params = "";//关键字
@@ -226,7 +227,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             @Override
             public void onDrawerClosed(View drawerView) {
                 page = 0;
-                presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+                presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
             }
 
             @Override
@@ -289,7 +290,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
 
     }
 
@@ -337,7 +338,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
                 }
             });
         } else {
@@ -347,7 +348,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
                 }
             });
         }
@@ -366,13 +367,13 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
     @Override
@@ -387,12 +388,12 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     public void findWares(String params) {
         page = 0;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
     public void findWares(String genreName, String genreSubName, String params) {
         page = 0;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
 }
