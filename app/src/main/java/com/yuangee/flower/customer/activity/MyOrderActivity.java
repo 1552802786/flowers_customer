@@ -84,7 +84,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
         status = getIntent().getIntExtra("status", -1);
         bespeak = getIntent().getBooleanExtra("bespeak", false);
         isShop = getIntent().getBooleanExtra("isShop", false);
-        if (isShop) {
+        if (isShop) {//是否是店铺订单
             shopId = App.me().getSharedPreferences().getLong("shopId", -1);
             if (shopId == -1) {
                 shopId = null;
@@ -105,12 +105,22 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
         } else if (status == 2) {
             radioWaitReceiving.setChecked(true);
         }
+
+//        if (isShop) {
+//            radioNotPay.setVisibility(View.GONE);
+//            radioAppoint.setVisibility(View.GONE);
+//            radioAppoint.setVisibility(View.GONE);
+//        }
         initRecyclerView();
     }
 
     @Override
     public void initToolBar() {
-        mToolbar.setTitle("我的订单");
+        if (isShop) {
+            mToolbar.setTitle("我的订单");
+        } else {
+            mToolbar.setTitle("店铺订单");
+        }
         setSupportActionBar(mToolbar);
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -130,7 +140,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
 
         initHandler();
         orders = new ArrayList<>();
-        adapter = new OrderAdapter(this, mRxManager);
+        adapter = new OrderAdapter(this, mRxManager,isShop);
         adapter.setOnRefresh(new OrderAdapter.OnRefresh() {
             @Override
             public void onRefresh() {
@@ -289,7 +299,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
 
     private void queryOrders(Integer status, Boolean bespeak, Long memberId, Long shopId) {
         Observable<PageResult<Order>> observable = ApiManager.getInstance().api
-                .findByParams(status, bespeak, memberId, shopId, (long) page, (long) limit)
+                .findByParams(status, bespeak, memberId, shopId, (long) page * 10, (long) limit)
                 .map(new HttpResultFunc<PageResult<Order>>(MyOrderActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

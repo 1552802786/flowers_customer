@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.OrderWareAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.db.DbHelper;
+import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Order;
 import com.yuangee.flower.customer.entity.OrderWare;
 import com.yuangee.flower.customer.entity.PayResult;
@@ -80,8 +83,46 @@ public class OrderDetailActivity extends RxBaseActivity {
     @BindView(R.id.baozhuang_fee)
     TextView baozhuangFee;
 
+    @BindView(R.id.order_no)
+    TextView orderNo;
+
+    @BindView(R.id.created_time)
+    TextView createdTime;
+
+    @BindView(R.id.bespeak_time)
+    TextView bespeakTime;
+
+    @BindView(R.id.bespeak_money)
+    TextView bespeakMoney;
+
+    @BindView(R.id.bespeak_time_con)
+    LinearLayout bespeakTimeCon;
+
+    @BindView(R.id.bespeak_money_con)
+    LinearLayout bespeakMoneyCon;
+
+    @BindView(R.id.customer_name)
+    TextView customerName;
+
+    @BindView(R.id.customer_phone)
+    TextView customerPhone;
+
+    @BindView(R.id.receiver_name)
+    TextView receiverName;
+
+    @BindView(R.id.receiver_phone)
+    TextView receiverPhone;
+
+    @BindView(R.id.receiver_place)
+    TextView receiverPlace;
+
+    @BindView(R.id.receiver_kuaidi)
+    TextView receiverKuaidi;
+
     private Order order;
     OrderWareAdapter adapter;
+
+    private boolean isShop = false;
 
     @Override
     public int getLayoutId() {
@@ -108,6 +149,7 @@ public class OrderDetailActivity extends RxBaseActivity {
     @Override
     public void initViews(Bundle savedInstanceState) {
         order = (Order) getIntent().getSerializableExtra("order");
+        isShop = getIntent().getBooleanExtra("isShop", false);
         if (null == order) {
             finish();
             return;
@@ -130,73 +172,117 @@ public class OrderDetailActivity extends RxBaseActivity {
         baozhuangFee.setText("¥" + order.baozhuangFee);
 
         couponFee.setText("¥" + order.couponMoney);
-        hejiFee.setText("" + (totalMoney + order.peihuoFee + order.baozhuangFee+
+        hejiFee.setText("" + (totalMoney + order.peihuoFee + order.baozhuangFee +
                 order.customerBrokerage + order.expressDeliveryMoney - order.couponMoney) + "元");
+
+        //订单基本信息
+        orderNo.setText(order.orderNo);
+        createdTime.setText(order.created);
+        if (!order.bespeak) {
+            bespeakMoneyCon.setVisibility(View.GONE);
+            bespeakTimeCon.setVisibility(View.GONE);
+        } else {
+            bespeakTime.setText(order.bespeakDateStr);
+            bespeakMoney.setText("¥" + order.bespeakMoney);
+        }
+
+        //客户基本信息
+        customerName.setText(order.memberName);
+        customerPhone.setText(order.memberPhone);
+
+        //收货信息
+        receiverName.setText(order.receiverName);
+        receiverPhone.setText(order.receiverPhone);
+        receiverPlace.setText(order.receiverAddress);
+        String s = "";
+        Express express = DbHelper.getInstance().getExpressLongDBManager().load(order.expressId);
+        if (express != null) {
+            s = express.expressDeliveryName + "<" + express.expressDeliveryMoney + "元>";
+        }
+        receiverKuaidi.setText(s);
 
         initBtn();
     }
 
     private void initBtn() {
-        if (order.status == 0) {
-            leftBtn.setVisibility(View.VISIBLE);
-            rightBtn.setVisibility(View.VISIBLE);
-            leftBtn.setText("去支付");
-            rightBtn.setText("取消订单");
-            leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    payOrder(order);
+        if (!isShop) {
+            if (order.status == 0) {
+                leftBtn.setVisibility(View.VISIBLE);
+                rightBtn.setVisibility(View.VISIBLE);
+                if (!order.bespeak) {
+                    leftBtn.setText("去支付");
+                } else {
+                    leftBtn.setText("支付预约金");
                 }
-            });
-            rightBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    cancelOrder(order);
-                }
-            });
-        } else if (order.status == 1) {
-            leftBtn.setVisibility(View.VISIBLE);
-            rightBtn.setVisibility(View.GONE);
-            leftBtn.setText("提醒发货");
-            leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ToastUtil.showMessage(OrderDetailActivity.this, "提醒卖家发货成功，商品将很快送到你手中");
-                }
-            });
-        } else if (order.status == 2) {
-            leftBtn.setVisibility(View.VISIBLE);
-            rightBtn.setVisibility(View.GONE);
-            leftBtn.setText("确认收货");
-            leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    confirmOrder(order);
-                }
-            });
-        } else if (order.status == 3) {
-            leftBtn.setVisibility(View.GONE);
-            rightBtn.setVisibility(View.GONE);
-        } else if (order.status == 4) {
-            leftBtn.setVisibility(View.VISIBLE);
-            rightBtn.setVisibility(View.VISIBLE);
-            leftBtn.setText("去支付");
-            rightBtn.setText("取消订单");
-            leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    payOrder(order);
-                }
-            });
-            rightBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    cancelOrder(order);
-                }
-            });
-        } else if (order.status == 5) {
-            leftBtn.setVisibility(View.GONE);
-            rightBtn.setVisibility(View.GONE);
+                rightBtn.setText("取消订单");
+                leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        payOrder(order);
+                    }
+                });
+                rightBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cancelOrder(order);
+                    }
+                });
+            } else if (order.status == 1) {
+                leftBtn.setVisibility(View.VISIBLE);
+                rightBtn.setVisibility(View.GONE);
+                leftBtn.setText("提醒发货");
+                leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ToastUtil.showMessage(OrderDetailActivity.this, "提醒卖家发货成功，商品将很快送到你手中");
+                    }
+                });
+            } else if (order.status == 2) {
+                leftBtn.setVisibility(View.VISIBLE);
+                rightBtn.setVisibility(View.GONE);
+                leftBtn.setText("确认收货");
+                leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        confirmOrder(order);
+                    }
+                });
+            } else if (order.status == 3) {
+                leftBtn.setVisibility(View.GONE);
+                rightBtn.setVisibility(View.GONE);
+            } else if (order.status == 4) {
+                leftBtn.setVisibility(View.VISIBLE);
+                rightBtn.setVisibility(View.VISIBLE);
+                leftBtn.setText("支付尾款");
+                rightBtn.setText("取消订单");
+                leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        payOrder(order);
+                    }
+                });
+                rightBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cancelOrder(order);
+                    }
+                });
+            } else if (order.status == 5) {
+                leftBtn.setVisibility(View.GONE);
+                rightBtn.setVisibility(View.GONE);
+            }
+        } else {
+            if (order.status == 1) {
+                leftBtn.setVisibility(View.VISIBLE);
+                rightBtn.setVisibility(View.GONE);
+                leftBtn.setText("确认发货");
+                leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        fahuo(order);
+                    }
+                });
+            }
         }
     }
 
@@ -293,13 +379,34 @@ public class OrderDetailActivity extends RxBaseActivity {
         dialog.show();
     }
 
+    private void fahuo(final Order order) {
+        AlertDialog dialog = new AlertDialog.Builder(OrderDetailActivity.this)
+                .setTitle("温馨提示")
+                .setMessage("您确定要取消订单吗？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        updateOrderStatus(order.id, 3);
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
     private void confirmOrder(Order order) {
         updateOrderStatus(order.id, Order.ORDER_STATUS_FINISH);
     }
 
-    private void payJishiWx(Long orderId) {
+    private void payJishiWx(Long orderId, Integer type) {
         Observable<JsonElement> observable = ApiManager.getInstance().api
-                .payJishiSingleWx(orderId)
+                .payJishiSingleWx(orderId, type)
                 .map(new HttpResultFunc<JsonElement>(OrderDetailActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -330,7 +437,7 @@ public class OrderDetailActivity extends RxBaseActivity {
     private void detailWxPay(JsonElement jsonElement) {
         try {
             JSONObject json = new JSONObject(jsonElement.toString());
-            if (null != json && !json.has("retcode")) {
+            if (!json.has("retcode")) {
                 PayReq req = new PayReq();
                 req.appId = json.getString("appid");
                 req.partnerId = json.getString("partnerid");
@@ -354,9 +461,9 @@ public class OrderDetailActivity extends RxBaseActivity {
         }
     }
 
-    private void payJishiZfb(Long orderId) {
+    private void payJishiZfb(Long orderId, Integer type) {
         Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payJishiSingleZfb(orderId)
+                .payJishiSingleZfb(orderId, type)
                 .map(new HttpResultFunc<ZfbResult>(OrderDetailActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -425,9 +532,13 @@ public class OrderDetailActivity extends RxBaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (order.bespeak) {
-                            payYuyueZfb(order.id);
+                            if (order.status == Order.ORDER_STATUS_NOTPAY) {
+                                payYuyueZfb(order.id);//预约单支付预约金
+                            } else if (order.status == Order.ORDER_STATUS_BE_BACK) {
+                                payJishiZfb(order.id, 1);//预约单支付尾款
+                            }
                         } else {
-                            payJishiZfb(order.id);
+                            payJishiZfb(order.id, 0);//即时单支付全款
                         }
                     }
                 })
@@ -435,9 +546,13 @@ public class OrderDetailActivity extends RxBaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (order.bespeak) {
-                            payYuyueWx(order.id);
+                            if (order.status == Order.ORDER_STATUS_NOTPAY) {
+                                payYuyueWx(order.id);//预约单支付预约金
+                            } else if (order.status == Order.ORDER_STATUS_BE_BACK) {
+                                payJishiWx(order.id, 1);//预约单支付尾款
+                            }
                         } else {
-                            payJishiWx(order.id);
+                            payJishiWx(order.id, 0);//即时单支付全款
                         }
                     }
                 }).create();

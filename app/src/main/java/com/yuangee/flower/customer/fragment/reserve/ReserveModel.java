@@ -28,7 +28,7 @@ public class ReserveModel implements ReserveContract.Model {
     @Override
     public Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName,
                                                       String params, long page, long limit,Long shopId) {
-        return ApiManager.getInstance().api.findWares(genreName,genreSubName,params,page, limit,shopId)
+        return ApiManager.getInstance().api.findWares(genreName,genreSubName,params,page*10, limit,shopId)
                 .map(new HttpResultFunc<PageResult<Goods>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

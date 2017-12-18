@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by developerLzh on 2017/11/1 0001.
  */
 
-public class OrderWare implements Serializable{
+public class OrderWare implements Serializable {
     public Long id;
 
     public long orderId;
@@ -19,7 +19,7 @@ public class OrderWare implements Serializable{
 
     public int quantity;
 
-    public int total;
+    public double total;
 
     public Goods wares;
 

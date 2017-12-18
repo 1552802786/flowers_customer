@@ -70,11 +70,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Holder> 
         holder.textDate.setText(msg.created);
         holder.messageText.setText(msg.contentMore);
         holder.titleText.setText(msg.content);
-        holder.icRead.setVisibility(msg.isRead ? View.GONE : View.VISIBLE);
+        holder.icRead.setVisibility(msg.noticeRead.hasRead ? View.GONE : View.VISIBLE);
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!msg.isRead) {
+                if (!msg.noticeRead.hasRead) {
                     readMsg(msg.id, position);
                 }
             }
@@ -92,7 +92,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Holder> 
             @Override
             public void onNext(Object o) {
                 Message msg = messages.get(position);
-                msg.isRead = true;
+                msg.noticeRead.hasRead = true;
                 notifyDataSetChanged();
             }
         })));

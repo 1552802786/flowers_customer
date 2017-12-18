@@ -15,7 +15,7 @@ public class Order implements Serializable{
     public static final int ORDER_STATUS_WAIT = 1;//已支付,未发货
     public static final int ORDER_STATUS_CONSIGN = 2;//已发货,未收货
     public static final int ORDER_STATUS_FINISH = 3;//确认收货,完成
-    public static final int ORDER_STATUS_BE_BACK=4;//预约订单 已支付预约金,未完成支付
+    public static final int ORDER_STATUS_BE_BACK=4;//预约订单 已支付预约金,未支付尾款
     public static final int ORDER_STATUS_CANCEL=5;//订单取消
 
     public Long id;
@@ -34,7 +34,9 @@ public class Order implements Serializable{
 
     public Boolean bespeak;//是否预约
 
-    public String bespeakDate;//预约时间
+    public Long bespeakDate;//预约时间
+
+    public String bespeakDateStr;
 
     public double bespeakMoney;//预约金额
 

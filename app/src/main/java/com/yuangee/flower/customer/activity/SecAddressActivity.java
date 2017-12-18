@@ -77,7 +77,7 @@ public class SecAddressActivity extends RxBaseActivity {
         selectedAddr = (Address) getIntent().getSerializableExtra("address");
 
         recyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new AddressAdapter(this,mRxManager);
+        adapter = new AddressAdapter(this, mRxManager);
 
         recyclerView.setHasMore(false);
         recyclerView.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
@@ -118,7 +118,7 @@ public class SecAddressActivity extends RxBaseActivity {
         }
     }
 
-    private void showRecycler(){
+    private void showRecycler() {
         customEmptyView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
     }
@@ -180,6 +180,12 @@ public class SecAddressActivity extends RxBaseActivity {
                     showEmptyLayout(0);
                 } else {
                     showRecycler();
+                    for (Address address : member.memberAddressList) {
+                        if (address.defaultAddress) {
+                            address.isSelected = true;
+                            break;
+                        }
+                    }
                     adapter.setAddressList(member.memberAddressList);
                 }
 

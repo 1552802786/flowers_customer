@@ -6,6 +6,8 @@ import android.support.multidex.MultiDexApplication;
 import com.facebook.stetho.Stetho;
 import com.yuangee.flower.customer.db.DbHelper;
 
+import cn.jpush.android.api.JPushInterface;
+
 /**
  * Created by hcc on 16/8/7 21:18
  * 100332338@qq.com
@@ -24,7 +26,7 @@ public class FlowerApp extends MultiDexApplication {
         App.initApp(this);
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return mInstance;
     }
 
@@ -37,6 +39,12 @@ public class FlowerApp extends MultiDexApplication {
                         .build());
 
         initDataBase();
+        initJPush();
+    }
+
+    private void initJPush() {
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
 
     public static FlowerApp getInstance() {

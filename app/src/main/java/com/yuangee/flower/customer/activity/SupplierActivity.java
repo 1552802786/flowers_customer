@@ -107,7 +107,7 @@ public class SupplierActivity extends RxBaseActivity {
 
     private void getGoodsData() {
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api
-                .findWares(shopId, page, limit)
+                .findWares(shopId, page * 10, limit)
                 .map(new HttpResultFunc<PageResult<Goods>>(SupplierActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

@@ -51,7 +51,8 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("rest/member/login")
     Observable<BaseResult<Member>> login(@Field("phone") String phone,
-                                         @Field("smsCode") String smsCode);
+                                         @Field("smsCode") String smsCode,
+                                         @Field("registrationId") String registrationId);
 
     /**
      * 查询商品类型
@@ -94,7 +95,7 @@ public interface ApiService {
                                                         @Query("params") String params,
                                                         @Query("offset") Long offset,
                                                         @Query("limit") Long Limit,
-                                                        @Query("shopId")Long shopId);
+                                                        @Query("shopId") Long shopId);
 
     /**
      * 根据用户id查询店铺信息
@@ -498,11 +499,13 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("rest/pay/immediate/order/alipay")
-    Observable<BaseResult<ZfbResult>> payJishiSingleZfb(@Field("orderId") Long orderId);
+    Observable<BaseResult<ZfbResult>> payJishiSingleZfb(@Field("orderId") Long orderId,
+                                                        @Field("type") Integer type);
 
     @FormUrlEncoded
     @POST("rest/pay/immediate/order/wxpay")
-    Observable<BaseResult<JsonElement>> payJishiSingleWx(@Field("orderId") Long orderId);
+    Observable<BaseResult<JsonElement>> payJishiSingleWx(@Field("orderId") Long orderId,
+                                                         @Field("type") Integer type);
 
     @FormUrlEncoded
     @POST("rest/pay/reservation/order/alipay")
@@ -522,13 +525,13 @@ public interface ApiService {
     Observable<BaseResult<Setting>> getSetting();
 
     @GET("rest/shop/findMemberIdByShopApply")
-    Observable<BaseResult<SuppStatus>> getSuppStatus(@Query("memberId")Long memberId);
+    Observable<BaseResult<SuppStatus>> getSuppStatus(@Query("memberId") Long memberId);
 
     @FormUrlEncoded
     @POST("rest/system/createFeedback")
-    Observable<BaseResult<Object>> feedback(@Field("memberName") String  memberName,
-                                            @Field("memberPhone") String  memberPhone,
-                                            @Field("content") String  content
-                                            );
+    Observable<BaseResult<Object>> feedback(@Field("memberName") String memberName,
+                                            @Field("memberPhone") String memberPhone,
+                                            @Field("content") String content
+    );
 
 }

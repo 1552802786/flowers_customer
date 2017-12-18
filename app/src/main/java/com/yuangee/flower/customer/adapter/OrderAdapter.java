@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
     private RxManager rxManager;
 
+    private boolean isShop = false;
+
     public interface OnItemClickListener {
         /**
          * 点击事件的处理
@@ -86,9 +89,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         this.onRefresh = onRefresh;
     }
 
-    public OrderAdapter(Context context, RxManager rxManager) {
+    public OrderAdapter(Context context, RxManager rxManager, boolean isShop) {
         this.context = context;
         this.rxManager = rxManager;
+        this.isShop = isShop;
         data = new ArrayList<>();
     }
 
@@ -124,8 +128,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     public void onBindViewHolder(OrderAdapter.OrderHolder holder, final int position) {
 
         final Order bean = data.get(position);
-        String kindStr = "共<font color='#52A436'>" + bean.orderWaresList != null ? "" + bean.orderWaresList.size() : "0" + "</font>类商品";
-        holder.tvGoodsKind.setText(kindStr);
+        String kindStr = "共<font color='#f74f50'>" + (bean.orderWaresList != null ? "" + bean.orderWaresList.size() : "0") + "</font>类商品";
+        holder.tvGoodsKind.setText(Html.fromHtml(kindStr));
         holder.tvOrderTime.setText("下单时间：" + bean.created);
         holder.tvOrderStatus.setText(bean.getStatusStr());
         holder.tvOrderMoney.setText("¥" + bean.payable);
@@ -147,76 +151,116 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
             }
         }
 
-        if (bean.status == 0) {
-            holder.leftBtn.setVisibility(View.VISIBLE);
-            holder.rightBtn.setVisibility(View.VISIBLE);
-            holder.leftBtn.setText("去支付");
-            holder.rightBtn.setText("取消订单");
-            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    payOrder(bean);
+        if (!isShop) {
+
+            if (bean.status == 0) {
+                holder.leftBtn.setVisibility(View.VISIBLE);
+                holder.rightBtn.setVisibility(View.VISIBLE);
+                if (!bean.bespeak) {
+                    holder.leftBtn.setText("去支付");
+                } else {
+                    holder.leftBtn.setText("支付预约金");
                 }
-            });
-            holder.rightBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    cancelOrder(bean);
-                }
-            });
-        } else if (bean.status == 1) {
-            holder.leftBtn.setVisibility(View.VISIBLE);
-            holder.rightBtn.setVisibility(View.GONE);
-            holder.leftBtn.setText("提醒发货");
-            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ToastUtil.showMessage(context, "提醒卖家发货成功，商品将很快送到你手中");
-                }
-            });
-        } else if (bean.status == 2) {
-            holder.leftBtn.setVisibility(View.VISIBLE);
-            holder.rightBtn.setVisibility(View.GONE);
-            holder.leftBtn.setText("确认收货");
-            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    confirmOrder(bean);
-                }
-            });
-        } else if (bean.status == 3) {
-            holder.leftBtn.setVisibility(View.GONE);
-            holder.rightBtn.setVisibility(View.GONE);
-        } else if (bean.status == 4) {
-            holder.leftBtn.setVisibility(View.VISIBLE);
-            holder.rightBtn.setVisibility(View.VISIBLE);
-            holder.leftBtn.setText("去支付");
-            holder.rightBtn.setText("取消订单");
-            holder.leftBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    payOrder(bean);
-                }
-            });
-            holder.rightBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    cancelOrder(bean);
-                }
-            });
-        } else if (bean.status == 5) {
-            holder.leftBtn.setVisibility(View.GONE);
-            holder.rightBtn.setVisibility(View.GONE);
+                holder.rightBtn.setText("取消订单");
+                holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        payOrder(bean);
+                    }
+                });
+                holder.rightBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cancelOrder(bean);
+                    }
+                });
+            } else if (bean.status == 1) {
+                holder.leftBtn.setVisibility(View.VISIBLE);
+                holder.rightBtn.setVisibility(View.GONE);
+                holder.leftBtn.setText("提醒发货");
+                holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ToastUtil.showMessage(context, "提醒卖家发货成功，商品将很快送到你手中");
+                    }
+                });
+            } else if (bean.status == 2) {
+                holder.leftBtn.setVisibility(View.GONE);
+                holder.rightBtn.setVisibility(View.GONE);
+//                holder.leftBtn.setText("确认收货");
+//                holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        confirmOrder(bean);
+//                    }
+//                });
+            } else if (bean.status == 3) {
+                holder.leftBtn.setVisibility(View.GONE);
+                holder.rightBtn.setVisibility(View.GONE);
+            } else if (bean.status == 4) {
+                holder.leftBtn.setVisibility(View.VISIBLE);
+                holder.rightBtn.setVisibility(View.VISIBLE);
+                holder.leftBtn.setText("支付尾款");
+                holder.rightBtn.setText("取消订单");
+                holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        payOrder(bean);
+                    }
+                });
+                holder.rightBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cancelOrder(bean);
+                    }
+                });
+            } else if (bean.status == 5) {
+                holder.leftBtn.setVisibility(View.GONE);
+                holder.rightBtn.setVisibility(View.GONE);
+            }
+        } else {
+            if (bean.status == 1) {
+                holder.leftBtn.setText("确认发货");
+                holder.rightBtn.setVisibility(View.GONE);
+                holder.leftBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        fahuo(bean);
+                    }
+                });
+            }
         }
         //给该item设置一个监听器
-            holder.root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, OrderDetailActivity.class);
-                    intent.putExtra("order", bean);
-                    context.startActivity(intent);
-                }
-            });
+        holder.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, OrderDetailActivity.class);
+                intent.putExtra("order", bean);
+                intent.putExtra("isShop", isShop);
+                context.startActivity(intent);
+            }
+        });
+    }
+
+    private void fahuo(final Order bean) {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("温馨提示")
+                .setMessage("您确定要确认发货吗？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        updateOrderStatus(bean.id, 3);
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     private void payOrder(final Order order) {
@@ -226,9 +270,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (order.bespeak) {
-                            payYuyueZfb(order.id);
+                            if (order.status == Order.ORDER_STATUS_NOTPAY) {
+                                payYuyueZfb(order.id);//预约单支付预约金
+                            } else if (order.status == Order.ORDER_STATUS_BE_BACK) {
+                                payJishiZfb(order.id, 1);//预约单支付尾款
+                            }
                         } else {
-                            payJishiZfb(order.id);
+                            payJishiZfb(order.id, 0);//即时单支付全款
                         }
                     }
                 })
@@ -236,9 +284,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (order.bespeak) {
-                            payYuyueWx(order.id);
+                            if (order.status == Order.ORDER_STATUS_NOTPAY) {
+                                payYuyueWx(order.id);//预约单支付预约金
+                            } else if (order.status == Order.ORDER_STATUS_BE_BACK) {
+                                payJishiWx(order.id, 1);//预约单支付尾款
+                            }
                         } else {
-                            payJishiWx(order.id);
+                            payJishiWx(order.id, 0);//即时单支付全款
                         }
                     }
                 }).create();
@@ -270,9 +322,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
     }
 
-    private void payJishiWx(Long orderId) {
+    /**
+     * @param orderId
+     * @param type    0 即时单支付 1预约单支付尾款
+     */
+    private void payJishiWx(Long orderId, Integer type) {
         Observable<JsonElement> observable = ApiManager.getInstance().api
-                .payJishiSingleWx(orderId)
+                .payJishiSingleWx(orderId, type)
                 .map(new HttpResultFunc<JsonElement>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -327,9 +383,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         }
     }
 
-    private void payJishiZfb(Long orderId) {
+    /**
+     * @param orderId
+     * @param type    0 即时单支付 1预约单支付尾款
+     */
+    private void payJishiZfb(Long orderId, Integer type) {
         Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payJishiSingleZfb(orderId)
+                .payJishiSingleZfb(orderId, type)
                 .map(new HttpResultFunc<ZfbResult>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

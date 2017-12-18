@@ -1,7 +1,9 @@
 package com.yuangee.flower.customer.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -562,10 +564,21 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
             @Override
             public void onNext(Object o) {
                 ToastUtil.showMessage(getActivity(), "下单成功");
-                startActivity(new Intent(getActivity(), MyOrderActivity.class));
                 expandableLayout.collapse();
                 apply.setText("提交订单");
                 onVisible();
+
+                AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                        .setTitle("温馨提示")
+                        .setMessage("您已下单成功，请尽快支付预约金")
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                            }
+                        })
+                        .create();
+                dialog.show();
             }
 
             @Override

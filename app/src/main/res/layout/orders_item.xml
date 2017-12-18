@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/img_con"
         android:layout_margin="5dp"
-        android:text="1111" />
+        android:text="" />
 
     <!-- 共<font color='#52A436'>6</font>类商品 -->
 
@@ -100,6 +100,7 @@
         android:id="@+id/right_btn"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:visibility="gone"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/order_fee"
         android:layout_margin="5dp"
@@ -113,6 +114,7 @@
         android:layout_height="40dp"
         android:layout_below="@+id/order_fee"
         android:layout_margin="5dp"
+        android:visibility="gone"
         android:layout_toLeftOf="@+id/right_btn"
         android:background="@drawable/corners_color_green"
         android:text="去支付"

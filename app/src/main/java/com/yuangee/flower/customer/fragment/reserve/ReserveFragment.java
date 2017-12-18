@@ -34,6 +34,7 @@ import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
+import com.yuangee.flower.customer.widget.GoodsDetailDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -262,10 +263,12 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getActivity(), GoodsActivity.class);
-                intent.putExtra("change", false);
-                intent.putExtra("goods", adapter.getData().get(position));
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), GoodsActivity.class);
+//                intent.putExtra("change", false);
+//                intent.putExtra("goods", adapter.getData().get(position));
+//                startActivity(intent);
+                GoodsDetailDialog dialog = new GoodsDetailDialog(getActivity());
+                dialog.setGoods(adapter.getData().get(position));
             }
         });
         adapter.setmOnAddClickListener(new GoodsAdapter.OnAddClickListener() {

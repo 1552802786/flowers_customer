@@ -35,6 +35,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jpush.android.api.JPushInterface;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -103,7 +104,7 @@ public class LoginActivity extends RxBaseActivity {
 
     private void login(String phone, String code) {
         Observable<Member> observable = ApiManager.getInstance().api
-                .login(phone, code)
+                .login(phone, code, JPushInterface.getRegistrationID(LoginActivity.this))
                 .map(new HttpResultFunc<Member>(LoginActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

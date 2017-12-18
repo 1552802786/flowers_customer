@@ -78,9 +78,6 @@ public class MineFragment extends RxLazyFragment {
     TextView personPhone;
 
     @BindView(R.id.wait_fahuo)
-    LinearLayout waitFahuo;
-
-    @BindView(R.id.fahuo_con)
     LinearLayout fahuoCon;
 
     @BindView(R.id.be_supplier)
@@ -88,6 +85,9 @@ public class MineFragment extends RxLazyFragment {
 
     @BindView(R.id.supplier_text)
     TextView supplierText;
+
+    @BindView(R.id.my_all_order)
+    TextView myAllOrder;
 
     @OnClick(R.id.notification_icon)
     void toMessage() {
@@ -99,7 +99,7 @@ public class MineFragment extends RxLazyFragment {
         startActivity(new Intent(getActivity(), PersonalCenterActivity.class));
     }
 
-    @OnClick(R.id.order_detail_con)
+    @OnClick(R.id.my_all_order)
     void toDetail() {
         Intent intent = new Intent(getActivity(), MyOrderActivity.class);
         intent.putExtra("status", -1);
@@ -131,6 +131,11 @@ public class MineFragment extends RxLazyFragment {
         startActivity(intent);
     }
 
+    @OnClick(R.id.jingpai)
+    void jingpai() {
+        ToastUtil.showMessage(getActivity(), "竞拍");
+    }
+
     @OnClick(R.id.to_agreement)
     void toAgreement() {
         ToastUtil.showMessage(getActivity(), "服务条款");
@@ -155,10 +160,10 @@ public class MineFragment extends RxLazyFragment {
     void callService() {
 //        PhoneUtil.call(getActivity(), "15102875535");
         String phone = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId()).customServicePhone;
-        if(StringUtils.isNotBlank(phone)){
-            PhoneUtil.call(getActivity(),phone);
+        if (StringUtils.isNotBlank(phone)) {
+            PhoneUtil.call(getActivity(), phone);
         } else {
-            ToastUtil.showMessage(getActivity(),"无效的电话号码");
+            ToastUtil.showMessage(getActivity(), "无效的电话号码");
         }
     }
 
@@ -193,6 +198,9 @@ public class MineFragment extends RxLazyFragment {
         initView();
     }
 
+    private long shopId = -1;
+    private String shopName = "";
+
     private void getConsumerInfo(long id) {
         PersonUtil.getMemberInfo(mRxManager, getActivity(), id, new PersonUtil.OnGetMember() {
             @Override
@@ -209,6 +217,10 @@ public class MineFragment extends RxLazyFragment {
 
                 personName.setText(o.name);
                 personVip.setText("普通会员");
+                if (o.shop != null) {
+                    shopId = o.shop.id;
+                    shopName = o.shop.shopName;
+                }
                 if (StringUtils.isNotBlank(o.phone) && o.phone.length() == 11) {
                     personPhone.setText(o.phone.subSequence(0, 4) + "****" + o.phone.substring(7, 11));
                 } else {
@@ -277,7 +289,10 @@ public class MineFragment extends RxLazyFragment {
                                 beSupplier.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        startActivity(new Intent(getActivity(), SupplierActivity.class));
+                                        Intent intent = new Intent(getActivity(), SupplierActivity.class);
+                                        intent.putExtra("shopId", shopId);
+                                        intent.putExtra("shopName", shopName);
+                                        startActivity(intent);
                                     }
                                 });
                             } else {

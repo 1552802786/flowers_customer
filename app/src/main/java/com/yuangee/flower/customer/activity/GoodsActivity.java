@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -602,7 +603,7 @@ public class GoodsActivity extends RxBaseActivity {
         } else if (hint.contains("可售量")) {
             editName.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (hint.contains("单价")) {
-            editName.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            editName.setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL);
         } else {
             editName.setInputType(InputType.TYPE_CLASS_TEXT);
         }
