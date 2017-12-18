@@ -2,7 +2,7 @@ package com.yuangee.flower.customer.push;
 
 import android.content.Context;
 
-import com.kaamoo.driver.jn9hao.util.TagAliasOperatorHelper;
+import com.yuangee.flower.customer.util.TagAliasOperatorHelper;
 
 import cn.jpush.android.api.JPushMessage;
 import cn.jpush.android.service.JPushMessageReceiver;

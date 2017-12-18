@@ -31,7 +31,7 @@ import org.greenrobot.greendao.AbstractDao;
 public class DbHelper {
     private static final String DB_NAME = "driver.db";//数据库名称
     private static DbHelper instance;
-    private DaoMaster.DevOpenHelper mHelper;
+    private CusDevOpenHelper mHelper;
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
 
@@ -65,13 +65,13 @@ public class DbHelper {
     }
 
     public void init(Context context) {
-        mHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
+        mHelper = new CusDevOpenHelper(context, DB_NAME, null);
         mDaoMaster = new DaoMaster(mHelper.getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
     }
 
     public void init(Context context, String dbName) {
-        mHelper = new DaoMaster.DevOpenHelper(context, dbName, null);
+        mHelper = new CusDevOpenHelper(context, dbName, null);
         mDaoMaster = new DaoMaster(mHelper.getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
     }
@@ -196,7 +196,7 @@ public class DbHelper {
         return updateWaresLongDBManager;
     }
 
-    public  DBManager<Genre, Long> getGenreLongDBManager() {
+    public DBManager<Genre, Long> getGenreLongDBManager() {
         if (genreLongDBManager == null) {
             genreLongDBManager = new DBManager<Genre, Long>() {
                 @Override
@@ -208,7 +208,7 @@ public class DbHelper {
         return genreLongDBManager;
     }
 
-    public  DBManager<GenreSub, Long> getGenreSubLongDBManager() {
+    public DBManager<GenreSub, Long> getGenreSubLongDBManager() {
         if (genreSubLongDBManager == null) {
             genreSubLongDBManager = new DBManager<GenreSub, Long>() {
                 @Override

@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.kaamoo.driver.jn9hao.App;
-import com.kaamoo.driver.jn9hao.util.StringUtils;
+import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.util.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
