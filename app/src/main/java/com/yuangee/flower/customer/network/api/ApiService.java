@@ -534,4 +534,13 @@ public interface ApiService {
                                             @Field("content") String content
     );
 
+    @FormUrlEncoded
+    @POST("rest/order/customOrder")
+    Observable<BaseResult<Object>> cusOrder(@Field("name") String name,
+                                            @Field("phone") String phone,
+                                            @Field("waresId") long waresId,
+                                            @Field("quantity") int quantity,
+                                            @Field("shopId") long shopIp
+    );
+
 }

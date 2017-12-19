@@ -18,9 +18,11 @@ import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.GoodsActivity;
 import com.yuangee.flower.customer.activity.LoginActivity;
+import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -43,16 +45,10 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
     private Context context;
     private List<Goods> data;
 
-    private OnItemClickListener mOnItemClickListener;   //声明监听器接口
+    private OnOrderIngClick mOnItemClickListener;   //声明监听器接口
 
-    public interface OnItemClickListener {
-        /**
-         * 点击事件的处理
-         *
-         * @param view     :item中设置了监听的view
-         * @param position :点击了item的位置
-         */
-        void onItemClick(View view, int position);
+    public interface OnOrderIngClick {
+        void onOrdering(Goods goods);
     }
 
     /**
@@ -60,7 +56,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
      *
      * @param mOnItemClickListener 监听器的接口类型
      */
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+    public void setOnOrderingClickListener(OnOrderIngClick mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
@@ -69,7 +65,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
     private long shopId;
     private String shopName;
 
-    public SupplierAdapter(Context context, RxManager rxManager,long shopId,String shopName) {
+    public SupplierAdapter(Context context, RxManager rxManager, long shopId, String shopName) {
         this.context = context;
         this.rxManager = rxManager;
         this.shopId = shopId;
@@ -94,6 +90,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         holder.goodsMoney = view.findViewById(R.id.goods_money);
         holder.changeGoods = view.findViewById(R.id.change);
         holder.deleteGoodsp = view.findViewById(R.id.delete);
+        holder.ordering = view.findViewById(R.id.order);
 //        holder.goodsNum = view.findViewById(R.id.goods_num);
 
         return holder;
@@ -161,15 +158,14 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
             }
         });
 
-        //给该item设置一个监听器
-        if (mOnItemClickListener != null) {
-            holder.layoutView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(v, position);
+        holder.ordering.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (null != mOnItemClickListener) {
+                    mOnItemClickListener.onOrdering(bean);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -197,6 +193,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
 
         TextView changeGoods;
         TextView deleteGoodsp;
+        TextView ordering;
     }
 
 }

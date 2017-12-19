@@ -52,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="----基本信息----" />
+                android:text="----基本信息----"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,7 +66,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="订单编号:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/order_no"
@@ -75,7 +76,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -90,7 +91,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="下单时间:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/created_time"
@@ -100,7 +101,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -116,7 +117,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="预约时间:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/bespeak_time"
@@ -126,7 +127,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -142,7 +143,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="预付金额:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/bespeak_money"
@@ -152,7 +153,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -161,7 +162,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="----客户信息----" />
+                android:text="----客户信息----"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,7 +176,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="客户姓名:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/customer_name"
@@ -184,7 +186,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -199,7 +201,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="客户电话:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/customer_phone"
@@ -209,7 +211,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -218,7 +220,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="----收货信息----" />
+                android:text="----收货信息----"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -231,7 +234,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="收货人:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/receiver_name"
@@ -241,7 +244,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -256,7 +259,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="联系电话:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/receiver_phone"
@@ -266,7 +269,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -281,7 +284,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="收货地址:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/receiver_place"
@@ -291,7 +294,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -306,7 +309,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="快递:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/receiver_kuaidi"
@@ -316,7 +319,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -325,7 +328,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="----费用信息----" />
+                android:text="----费用信息----"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -340,7 +344,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="商品总额:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/total_fee"
@@ -349,7 +353,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -365,7 +369,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="平台服务费:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/shouxu_fee"
@@ -374,7 +378,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -391,7 +395,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="运费:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/yun_fee"
@@ -400,7 +404,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -417,7 +421,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="配货费:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/peihuo_fee"
@@ -426,7 +430,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -443,7 +447,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="包装费:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/baozhuang_fee"
@@ -453,7 +457,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -469,7 +473,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="优惠券抵扣:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/coupon_fee"
@@ -479,7 +483,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -541,7 +545,7 @@
             android:gravity="center"
             android:text=""
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:visibility="gone" />
 
         <TextView
@@ -553,7 +557,7 @@
             android:gravity="center"
             android:text=""
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:visibility="gone" />
     </LinearLayout>
 

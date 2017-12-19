@@ -2,16 +2,22 @@ package com.yuangee.flower.customer.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.SupplierAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
@@ -19,6 +25,8 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.util.StringUtils;
+import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
@@ -79,6 +87,12 @@ public class SupplierActivity extends RxBaseActivity {
 
         goodsList = new ArrayList<>();
         adapter = new SupplierAdapter(this, mRxManager, shopId, shopName);
+        adapter.setOnOrderingClickListener(new SupplierAdapter.OnOrderIngClick() {
+            @Override
+            public void onOrdering(Goods goods) {
+                showCusDialog(goods);
+            }
+        });
         goodRecycler.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         goodRecycler.setAdapter(adapter);
         goodRecycler.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
@@ -96,6 +110,101 @@ public class SupplierActivity extends RxBaseActivity {
                 getGoodsData();
             }
         });
+    }
+
+    private int qua;
+
+    AlertDialog dialog;
+
+    private void showCusDialog(final Goods goods) {
+        View view = LayoutInflater.from(this).inflate(R.layout.change_num_dialog, null);
+        final ImageView sub = view.findViewById(R.id.num_sub);
+        final ImageView add = view.findViewById(R.id.num_add);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        final TextView num = view.findViewById(R.id.goods_num);
+
+        qua = 1;
+        sub.setEnabled(false);
+        if (qua < goods.salesVolume) {
+            add.setEnabled(true);
+        }
+
+        sub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str = num.getText().toString();
+                if (StringUtils.isNotBlank(str)) {
+                    qua = Integer.parseInt(str);
+                } else {
+                    qua = 0;
+                }
+                qua--;
+                num.setText(String.valueOf(qua));
+                if (qua <= 1) {
+                    sub.setEnabled(false);
+                } else {
+                    sub.setEnabled(true);
+                }
+                if (qua >= goods.salesVolume) {
+                    add.setEnabled(false);
+                } else {
+                    add.setEnabled(true);
+                }
+            }
+        });
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str = num.getText().toString();
+                if (StringUtils.isNotBlank(str)) {
+                    qua = Integer.parseInt(str);
+                } else {
+                    qua = 0;
+                }
+                qua++;
+                num.setText(String.valueOf(qua));
+                if (qua <= 1) {
+                    sub.setEnabled(false);
+                } else {
+                    sub.setEnabled(true);
+                }
+                if (qua >= goods.salesVolume) {
+                    add.setEnabled(false);
+                } else {
+                    add.setEnabled(true);
+                }
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str = num.getText().toString();
+                if (StringUtils.isNotBlank(str)) {
+                    qua = Integer.parseInt(str);
+                } else {
+                    qua = 0;
+                }
+                if (qua != 0 && qua <= goods.salesVolume) {
+                    dialog.dismiss();
+                    orderIng(goods.id, qua);
+                } else if (qua == 0) {
+                    ToastUtil.showMessage(SupplierActivity.this, "数量必须大于0");
+                } else {
+                    ToastUtil.showMessage(SupplierActivity.this, "数量必须小于最大可售量" + goods.salesVolume);
+                }
+            }
+        });
+        dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+        dialog.show();
     }
 
     @Override
@@ -184,5 +293,22 @@ public class SupplierActivity extends RxBaseActivity {
 
     public void back(View view) {
         onBackPressed();
+    }
+
+    private void orderIng(long waresId, int num) {
+        Member member = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId());
+        Observable<Object> observable = ApiManager.getInstance().api
+                .cusOrder(member.name, member.phone, waresId, num, shopId)
+                .map(new HttpResultFunc<>(this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+                loadData();
+                goodRecycler.setRefreshing(true);
+            }
+        })));
     }
 }
