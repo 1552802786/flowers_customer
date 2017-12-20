@@ -112,18 +112,20 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     public void onBindViewHolder(final GoodsHolder holder, final int position) {
 
         final CartItem bean = data.get(position);
-        bean.wares.selectedNum = bean.quantity;
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.color.color_f6)
-                .diskCacheStrategy(DiskCacheStrategy.ALL);
-        Glide.with(context)
-                .load(Config.BASE_URL + bean.wares.image)
-                .apply(options)
-                .into(holder.goodsImg);
+        if (null != bean.wares) {
+            bean.wares.selectedNum = bean.quantity;
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.color.color_f6)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL);
+            Glide.with(context)
+                    .load(Config.BASE_URL + bean.wares.image)
+                    .apply(options)
+                    .into(holder.goodsImg);
 
-        holder.goodsName.setText(bean.wares.name);
-        holder.goodsPrice.setText("¥" + bean.wares.unitPrice + "/" + bean.wares.unit);
+            holder.goodsName.setText(bean.wares.name);
+            holder.goodsPrice.setText("¥" + bean.wares.unitPrice + "/" + bean.wares.unit);
+        }
         holder.goodsMoney.setText("总计：" + bean.totalPrice + "元");
 
         holder.goodsNum.setText(bean.quantity + "");

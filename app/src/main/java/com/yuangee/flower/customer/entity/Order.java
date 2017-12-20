@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.entity;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -54,18 +55,18 @@ public class Order implements Serializable{
 
     public static final long serialVersionUID = 1L;
 
-    public double expressDeliveryMoney;//快递费
+    public BigDecimal expressDeliveryMoney;//快递费
 
-    public double couponMoney;//快递费
+    public BigDecimal couponMoney;//快递费
 
-    public double customerBrokerage;//收取客户手续费
+    public BigDecimal customerBrokerage;//收取客户手续费
 
 
     @SerializedName("preparePrice")
-    public double peihuoFee;//配货费
+    public BigDecimal peihuoFee;//配货费
 
     @SerializedName("packPrice")
-    public double baozhuangFee;//包装费
+    public BigDecimal baozhuangFee;//包装费
 
     public double shopIncome;//供货商收益,没用字段
 

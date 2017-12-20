@@ -306,8 +306,8 @@ public class SupplierActivity extends RxBaseActivity {
         mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new NoErrSubscriberListener<Object>() {
             @Override
             public void onNext(Object o) {
-                loadData();
                 goodRecycler.setRefreshing(true);
+                getGoodsData();
             }
         })));
     }

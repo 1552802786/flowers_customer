@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.victor.loading.newton.NewtonCradleLoading;
+import com.victor.loading.rotate.RotateLoading;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.util.StringUtils;
 
@@ -35,14 +36,14 @@ public class RxProgressHUD extends Dialog {
     }
 
     public void dismiss() {
-        NewtonCradleLoading imageView = findViewById(R.id.spinnerImageView);
+        RotateLoading imageView = findViewById(R.id.spinnerImageView);
         imageView.stop();
         super.dismiss();
     }
 
     public void show() {
 
-        NewtonCradleLoading imageView = findViewById(R.id.spinnerImageView);
+        RotateLoading imageView = findViewById(R.id.spinnerImageView);
         imageView.start();
 
         super.show();

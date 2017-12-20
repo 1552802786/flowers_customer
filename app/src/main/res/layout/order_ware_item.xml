@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="品尚玫瑰"
+            android:text=""
             android:textColor="#000000" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:layout_weight="1"
             android:textColor="@color/green"
             android:gravity="center_vertical"
-            android:text="¥10/扎" />
+            android:text="" />
 
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:textColor="@color/colorAccent"
-            android:text="总计：20.0元" />
+            android:text="" />
 
     </LinearLayout>
 
@@ -52,7 +52,7 @@
         android:id="@+id/goods_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="x2"
+        android:text=""
         android:textSize="16sp"
         android:textColor="@color/green"
         android:layout_alignParentRight="true"

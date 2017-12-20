@@ -519,7 +519,7 @@ public class GoodsActivity extends RxBaseActivity {
 
     @Override
     public void initToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar =  findViewById(R.id.toolbar);
         toolbar.setTitle("商品详情");
 
         setSupportActionBar(toolbar);

@@ -48,16 +48,18 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         OrderWare orderWare = orderWares.get(position);
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.color.color_f6)
-                .diskCacheStrategy(DiskCacheStrategy.ALL);
-        Glide.with(context)
-                .load(Config.BASE_URL + orderWare.wares.image)
-                .apply(options)
-                .into(holder.img);
-        holder.goodsName.setText(orderWare.wares.name);
-        holder.goodsPrice.setText("¥" + orderWare.wares.unitPrice + "元/扎");
+        if(orderWare.wares != null){
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.color.color_f6)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL);
+            Glide.with(context)
+                    .load(Config.BASE_URL + orderWare.wares.image)
+                    .apply(options)
+                    .into(holder.img);
+            holder.goodsName.setText(orderWare.wares.name);
+            holder.goodsPrice.setText("¥" + orderWare.wares.unitPrice + "元/扎");
+        }
         holder.goodsTotalFee.setText("总价：" + orderWare.total + "元");
         holder.goodsNum.setText("x" + orderWare.quantity);
     }

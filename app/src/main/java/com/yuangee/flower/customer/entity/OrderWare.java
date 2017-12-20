@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Created by developerLzh on 2017/11/1 0001.
@@ -19,7 +20,7 @@ public class OrderWare implements Serializable {
 
     public int quantity;
 
-    public double total;
+    public BigDecimal total;
 
     public Goods wares;
 

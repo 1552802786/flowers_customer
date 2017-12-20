@@ -214,7 +214,7 @@ public class RegisterActivity extends RxBaseActivity {
     @Override
     public void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("商品详情");
+        toolbar.setTitle("注册");
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

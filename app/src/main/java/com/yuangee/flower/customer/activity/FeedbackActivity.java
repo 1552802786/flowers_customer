@@ -1,6 +1,8 @@
 package com.yuangee.flower.customer.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
@@ -29,6 +31,9 @@ public class FeedbackActivity extends RxBaseActivity {
     @BindView(R.id.edit_text)
     EditText editText;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_feedback;
@@ -37,6 +42,18 @@ public class FeedbackActivity extends RxBaseActivity {
     @Override
     public void initViews(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    public void initToolBar() {
+        toolbar =  findViewById(R.id.toolbar);
+        toolbar.setTitle("意见反馈");
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     public void send(View view){

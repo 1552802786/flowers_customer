@@ -34,10 +34,13 @@ import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.math.BigDecimal;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -119,6 +122,12 @@ public class OrderDetailActivity extends RxBaseActivity {
     @BindView(R.id.receiver_kuaidi)
     TextView receiverKuaidi;
 
+    @BindView(R.id.memo_con)
+    LinearLayout memoCon;
+
+    @BindView(R.id.memo_text)
+    TextView memoText;
+
     private Order order;
     OrderWareAdapter adapter;
 
@@ -160,9 +169,9 @@ public class OrderDetailActivity extends RxBaseActivity {
         adapter.setOrderWares(order.orderWaresList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
-        double totalMoney = 0.0;
+        BigDecimal totalMoney = new BigDecimal(0.0);
         for (OrderWare orderWare : order.orderWaresList) {
-            totalMoney += orderWare.total;
+            totalMoney = totalMoney.add(orderWare.total);
         }
         totalFee.setText("¥" + totalMoney);
         shouxuFei.setText("¥" + order.customerBrokerage);
@@ -172,8 +181,9 @@ public class OrderDetailActivity extends RxBaseActivity {
         baozhuangFee.setText("¥" + order.baozhuangFee);
 
         couponFee.setText("¥" + order.couponMoney);
-        hejiFee.setText("" + (totalMoney + order.peihuoFee + order.baozhuangFee +
-                order.customerBrokerage + order.expressDeliveryMoney - order.couponMoney) + "元");
+
+        hejiFee.setText("" + (totalMoney.add(order.peihuoFee).add(order.baozhuangFee).add(order.customerBrokerage)
+                .add(order.expressDeliveryMoney).subtract(order.couponMoney)) + "元");
 
         //订单基本信息
         orderNo.setText(order.orderNo);
@@ -184,6 +194,12 @@ public class OrderDetailActivity extends RxBaseActivity {
         } else {
             bespeakTime.setText(order.bespeakDateStr);
             bespeakMoney.setText("¥" + order.bespeakMoney);
+        }
+        if (StringUtils.isBlank(order.memo)) {
+            memoCon.setVisibility(View.GONE);
+        } else {
+            memoCon.setVisibility(View.VISIBLE);
+            memoText.setText(order.memo);
         }
 
         //客户基本信息

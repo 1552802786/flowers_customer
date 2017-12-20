@@ -125,7 +125,7 @@ public class SecAddressActivity extends RxBaseActivity {
 
     @Override
     public void initToolBar() {
-        mToolbar.setTitle("个人中心");
+        mToolbar.setTitle("收货地信息");
         setSupportActionBar(mToolbar);
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

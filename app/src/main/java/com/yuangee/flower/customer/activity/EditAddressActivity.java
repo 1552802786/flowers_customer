@@ -121,7 +121,7 @@ public class EditAddressActivity extends RxBaseActivity {
 
     @Override
     public void initToolBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         toolbar.setTitle("收货信息");
 
         setSupportActionBar(toolbar);

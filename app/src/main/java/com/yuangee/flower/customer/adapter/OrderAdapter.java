@@ -137,16 +137,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         if (null != bean.orderWaresList) {
             for (int i = 0; i < bean.orderWaresList.size(); i++) {
                 OrderWare wares = bean.orderWaresList.get(i);
-                if (i == 0) {
-                    loadImg(holder.img1, wares.wares.image, context);
-                } else if (i == 1) {
-                    loadImg(holder.img2, wares.wares.image, context);
-                } else if (i == 2) {
-                    loadImg(holder.img3, wares.wares.image, context);
-                } else if (i == 3) {
-                    loadImg(holder.img4, wares.wares.image, context);
-                } else if (i == 4) {
-                    loadImg(holder.img5, wares.wares.image, context);
+                if (wares.wares != null) {
+                    if (i == 0) {
+                        loadImg(holder.img1, wares.wares.image, context);
+                    } else if (i == 1) {
+                        loadImg(holder.img2, wares.wares.image, context);
+                    } else if (i == 2) {
+                        loadImg(holder.img3, wares.wares.image, context);
+                    } else if (i == 3) {
+                        loadImg(holder.img4, wares.wares.image, context);
+                    } else if (i == 4) {
+                        loadImg(holder.img5, wares.wares.image, context);
+                    }
                 }
             }
         }
