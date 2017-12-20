@@ -397,10 +397,12 @@ public class GoodsActivity extends RxBaseActivity {
                 .selectionMode(PictureConfig.SINGLE)
                 .previewImage(true)
                 .isCamera(true)
-                .enableCrop(false)
+                .enableCrop(true)
+                .withAspectRatio(4, 3)
                 .compress(true)
+                .showCropFrame(true)
+                .showCropGrid(true)
                 .compressMode(PictureConfig.LUBAN_COMPRESS_MODE)
-                .glideOverride(160, 160)
                 .previewEggs(true)
                 .hideBottomControls(true)
                 .forResult(PictureConfig.CHOOSE_REQUEST);
@@ -414,7 +416,7 @@ public class GoodsActivity extends RxBaseActivity {
             if (requestCode == PictureConfig.CHOOSE_REQUEST) {
                 List<LocalMedia> images = PictureSelector.obtainMultipleResult(data);
                 if (images != null && images.size() > 0) {
-                    imgPath = images.get(0).getCompressPath();
+                    imgPath = images.get(0).getCutPath();
                     RequestOptions options = new RequestOptions()
                             .centerCrop()
                             .placeholder(R.drawable.ic_add_img)
@@ -519,7 +521,7 @@ public class GoodsActivity extends RxBaseActivity {
 
     @Override
     public void initToolBar() {
-        toolbar =  findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("商品详情");
 
         setSupportActionBar(toolbar);
@@ -527,6 +529,12 @@ public class GoodsActivity extends RxBaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override

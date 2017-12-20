@@ -18,6 +18,7 @@ import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.GoodsActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
+import com.yuangee.flower.customer.activity.WaresDetailActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.adapter.Type2Adapter;
 import com.yuangee.flower.customer.adapter.Type3Adapter;
@@ -260,12 +261,11 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         adapter.setOnItemClickListener(new GoodsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                Intent intent = new Intent(getActivity(), GoodsActivity.class);
-//                intent.putExtra("goods", adapter.getData().get(position));
-//                intent.putExtra("change", false);
-//                startActivity(intent);
-                GoodsDetailDialog dialog = new GoodsDetailDialog(getActivity());
-                dialog.setGoods(adapter.getData().get(position));
+                Intent intent = new Intent(getActivity(), WaresDetailActivity.class);
+                intent.putExtra("goods", adapter.getData().get(position));
+                startActivity(intent);
+//                GoodsDetailDialog dialog = new GoodsDetailDialog(getActivity());
+//                dialog.setGoods(adapter.getData().get(position));
 
             }
         });

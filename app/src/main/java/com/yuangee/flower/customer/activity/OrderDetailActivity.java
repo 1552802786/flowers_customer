@@ -171,7 +171,9 @@ public class OrderDetailActivity extends RxBaseActivity {
                 LinearLayoutManager.VERTICAL, false));
         BigDecimal totalMoney = new BigDecimal(0.0);
         for (OrderWare orderWare : order.orderWaresList) {
-            totalMoney = totalMoney.add(orderWare.total);
+            if (null != orderWare.total) {
+                totalMoney = totalMoney.add(orderWare.total);
+            }
         }
         totalFee.setText("¥" + totalMoney);
         shouxuFei.setText("¥" + order.customerBrokerage);
@@ -182,8 +184,23 @@ public class OrderDetailActivity extends RxBaseActivity {
 
         couponFee.setText("¥" + order.couponMoney);
 
-        hejiFee.setText("" + (totalMoney.add(order.peihuoFee).add(order.baozhuangFee).add(order.customerBrokerage)
-                .add(order.expressDeliveryMoney).subtract(order.couponMoney)) + "元");
+        if (null != order.peihuoFee) {
+            totalMoney = totalMoney.add(order.peihuoFee);
+        }
+        if (null != order.baozhuangFee) {
+            totalMoney = totalMoney.add(order.baozhuangFee);
+        }
+        if (null != order.customerBrokerage) {
+            totalMoney = totalMoney.add(order.customerBrokerage);
+        }
+        if (null != order.expressDeliveryMoney) {
+            totalMoney = totalMoney.add(order.expressDeliveryMoney);
+        }
+        if (null != order.couponMoney) {
+            totalMoney = totalMoney.add(order.couponMoney);
+        }
+
+        hejiFee.setText("" + totalMoney.doubleValue() + "元");
 
         //订单基本信息
         orderNo.setText(order.orderNo);
@@ -398,7 +415,7 @@ public class OrderDetailActivity extends RxBaseActivity {
     private void fahuo(final Order order) {
         AlertDialog dialog = new AlertDialog.Builder(OrderDetailActivity.this)
                 .setTitle("温馨提示")
-                .setMessage("您确定要取消订单吗？")
+                .setMessage("您确定要确认发货吗？")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

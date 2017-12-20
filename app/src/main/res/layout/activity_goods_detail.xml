@@ -20,6 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -27,15 +28,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="添加商品图片"
+                    android:text="商品图片"
                     android:textColor="@color/black_alpha_45" />
 
 
                 <ImageView
                     android:id="@+id/goods_img"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
                     android:layout_margin="10dp"
+                    android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_add_img" />
 
 
@@ -72,11 +74,11 @@
                     <TextView
                         android:id="@+id/genre_first"
                         android:layout_width="match_parent"
-                        android:gravity="right"
-                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_1"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -113,9 +115,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:gravity="right"
                         android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_2"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -149,12 +151,12 @@
 
                     <TextView
                         android:id="@+id/grade"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="80dp"
+                        android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_3"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -188,12 +190,12 @@
 
                     <TextView
                         android:id="@+id/color"
-                        android:gravity="right"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_4"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -227,12 +229,12 @@
 
                     <TextView
                         android:id="@+id/spec"
-                        android:gravity="right"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_5"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -266,12 +268,12 @@
 
                     <TextView
                         android:id="@+id/unit"
-                        android:gravity="right"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_6"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -305,12 +307,12 @@
 
                     <TextView
                         android:id="@+id/sales_value"
-                        android:gravity="right"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_7"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -344,12 +346,12 @@
 
                     <TextView
                         android:id="@+id/goods_name"
-                        android:gravity="right"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_8"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -383,12 +385,12 @@
 
                     <TextView
                         android:id="@+id/goods_price"
-                        android:gravity="right"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
                         android:layout_toLeftOf="@+id/ic_right_9"
+                        android:gravity="right"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -403,10 +405,10 @@
                     android:id="@+id/apply"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="修改/创建"
-                    android:textColor="@color/white"
                     android:layout_margin="10dp"
-                    android:background="@drawable/corners_login_btn"/>
+                    android:background="@drawable/corners_login_btn"
+                    android:text="修改/创建"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
         </LinearLayout>

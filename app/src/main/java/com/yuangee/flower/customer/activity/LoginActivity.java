@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -27,6 +28,7 @@ import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StatusBarUtil;
+import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.List;
@@ -64,6 +66,9 @@ public class LoginActivity extends RxBaseActivity {
     @BindView(R.id.login_btn)
     Button loginBtn;
 
+    @BindView(R.id.agree_checkbox)
+    CheckBox agreeCheckbox;
+
     private int count = 60;
 
     @OnClick(R.id.get_code)
@@ -74,6 +79,18 @@ public class LoginActivity extends RxBaseActivity {
 
     @OnClick(R.id.login_btn)
     void login() {
+        if (StringUtils.isBlank(editPhone.getText().toString())) {
+            ToastUtil.showMessage(LoginActivity.this, "请输入电话号码");
+            return;
+        }
+        if (StringUtils.isBlank(editCode.getText().toString())) {
+            ToastUtil.showMessage(LoginActivity.this, "请输入验证码");
+            return;
+        }
+        if (!agreeCheckbox.isChecked()) {
+            ToastUtil.showMessage(LoginActivity.this, "请同意用户协议");
+            return;
+        }
         login(editPhone.getText().toString(), editCode.getText().toString());
     }
 
