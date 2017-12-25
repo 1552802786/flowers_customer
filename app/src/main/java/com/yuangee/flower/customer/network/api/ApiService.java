@@ -94,6 +94,7 @@ public interface ApiService {
                                                         @Query("genreSubName") String genreSubName,
                                                         @Query("params") String params,
                                                         @Query("offset") Long offset,
+                                                        @Query("bespeak") boolean bespeak,
                                                         @Query("limit") Long Limit,
                                                         @Query("shopId") Long shopId);
 
@@ -276,7 +277,7 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("rest/order/confirmOrderMulti")
-    Observable<BaseResult<Object>> confirmOrderMulti(@Field("memberId") Long memberId,
+    Observable<BaseResult<Order>> confirmOrderMulti(@Field("memberId") Long memberId,
                                                      @Field("receiverName") String receiverName,
                                                      @Field("receiverPhone") String receiverPhone,
                                                      @Field("receiverAddress") String receiverAddress,
@@ -296,7 +297,7 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("rest/order/bespeakOrderMulti")
-    Observable<BaseResult<Object>> bespeakOrderMulti(@Field("memberId") Long memberId,
+    Observable<BaseResult<Order>> bespeakOrderMulti(@Field("memberId") Long memberId,
                                                      @Field("receiverName") String receiverName,
                                                      @Field("receiverPhone") String receiverPhone,
                                                      @Field("receiverAddress") String receiverAddress,

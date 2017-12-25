@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by developerLzh on 2017/9/18 0018.
  */
 
-public class Goods implements Serializable{
+public class Goods implements Serializable {
 
     public long id;//商品id
 
@@ -33,6 +33,8 @@ public class Goods implements Serializable{
     public double unitPrice;//单价
 
     public int salesVolume;//可售量
+
+    public int bespeakNum;//可预约数量
 
     public long shopId;//商铺id
 

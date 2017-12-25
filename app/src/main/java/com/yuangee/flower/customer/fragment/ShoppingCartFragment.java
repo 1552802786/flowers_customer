@@ -1,8 +1,11 @@
 package com.yuangee.flower.customer.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alipay.sdk.app.PayTask;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
@@ -34,9 +39,13 @@ import com.yuangee.flower.customer.entity.Coupon;
 import com.yuangee.flower.customer.entity.DestineTime;
 import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.Order;
+import com.yuangee.flower.customer.entity.PayResult;
+import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.QueryCartResult;
 import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.StringUtils;
@@ -515,20 +524,34 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
         Long[] longArray = new Long[longs.size()];
 
-        Observable<Object> observable = ApiManager.getInstance().api
+        Observable<Order> observable = ApiManager.getInstance().api
                 .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId, longs.toArray(longArray))
-                .map(new HttpResultFunc<>(getActivity()))
+                .map(new HttpResultFunc<Order>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Order>() {
             @Override
-            public void onNext(Object o) {
+            public void onNext(final Order o) {
                 ToastUtil.showMessage(getActivity(), "下单成功");
-                startActivity(new Intent(getActivity(), MyOrderActivity.class));
                 expandableLayout.collapse();
                 apply.setText("提交订单");
+                startActivity(new Intent(getActivity(), MyOrderActivity.class));
                 onVisible();
+
+//                AlertDialog dialog = new AlertDialog.Builder(getActivity())
+//                        .setTitle("温馨提示")
+//                        .setMessage("您已下单成功，请支付")
+//                        .setPositiveButton("支付宝支付", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                dialogInterface.dismiss();
+//                                payJishiZfb(o.id, 0);
+//                            }
+//                        })
+//                        .setCancelable(false)
+//                        .create();
+//                dialog.show();
             }
 
             @Override
@@ -554,15 +577,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
         Long[] longArray = new Long[longs.size()];
 
-        Observable<Object> observable = ApiManager.getInstance().api
+        Observable<Order> observable = ApiManager.getInstance().api
                 .bespeakOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, date, couponId, longs.toArray(longArray))
-                .map(new HttpResultFunc<>(getActivity()))
+                .map(new HttpResultFunc<Order>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Object>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Order>() {
             @Override
-            public void onNext(Object o) {
+            public void onNext(final Order o) {
                 ToastUtil.showMessage(getActivity(), "下单成功");
                 expandableLayout.collapse();
                 apply.setText("提交订单");
@@ -570,13 +593,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
                 AlertDialog dialog = new AlertDialog.Builder(getActivity())
                         .setTitle("温馨提示")
-                        .setMessage("您已下单成功，请尽快支付预约金")
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        .setMessage("您已下单成功，请支付预约金")
+                        .setPositiveButton("支付宝支付", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                                dialogInterface.dismiss();
+                                payYuyueZfb(o.id);
                             }
                         })
+                        .setCancelable(false)
                         .create();
                 dialog.show();
             }
@@ -611,4 +636,74 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     }
 
     private long expressId = -1;
+
+    private void payYuyueZfb(Long orderId) {
+        Observable<ZfbResult> observable = ApiManager.getInstance().api
+                .payYuyueSingleZfb(orderId)
+                .map(new HttpResultFunc<ZfbResult>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(getActivity(), true,
+                false, new NoErrSubscriberListener<ZfbResult>() {
+            @Override
+            public void onNext(ZfbResult s) {
+                detailZfb(s.orderInfo);
+            }
+        })));
+    }
+
+    /**
+     * @param orderId
+     * @param type    0 即时单支付 1预约单支付尾款
+     */
+    private void payJishiZfb(Long orderId, Integer type) {
+        Observable<ZfbResult> observable = ApiManager.getInstance().api
+                .payJishiSingleZfb(orderId, type)
+                .map(new HttpResultFunc<ZfbResult>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(getActivity(), true,
+                false, new NoErrSubscriberListener<ZfbResult>() {
+            @Override
+            public void onNext(ZfbResult s) {
+                detailZfb(s.orderInfo);
+            }
+        })));
+    }
+
+    private void detailZfb(String s) {
+        PayTask alipay = new PayTask(getActivity());
+        String result = alipay
+                .pay(s, true);
+
+        Message msg = new Message();
+        msg.what = 0;
+        msg.obj = result;
+        handler.sendMessage(msg);
+    }
+
+    Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            switch (message.what) {
+                case 0:
+                    Context context = getActivity();
+                    PayResult result = new PayResult((String) message.obj);
+                    if (result.resultStatus.equals("9000")) {
+                        Toast.makeText(context, getString(R.string.pay_succeed),
+                                Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(getActivity(), MyOrderActivity.class));
+
+                    } else {
+                        Toast.makeText(context, getString(R.string.pay_fail),
+                                Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                    }
+                    break;
+            }
+            return true;
+        }
+    });
 }

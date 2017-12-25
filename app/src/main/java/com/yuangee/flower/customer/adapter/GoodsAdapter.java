@@ -144,15 +144,16 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.goodsGrade.setText("等级：" + bean.grade);
         holder.goodsColor.setText("颜色：" + bean.color);
         holder.goodsSpec.setText("规格：" + bean.spec);
-        holder.goodsLeft.setText("可售量：" + bean.salesVolume);
         holder.goodsNum.setText(bean.selectedNum + "");
 
         if (flag == 0) {
             holder.addToCar.setVisibility(View.VISIBLE);
             holder.yuYue.setVisibility(View.GONE);
+            holder.goodsLeft.setText("可售量：" + bean.salesVolume);
         } else {
             holder.addToCar.setVisibility(View.GONE);
             holder.yuYue.setVisibility(View.VISIBLE);
+            holder.goodsLeft.setText("可售量：" + bean.bespeakNum);
         }
 
         setBtnEnable(holder, bean);

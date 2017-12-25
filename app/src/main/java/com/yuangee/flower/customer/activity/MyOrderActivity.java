@@ -117,9 +117,9 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
     @Override
     public void initToolBar() {
         if (isShop) {
-            mToolbar.setTitle("我的订单");
-        } else {
             mToolbar.setTitle("店铺订单");
+        } else {
+            mToolbar.setTitle("我的订单");
         }
         setSupportActionBar(mToolbar);
         if (null != getSupportActionBar()) {

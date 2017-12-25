@@ -368,6 +368,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     @Override
     public void onRefresh() {
+        this.params = "";
+        tvSearch.setText("  搜索");
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
@@ -391,11 +393,15 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     }
 
     public void findWares(String params) {
+        this.params = params;
+        tvSearch.setText("  "+params);
         page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
     public void findWares(String genreName, String genreSubName, String params) {
+        this.params = params;
+        tvSearch.setText("  "+params);
         page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }

@@ -27,7 +27,7 @@ public class ShoppingModel implements ShoppingContract.Model {
 
     @Override
     public Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName, String params, long page, long limit, Long shopId) {
-        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, limit, shopId)
+        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, false,limit, shopId)
                 .map(new HttpResultFunc<PageResult<Goods>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

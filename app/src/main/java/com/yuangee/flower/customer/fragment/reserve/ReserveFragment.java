@@ -370,6 +370,8 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     @Override
     public void onRefresh() {
+        this.params = "";
+        tvSearch.setText("  搜索");
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
@@ -393,6 +395,8 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     }
 
     public void findWares(String params) {
+        this.params = params;
+        tvSearch.setText("  "+params);
         page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
