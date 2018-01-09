@@ -544,4 +544,20 @@ public interface ApiService {
                                             @Field("shopId") long shopIp
     );
 
+    /**
+     * 查询大订单
+     * @param status
+     * @param bespeak
+     * @param memberId
+     * @param offset
+     * @param limit
+     * @return
+     */
+    @GET("rest/order/findOrderRecordByParam")
+    Observable<BaseResult<PageResult<Order>>> findMemberOrder(@Query("status") Integer status,
+                                                           @Query("bespeak") Boolean bespeak,
+                                                           @Query("memberId") Long memberId,
+                                                           @Query("offset") Long offset,
+                                                           @Query("limit") Long limit);
+
 }

@@ -24,6 +24,7 @@ import com.yuangee.flower.customer.entity.PayResult;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
@@ -330,6 +331,19 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
                 recyclerView.setPullLoadMoreCompleted();
             }
         })));
+
+//        Observable<PageResult<Order>> observable2 = ApiManager.getInstance().api
+//                .findMemberOrder(status, bespeak, memberId, (long) page * 10, (long) limit)
+//                .map(new HttpResultFunc<PageResult<Order>>(MyOrderActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//
+//        mRxManager.add(observable2.subscribe(new MySubscriber<PageResult<Order>>(this, false, false, new NoErrSubscriberListener<PageResult<Order>>() {
+//            @Override
+//            public void onNext(PageResult<Order> orderPageResult) {
+//
+//            }
+//        })));
     }
 
     private void showEmpty() {
