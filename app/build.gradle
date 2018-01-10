@@ -8,7 +8,7 @@ android {
         applicationId "com.yuangee.flower.customer"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 6
+        versionCode 7
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
