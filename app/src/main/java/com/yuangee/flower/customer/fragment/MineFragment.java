@@ -220,6 +220,15 @@ public class MineFragment extends RxLazyFragment {
                 if (o.shop != null) {
                     shopId = o.shop.id;
                     shopName = o.shop.shopName;
+                    getSuppStatus();
+                } else {
+                    supplierText.setText("申请成为供货商");
+                    beSupplier.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(new Intent(getActivity(), RegisterActivity.class));
+                        }
+                    });
                 }
                 if (StringUtils.isNotBlank(o.phone) && o.phone.length() == 11) {
                     personPhone.setText(o.phone.subSequence(0, 4) + "****" + o.phone.substring(7, 11));
@@ -253,7 +262,6 @@ public class MineFragment extends RxLazyFragment {
 
     private void initView() {
         getConsumerInfo(App.getPassengerId());
-        getSuppStatus();
     }
 
     private void getSuppStatus() {
