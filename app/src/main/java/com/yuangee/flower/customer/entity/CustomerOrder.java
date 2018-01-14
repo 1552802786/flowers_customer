@@ -57,7 +57,7 @@ public class CustomerOrder implements Serializable{
 
     public BigDecimal expressDeliveryMoney;//快递费
 
-    public BigDecimal couponMoney;//快递费
+    public BigDecimal couponMoney;
 
     public BigDecimal customerBrokerage;//收取客户手续费
 

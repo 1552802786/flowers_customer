@@ -573,4 +573,7 @@ public interface ApiService {
                                                                       @Query("offset") Long offset,
                                                                       @Query("limit") Long limit);
 
+    @FormUrlEncoded
+    @POST("rest/order/comfrimBespokePrice")
+    Observable<BaseResult<CustomerOrder>> confirmMoney(@Field("orderRecordId") Long orderId);
 }

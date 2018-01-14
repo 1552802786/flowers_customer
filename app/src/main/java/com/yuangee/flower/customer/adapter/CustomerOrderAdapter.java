@@ -275,7 +275,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                             if (shopOrder.status == CustomerOrder.ORDER_STATUS_NOTPAY) {
                                 payYuyueZfb(shopOrder.id);//预约单支付预约金
                             } else if (shopOrder.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
-                                payJishiZfb(shopOrder.id, 1);//预约单支付尾款
+                                confirmOrder(shopOrder);
                             }
                         } else {
                             payJishiZfb(shopOrder.id, 0);//即时单支付全款
@@ -321,7 +321,18 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
     }
 
     private void confirmOrder(CustomerOrder shopOrder) {
-
+        Observable<CustomerOrder> observable = ApiManager.getInstance().api
+                .confirmMoney(shopOrder.id)
+                .map(new HttpResultFunc<CustomerOrder>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        rxManager.add(observable.subscribe(new MySubscriber<CustomerOrder>(context, true,
+                true, new NoErrSubscriberListener<CustomerOrder>() {
+            @Override
+            public void onNext(CustomerOrder o) {
+                payJishiZfb(o.id, 1);//预约单支付尾款
+            }
+        })));
     }
 
     /**

@@ -189,7 +189,15 @@ public class CusOrderDetailActivity extends RxBaseActivity {
         peihuoFee.setText("¥" + cusOrder.peihuoFee);
         baozhuangFee.setText("¥" + cusOrder.baozhuangFee);
 
-        couponFee.setText("¥" + cusOrder.couponMoney);
+        if(StringUtils.isNotBlank(String.valueOf(cusOrder.couponMoney))){
+            if(String.valueOf(cusOrder.couponMoney).equals("null")){
+                couponFee.setText("¥"+"0");
+            } else {
+                couponFee.setText("¥"+cusOrder.couponMoney);
+            }
+        } else {
+            couponFee.setText("¥"+"0");
+        }
 
         if (null != cusOrder.peihuoFee) {
             totalMoney = totalMoney.add(cusOrder.peihuoFee);
@@ -204,7 +212,7 @@ public class CusOrderDetailActivity extends RxBaseActivity {
             totalMoney = totalMoney.add(cusOrder.expressDeliveryMoney);
         }
         if (null != cusOrder.couponMoney) {
-            totalMoney = totalMoney.add(cusOrder.couponMoney);
+            totalMoney = totalMoney.subtract(cusOrder.couponMoney);
         }
 
         hejiFee.setText("" + totalMoney.doubleValue() + "元");
