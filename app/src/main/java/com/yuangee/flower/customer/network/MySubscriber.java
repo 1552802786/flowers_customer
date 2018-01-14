@@ -1,11 +1,15 @@
 package com.yuangee.flower.customer.network;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ParseException;
 import android.util.Log;
 
 import com.google.gson.JsonParseException;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.LoginActivity;
+import com.yuangee.flower.customer.util.AppManager;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import org.json.JSONException;
@@ -97,6 +101,14 @@ public class MySubscriber<T> extends Subscriber<T> implements ProgressDismissLis
             }
         } else if (e instanceof ApiException) {
             ToastUtil.showMessage(context, e.getMessage());//服务器定义的错误
+
+            if(e.getMessage().contains("token")){
+                AppManager.getAppManager().finishAllActivity();
+                App.me().getSharedPreferences().edit().clear().apply();
+                Intent intent = new Intent(context, LoginActivity.class);
+                context.startActivity(intent);
+            }
+
             if (null != haveErrSubscriberListener) {
                 haveErrSubscriberListener.onError(((ApiException) e).getErrCode());
             }

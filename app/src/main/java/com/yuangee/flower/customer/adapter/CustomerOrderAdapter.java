@@ -25,7 +25,6 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.CusOrderDetailActivity;
-import com.yuangee.flower.customer.activity.ShopOrderDetailActivity;
 import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.OrderWare;
 import com.yuangee.flower.customer.entity.ShopOrder;
@@ -273,9 +272,9 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (shopOrder.bespeak) {
-                            if (shopOrder.status == ShopOrder.ORDER_STATUS_NOTPAY) {
+                            if (shopOrder.status == CustomerOrder.ORDER_STATUS_NOTPAY) {
                                 payYuyueZfb(shopOrder.id);//预约单支付预约金
-                            } else if (shopOrder.status == ShopOrder.ORDER_STATUS_BE_BACK) {
+                            } else if (shopOrder.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
                                 payJishiZfb(shopOrder.id, 1);//预约单支付尾款
                             }
                         } else {
@@ -287,9 +286,9 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (shopOrder.bespeak) {
-                            if (shopOrder.status == ShopOrder.ORDER_STATUS_NOTPAY) {
+                            if (shopOrder.status == CustomerOrder.ORDER_STATUS_NOTPAY) {
                                 payYuyueWx(shopOrder.id);//预约单支付预约金
-                            } else if (shopOrder.status == ShopOrder.ORDER_STATUS_BE_BACK) {
+                            } else if (shopOrder.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
                                 payJishiWx(shopOrder.id, 1);//预约单支付尾款
                             }
                         } else {
@@ -321,7 +320,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         dialog.show();
     }
 
-    private void confirmOrder(ShopOrder shopOrder) {
+    private void confirmOrder(CustomerOrder shopOrder) {
 
     }
 

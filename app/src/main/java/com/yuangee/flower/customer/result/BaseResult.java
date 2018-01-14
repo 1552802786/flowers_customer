@@ -9,6 +9,8 @@ public class BaseResult<T> {
 
     private String message; //返回信息
 
+    private int code;
+
     private T data; //成功返回用户信息，不成功不返回
 
     public boolean isSuccess() {
