@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
@@ -20,6 +21,7 @@ import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
+import com.yuangee.flower.customer.entity.WaresNumber;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -34,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import retrofit2.http.Field;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -296,9 +299,18 @@ public class SupplierActivity extends RxBaseActivity {
     }
 
     private void orderIng(long waresId, int num) {
+
+        WaresNumber number = new WaresNumber();
+        number.waresId = waresId;
+        number.quantity = num;
+        Gson gson = new Gson();
+
+        List<WaresNumber> waresNumbers = new ArrayList<>();
+        waresNumbers.add(number);
+
         Member member = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId());
         Observable<Object> observable = ApiManager.getInstance().api
-                .cusOrder(member.name, member.phone, waresId, num, shopId)
+                .cusOrder(member.name, member.phone, member.id, gson.toJson(waresNumbers), shopId)
                 .map(new HttpResultFunc<>(this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

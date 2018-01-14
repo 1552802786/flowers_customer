@@ -22,18 +22,25 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Address;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.picker.AddressInitTask;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.qqtheme.framework.entity.City;
+import cn.qqtheme.framework.entity.County;
+import cn.qqtheme.framework.entity.Province;
+import cn.qqtheme.framework.picker.AddressPicker;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -144,7 +151,7 @@ public class RegisterActivity extends RxBaseActivity {
     EditText phoneEdit;
 
     @BindView(R.id.detail_address)
-    EditText detailAddressEdit;
+    TextView detailAddressEdit;
 
     @BindView(R.id.card_no)
     EditText cardNoEdit;
@@ -167,6 +174,45 @@ public class RegisterActivity extends RxBaseActivity {
     @OnClick(R.id.apply_now)
     void apply() {
         applyMsg();
+    }
+
+    @OnClick(R.id.detail_address)
+    void showPlace(){
+        new AddressInitTask(this, new AddressInitTask.InitCallback() {
+            @Override
+            public void onDataInitFailure() {
+                ToastUtil.showMessage(RegisterActivity.this, "数据初始化失败");
+            }
+
+            @Override
+            public void onDataInitSuccess(ArrayList<Province> provinces) {
+                AddressPicker picker = new AddressPicker(RegisterActivity.this, provinces);
+                picker.setOnAddressPickListener(new AddressPicker.OnAddressPickListener() {
+                    @Override
+                    public void onAddressPicked(Province province, City city, County county) {
+                        String provinceName = province.getName();
+                        String cityName = "";
+                        if (city != null) {
+                            cityName = city.getName();
+                            //忽略直辖市的二级名称
+                            if (cityName.equals("市辖区") || cityName.equals("市") || cityName.equals("县")) {
+                                cityName = "";
+                            }
+                        }
+                        String countyName = "";
+                        if (county != null) {
+                            countyName = county.getName();
+                        }
+                        Address address = new Address();
+                        address.pro = provinceName;
+                        address.city = cityName;
+                        address.area = countyName;
+                        detailAddressEdit.setText(provinceName + cityName + countyName);
+                    }
+                });
+                picker.show();
+            }
+        }).execute();
     }
 
     private ImageView currentImg;

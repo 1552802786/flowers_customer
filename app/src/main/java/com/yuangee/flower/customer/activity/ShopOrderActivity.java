@@ -17,14 +17,13 @@ import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.adapter.OrderAdapter;
+import com.yuangee.flower.customer.adapter.ShopOrderAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
-import com.yuangee.flower.customer.entity.Order;
+import com.yuangee.flower.customer.entity.ShopOrder;
 import com.yuangee.flower.customer.entity.PayResult;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
-import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
@@ -41,7 +40,7 @@ import rx.schedulers.Schedulers;
  * Created by developerLzh on 2017/11/1 0001.
  */
 
-public class MyOrderActivity extends RxBaseActivity implements CompoundButton.OnCheckedChangeListener {
+public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.OnCheckedChangeListener {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -64,13 +63,12 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
     @BindView(R.id.empty)
     CustomEmptyView emptyView;
 
-    private OrderAdapter adapter;
+    private ShopOrderAdapter adapter;
 
-    private List<Order> orders;
+    private List<ShopOrder> shopOrders;
 
     private Integer status;
     private Boolean bespeak;//是否预约
-    private boolean isShop = false;
     private Long memberId = App.getPassengerId();
     private Long shopId = null;
 
@@ -81,15 +79,12 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        orders = new ArrayList<>();
+        shopOrders = new ArrayList<>();
         status = getIntent().getIntExtra("status", -1);
         bespeak = getIntent().getBooleanExtra("bespeak", false);
-        isShop = getIntent().getBooleanExtra("isShop", false);
-        if (isShop) {//是否是店铺订单
-            shopId = App.me().getSharedPreferences().getLong("shopId", -1);
-            if (shopId == -1) {
-                shopId = null;
-            }
+        shopId = App.me().getSharedPreferences().getLong("shopId", -1);
+        if (shopId == -1) {
+            shopId = null;
         }
         radioAll.setOnCheckedChangeListener(this);
         radioAppoint.setOnCheckedChangeListener(this);
@@ -117,11 +112,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
 
     @Override
     public void initToolBar() {
-        if (isShop) {
-            mToolbar.setTitle("店铺订单");
-        } else {
-            mToolbar.setTitle("我的订单");
-        }
+        mToolbar.setTitle("店铺订单");
         setSupportActionBar(mToolbar);
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -140,22 +131,22 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
     public void initRecyclerView() {
 
         initHandler();
-        orders = new ArrayList<>();
-        adapter = new OrderAdapter(this, mRxManager,isShop);
-        adapter.setOnRefresh(new OrderAdapter.OnRefresh() {
+        shopOrders = new ArrayList<>();
+        adapter = new ShopOrderAdapter(this, mRxManager, true);
+        adapter.setOnRefresh(new ShopOrderAdapter.OnRefresh() {
             @Override
             public void onRefresh() {
                 recyclerView.setRefreshing(true);
                 queryOrders(status, bespeak, memberId, shopId);
             }
         });
-        adapter.setZfbPay(new OrderAdapter.OnStartZfbPay() {
+        adapter.setZfbPay(new ShopOrderAdapter.OnStartZfbPay() {
             @Override
             public void pay(final String s) {
                 new Thread() {
                     public void run() {
 
-                        PayTask alipay = new PayTask(MyOrderActivity.this);
+                        PayTask alipay = new PayTask(ShopOrderActivity.this);
                         String result = alipay
                                 .pay(s, true);
 
@@ -198,7 +189,7 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
             public boolean handleMessage(Message message) {
                 switch (message.what) {
                     case 0:
-                        Context context = MyOrderActivity.this;
+                        Context context = ShopOrderActivity.this;
                         PayResult result = new PayResult((String) message.obj);
                         if (result.resultStatus.equals("9000")) {
                             Toast.makeText(context, getString(R.string.pay_succeed),
@@ -298,16 +289,27 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
     private int page = 0;
     private int limit = 10;
 
+    /**
+     * 查询店铺订单（小订单）
+     *
+     * @param status
+     * @param bespeak
+     * @param memberId
+     * @param shopId
+     */
     private void queryOrders(Integer status, Boolean bespeak, Long memberId, Long shopId) {
-        Observable<PageResult<Order>> observable = ApiManager.getInstance().api
+        if(!bespeak){//费预约穿Null
+            bespeak = null;//
+        }
+        Observable<PageResult<ShopOrder>> observable = ApiManager.getInstance().api
                 .findByParams(status, bespeak, memberId, shopId, (long) page * 10, (long) limit)
-                .map(new HttpResultFunc<PageResult<Order>>(MyOrderActivity.this))
+                .map(new HttpResultFunc<PageResult<ShopOrder>>(ShopOrderActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(MyOrderActivity.this, true, false, new HaveErrSubscriberListener<PageResult<Order>>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(ShopOrderActivity.this, true, false, new HaveErrSubscriberListener<PageResult<ShopOrder>>() {
             @Override
-            public void onNext(PageResult<Order> result) {
+            public void onNext(PageResult<ShopOrder> result) {
                 if (result.total > (page + 1) * limit) {
                     recyclerView.setHasMore(true);
                 } else {
@@ -315,10 +317,10 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
                 }
                 recyclerView.setPullLoadMoreCompleted();
                 if (page == 0) {
-                    orders.clear();
+                    shopOrders.clear();
                 }
-                orders.addAll(result.rows);
-                adapter.setData(orders);
+                shopOrders.addAll(result.rows);
+                adapter.setData(shopOrders);
                 if (result.total == 0) {
                     showEmpty();
                 } else {
@@ -331,19 +333,6 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
                 recyclerView.setPullLoadMoreCompleted();
             }
         })));
-
-//        Observable<PageResult<Order>> observable2 = ApiManager.getInstance().api
-//                .findMemberOrder(status, bespeak, memberId, (long) page * 10, (long) limit)
-//                .map(new HttpResultFunc<PageResult<Order>>(MyOrderActivity.this))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//
-//        mRxManager.add(observable2.subscribe(new MySubscriber<PageResult<Order>>(this, false, false, new NoErrSubscriberListener<PageResult<Order>>() {
-//            @Override
-//            public void onNext(PageResult<Order> orderPageResult) {
-//
-//            }
-//        })));
     }
 
     private void showEmpty() {
@@ -366,13 +355,13 @@ public class MyOrderActivity extends RxBaseActivity implements CompoundButton.On
         String str = data.getExtras().getString("pay_result");
         if (str.equalsIgnoreCase("success")) {
             queryOrders(status, bespeak, memberId, shopId);
-            ToastUtil.showMessage(MyOrderActivity.this, "支付成功");
+            ToastUtil.showMessage(ShopOrderActivity.this, "支付成功");
 
 // 结果result_data为成功时，去商户后台查询一下再展示成功
         } else if (str.equalsIgnoreCase("fail")) {
-            ToastUtil.showMessage(MyOrderActivity.this, "支付失败！");
+            ToastUtil.showMessage(ShopOrderActivity.this, "支付失败！");
         } else if (str.equalsIgnoreCase("cancel")) {
-            ToastUtil.showMessage(MyOrderActivity.this, "你已取消了本次订单的支付！");
+            ToastUtil.showMessage(ShopOrderActivity.this, "你已取消了本次订单的支付！");
         }
     }
 }

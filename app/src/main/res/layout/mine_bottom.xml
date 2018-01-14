@@ -21,7 +21,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="我的订单"
+            android:text="店铺订单"
             android:textSize="14sp" />
 
         <View
@@ -35,6 +35,30 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/my_dingdan"
+                android:layout_width="0.0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/f7_circle"
+                    android:padding="11dp"
+                    app:srcCompat="@drawable/ic_all" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="我的订单"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/wait_pay"
@@ -108,29 +132,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/wait_fahuo"
-                android:layout_width="0.0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/f7_circle"
-                    android:padding="11dp"
-                    app:srcCompat="@drawable/ic_freight" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="待我发货"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
 
@@ -179,7 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="成为供货商"
+                android:text="申请供货商"
                 android:textSize="14sp" />
 
         </LinearLayout>

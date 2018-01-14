@@ -4,17 +4,17 @@ import com.google.gson.JsonElement;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Coupon;
+import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.Message;
-import com.yuangee.flower.customer.entity.Order;
+import com.yuangee.flower.customer.entity.ShopOrder;
 import com.yuangee.flower.customer.entity.PersonResult;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Setting;
 import com.yuangee.flower.customer.entity.Shop;
-import com.yuangee.flower.customer.entity.Type;
 import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
@@ -202,12 +202,12 @@ public interface ApiService {
      * @return
      */
     @GET("rest/order/findByParams")
-    Observable<BaseResult<PageResult<Order>>> findByParams(@Query("status") Integer status,
-                                                           @Query("bespeak") Boolean bespeak,
-                                                           @Query("memberId") Long memberId,
-                                                           @Query("shopId") Long shopId,
-                                                           @Query("offset") Long offset,
-                                                           @Query("limit") Long limit);
+    Observable<BaseResult<PageResult<ShopOrder>>> findByParams(@Query("status") Integer status,
+                                                               @Query("bespeak") Boolean bespeak,
+                                                               @Query("memberId") Long memberId,
+                                                               @Query("shopId") Long shopId,
+                                                               @Query("offset") Long offset,
+                                                               @Query("limit") Long limit);
 
     /**
      * 添加商品到购物车
@@ -277,13 +277,13 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("rest/order/confirmOrderMulti")
-    Observable<BaseResult<Order>> confirmOrderMulti(@Field("memberId") Long memberId,
-                                                     @Field("receiverName") String receiverName,
-                                                     @Field("receiverPhone") String receiverPhone,
-                                                     @Field("receiverAddress") String receiverAddress,
-                                                     @Field("expressId") Long expressId,
-                                                     @Field("couponId") Long couponId,
-                                                     @Field("cartItemIds") Long[] cartItemIds
+    Observable<BaseResult<CustomerOrder>> confirmOrderMulti(@Field("memberId") Long memberId,
+                                                        @Field("receiverName") String receiverName,
+                                                        @Field("receiverPhone") String receiverPhone,
+                                                        @Field("receiverAddress") String receiverAddress,
+                                                        @Field("expressId") Long expressId,
+                                                        @Field("couponId") Long couponId,
+                                                        @Field("cartItemIds") Long[] cartItemIds
     );
 
     /**
@@ -297,14 +297,14 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("rest/order/bespeakOrderMulti")
-    Observable<BaseResult<Order>> bespeakOrderMulti(@Field("memberId") Long memberId,
-                                                     @Field("receiverName") String receiverName,
-                                                     @Field("receiverPhone") String receiverPhone,
-                                                     @Field("receiverAddress") String receiverAddress,
-                                                     @Field("expressId") Long expressId,
-                                                     @Field("bespeakDate") String bespeakDate,
-                                                     @Field("couponId") Long couponId,
-                                                     @Field("cartItemIds") Long[] cartItemIds
+    Observable<BaseResult<CustomerOrder>> bespeakOrderMulti(@Field("memberId") Long memberId,
+                                                        @Field("receiverName") String receiverName,
+                                                        @Field("receiverPhone") String receiverPhone,
+                                                        @Field("receiverAddress") String receiverAddress,
+                                                        @Field("expressId") Long expressId,
+                                                        @Field("bespeakDate") String bespeakDate,
+                                                        @Field("couponId") Long couponId,
+                                                        @Field("cartItemIds") Long[] cartItemIds
     );
 
     /**
@@ -495,26 +495,38 @@ public interface ApiService {
     Observable<BaseResult<Object>> updateOrder(@Query("orderId") Long orderId,
                                                @Query("status") Integer status);
 
+
+    /**
+     * 更新大订单信息
+     *
+     * @param orderId
+     * @param status
+     * @return
+     */
+    @GET("rest/order/updateStatusRecord")
+    Observable<BaseResult<Object>> updateBigOrder(@Query("id") Long orderId,
+                                                  @Query("status") Integer status);
+
     @GET("rest/activity/findMemberIdByCoupon")
     Observable<BaseResult<List<Coupon>>> findCoupon(@Query("memberId") Long memberId);
 
     @FormUrlEncoded
-    @POST("rest/pay/immediate/order/alipay")
-    Observable<BaseResult<ZfbResult>> payJishiSingleZfb(@Field("orderId") Long orderId,
+    @POST("rest/pay/immediate/alipay")
+    Observable<BaseResult<ZfbResult>> payJishiSingleZfb(@Field("orderRecordId") Long orderId,
                                                         @Field("type") Integer type);
 
     @FormUrlEncoded
-    @POST("rest/pay/immediate/order/wxpay")
-    Observable<BaseResult<JsonElement>> payJishiSingleWx(@Field("orderId") Long orderId,
+    @POST("rest/pay/immediate/wxpay")
+    Observable<BaseResult<JsonElement>> payJishiSingleWx(@Field("orderRecordId") Long orderId,
                                                          @Field("type") Integer type);
 
     @FormUrlEncoded
-    @POST("rest/pay/reservation/order/alipay")
-    Observable<BaseResult<ZfbResult>> payYuyueSingleZfb(@Field("orderId") Long orderId);
+    @POST("rest/pay/reservation/alipay")
+    Observable<BaseResult<ZfbResult>> payYuyueSingleZfb(@Field("orderRecordId") Long orderId);
 
     @FormUrlEncoded
-    @POST("rest/pay/reservation/order/wxpay")
-    Observable<BaseResult<JsonElement>> payYuyueSingleWx(@Field("orderId") Long orderId);
+    @POST("rest/pay/reservation/wxpay")
+    Observable<BaseResult<JsonElement>> payYuyueSingleWx(@Field("orderRecordId") Long orderId);
 
 
     /**
@@ -539,13 +551,14 @@ public interface ApiService {
     @POST("rest/order/customOrder")
     Observable<BaseResult<Object>> cusOrder(@Field("name") String name,
                                             @Field("phone") String phone,
-                                            @Field("waresId") long waresId,
-                                            @Field("quantity") int quantity,
+                                            @Field("memberId") Long memberId,
+                                            @Field("waresJson") String waresJson,
                                             @Field("shopId") long shopIp
     );
 
     /**
      * 查询大订单
+     *
      * @param status
      * @param bespeak
      * @param memberId
@@ -554,10 +567,10 @@ public interface ApiService {
      * @return
      */
     @GET("rest/order/findOrderRecordByParam")
-    Observable<BaseResult<PageResult<Order>>> findMemberOrder(@Query("status") Integer status,
-                                                           @Query("bespeak") Boolean bespeak,
-                                                           @Query("memberId") Long memberId,
-                                                           @Query("offset") Long offset,
-                                                           @Query("limit") Long limit);
+    Observable<BaseResult<PageResult<CustomerOrder>>> findMemberOrder(@Query("status") Integer status,
+                                                                      @Query("bespeak") Boolean bespeak,
+                                                                      @Query("memberId") Long memberId,
+                                                                      @Query("offset") Long offset,
+                                                                      @Query("limit") Long limit);
 
 }

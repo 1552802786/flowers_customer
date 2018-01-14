@@ -8,16 +8,20 @@ import java.util.List;
 
 /**
  * Created by developerLzh on 2017/11/1 0001.
+ *
+ * 小订单 商户看到的订单
+ *
  */
 
-public class Order implements Serializable{
+public class ShopOrder implements Serializable{
 
     public static final int ORDER_STATUS_NOTPAY = 0;//未支付
     public static final int ORDER_STATUS_WAIT = 1;//已支付,未发货
     public static final int ORDER_STATUS_CONSIGN = 2;//已发货,未收货
     public static final int ORDER_STATUS_FINISH = 3;//确认收货,完成
-    public static final int ORDER_STATUS_BE_BACK=4;//预约订单 已支付预约金,未支付尾款
+    public static final int ORDER_STATUS_BE_BACK=4;//预约订单,已支付预约金,未完成支付,待支付尾款
     public static final int ORDER_STATUS_CANCEL=5;//订单取消
+    public static final int ORDER_STATUS_JP_NOT_FINISHPAY=6; //竞拍订单支付金额不够订单金额 还差点
 
     public Long id;
 
@@ -87,17 +91,17 @@ public class Order implements Serializable{
     public Long orderRecordId;
 
     public String getStatusStr(){
-        if(status == 0){
+        if(status == ORDER_STATUS_NOTPAY){
             return "未支付";
-        } else if(status == 1){
+        } else if(status == ORDER_STATUS_WAIT){
             return "未发货";
-        } else if(status == 2){
+        } else if(status == ORDER_STATUS_CONSIGN){
             return "未收货";
-        } else if(status == 3){
+        } else if(status == ORDER_STATUS_FINISH){
             return "已完成";
-        } else if(status == 4){
+        } else if(status == ORDER_STATUS_BE_BACK){
             return "已支付预约金";
-        } else if(status == 5){
+        } else if(status == ORDER_STATUS_CANCEL){
             return "已取消";
         }
         return "";

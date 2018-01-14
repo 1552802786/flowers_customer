@@ -1,7 +1,6 @@
 package com.yuangee.flower.customer.fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
@@ -17,17 +16,17 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.CustomerOrderActivity;
 import com.yuangee.flower.customer.activity.FeedbackActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
-import com.yuangee.flower.customer.activity.MyOrderActivity;
+import com.yuangee.flower.customer.activity.ShopOrderActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.activity.SupplierActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.db.DbHelper;
-import com.yuangee.flower.customer.entity.Address;
+import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.Member;
-import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
@@ -38,12 +37,9 @@ import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -77,8 +73,8 @@ public class MineFragment extends RxLazyFragment {
     @BindView(R.id.person_phone)
     TextView personPhone;
 
-    @BindView(R.id.wait_fahuo)
-    LinearLayout fahuoCon;
+    @BindView(R.id.my_dingdan)
+    LinearLayout myDingdan;
 
     @BindView(R.id.be_supplier)
     LinearLayout beSupplier;
@@ -101,7 +97,7 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.my_all_order)
     void toDetail() {
-        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        Intent intent = new Intent(getActivity(), CustomerOrderActivity.class);
         intent.putExtra("status", -1);
         intent.putExtra("bespeak", false);
         startActivity(intent);
@@ -109,7 +105,7 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.wait_receive)
     void waitReceive() {
-        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        Intent intent = new Intent(getActivity(), CustomerOrderActivity.class);
         intent.putExtra("status", 2);
         intent.putExtra("bespeak", false);
         startActivity(intent);
@@ -117,15 +113,23 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.book)
     void book() {
-        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        Intent intent = new Intent(getActivity(), CustomerOrderActivity.class);
         intent.putExtra("status", -1);
         intent.putExtra("bespeak", true);
         startActivity(intent);
     }
 
+    @OnClick(R.id.my_dingdan)
+    void myAll() {
+        Intent intent = new Intent(getActivity(), CustomerOrderActivity.class);
+        intent.putExtra("status", -1);
+        intent.putExtra("bespeak", false);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.wait_pay)
     void waitPay() {
-        Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+        Intent intent = new Intent(getActivity(), CustomerOrderActivity.class);
         intent.putExtra("status", 0);
         intent.putExtra("bespeak", false);
         startActivity(intent);
@@ -220,15 +224,14 @@ public class MineFragment extends RxLazyFragment {
                 if (o.shop != null) {
                     shopId = o.shop.id;
                     shopName = o.shop.shopName;
-                    getSuppStatus();
                 } else {
-                    supplierText.setText("申请成为供货商");
-                    beSupplier.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            startActivity(new Intent(getActivity(), RegisterActivity.class));
-                        }
-                    });
+//                    supplierText.setText("申请成为供货商");
+//                    beSupplier.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            startActivity(new Intent(getActivity(), RegisterActivity.class));
+//                        }
+//                    });
                 }
                 if (StringUtils.isNotBlank(o.phone) && o.phone.length() == 11) {
                     personPhone.setText(o.phone.subSequence(0, 4) + "****" + o.phone.substring(7, 11));
@@ -236,13 +239,13 @@ public class MineFragment extends RxLazyFragment {
                     personPhone.setText(o.phone);
                 }
                 if (o.shop == null) {
-                    fahuoCon.setVisibility(View.GONE);
+                    myAllOrder.setVisibility(View.GONE);
                 } else {
-                    fahuoCon.setVisibility(View.VISIBLE);
-                    fahuoCon.setOnClickListener(new View.OnClickListener() {
+                    myAllOrder.setVisibility(View.VISIBLE);
+                    myAllOrder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+                            Intent intent = new Intent(getActivity(), ShopOrderActivity.class);
                             intent.putExtra("status", -1);
                             intent.putExtra("bespeak", false);
                             intent.putExtra("isShop", true);
@@ -262,6 +265,7 @@ public class MineFragment extends RxLazyFragment {
 
     private void initView() {
         getConsumerInfo(App.getPassengerId());
+        getSuppStatus();
     }
 
     private void getSuppStatus() {
@@ -276,7 +280,7 @@ public class MineFragment extends RxLazyFragment {
                     @Override
                     public void onNext(SuppStatus status) {
                         if (status == null) {
-                            supplierText.setText("申请成为供货商");
+                            supplierText.setText("申请供货商");
                             beSupplier.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -285,7 +289,7 @@ public class MineFragment extends RxLazyFragment {
                             });
                         } else {
                             if (status.status == 0) {
-                                supplierText.setText("申请成为供货商");
+                                supplierText.setText("申请审核中..");
                                 beSupplier.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -304,7 +308,7 @@ public class MineFragment extends RxLazyFragment {
                                     }
                                 });
                             } else {
-                                supplierText.setText("申请成为供货商");
+                                supplierText.setText("申请供货商");
                                 beSupplier.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {

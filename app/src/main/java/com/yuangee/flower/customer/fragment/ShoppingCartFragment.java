@@ -26,7 +26,7 @@ import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.EditAddressActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
-import com.yuangee.flower.customer.activity.MyOrderActivity;
+import com.yuangee.flower.customer.activity.CustomerOrderActivity;
 import com.yuangee.flower.customer.activity.SecAddressActivity;
 import com.yuangee.flower.customer.adapter.CouponAdapter;
 import com.yuangee.flower.customer.adapter.KuaidiAdapter;
@@ -39,7 +39,7 @@ import com.yuangee.flower.customer.entity.Coupon;
 import com.yuangee.flower.customer.entity.DestineTime;
 import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Member;
-import com.yuangee.flower.customer.entity.Order;
+import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.PayResult;
 import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
@@ -524,19 +524,19 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
         Long[] longArray = new Long[longs.size()];
 
-        Observable<Order> observable = ApiManager.getInstance().api
+        Observable<CustomerOrder> observable = ApiManager.getInstance().api
                 .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId, longs.toArray(longArray))
-                .map(new HttpResultFunc<Order>(getActivity()))
+                .map(new HttpResultFunc<CustomerOrder>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Order>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<CustomerOrder>() {
             @Override
-            public void onNext(final Order o) {
+            public void onNext(final CustomerOrder o) {
                 ToastUtil.showMessage(getActivity(), "下单成功");
                 expandableLayout.collapse();
                 apply.setText("提交订单");
-                startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                startActivity(new Intent(getActivity(), CustomerOrderActivity.class));
                 onVisible();
 
 //                AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -577,15 +577,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
         Long[] longArray = new Long[longs.size()];
 
-        Observable<Order> observable = ApiManager.getInstance().api
+        Observable<CustomerOrder> observable = ApiManager.getInstance().api
                 .bespeakOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, date, couponId, longs.toArray(longArray))
-                .map(new HttpResultFunc<Order>(getActivity()))
+                .map(new HttpResultFunc<CustomerOrder>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<Order>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<CustomerOrder>() {
             @Override
-            public void onNext(final Order o) {
+            public void onNext(final CustomerOrder o) {
                 ToastUtil.showMessage(getActivity(), "下单成功");
                 expandableLayout.collapse();
                 apply.setText("提交订单");
@@ -671,15 +671,21 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         })));
     }
 
-    private void detailZfb(String s) {
-        PayTask alipay = new PayTask(getActivity());
-        String result = alipay
-                .pay(s, true);
+    private void detailZfb(final String s) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask(getActivity());
+                String result = alipay
+                        .pay(s, true);
 
-        Message msg = new Message();
-        msg.what = 0;
-        msg.obj = result;
-        handler.sendMessage(msg);
+                Message msg = new Message();
+                msg.what = 0;
+                msg.obj = result;
+                handler.sendMessage(msg);
+            }
+        }).start();
+
     }
 
     Handler handler = new Handler(new Handler.Callback() {
@@ -693,13 +699,13 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                         Toast.makeText(context, getString(R.string.pay_succeed),
                                 Toast.LENGTH_SHORT).show();
 
-                        startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                        startActivity(new Intent(getActivity(), CustomerOrderActivity.class));
 
                     } else {
                         Toast.makeText(context, getString(R.string.pay_fail),
                                 Toast.LENGTH_SHORT).show();
 
-                        startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                        startActivity(new Intent(getActivity(), CustomerOrderActivity.class));
                     }
                     break;
             }
