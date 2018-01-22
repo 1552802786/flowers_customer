@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.OrderWare;
 
 import java.util.ArrayList;
@@ -27,6 +28,11 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
     private List<OrderWare> orderWares;
 
     private Context context;
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public OrderWareAdapter(Context context) {
         this.context = context;
@@ -47,7 +53,7 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        OrderWare orderWare = orderWares.get(position);
+        final OrderWare orderWare = orderWares.get(position);
         if(orderWare.wares != null){
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -63,6 +69,12 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
         holder.goodsTotalFee.setText("总价：" +
                 (orderWare.total == null ? 0.0 : orderWare.total.doubleValue()) + "元");
         holder.goodsNum.setText("x" + orderWare.quantity);
+        holder.parentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onItemClick(orderWare.wares);
+            }
+        });
     }
 
     @Override
@@ -77,14 +89,18 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
         TextView goodsPrice;
         TextView goodsTotalFee;
         TextView goodsNum;
-
+        View parentView;
         public Holder(View itemView) {
             super(itemView);
+            parentView=itemView.findViewById(R.id.container_view);
             img = itemView.findViewById(R.id.goods_img);
             goodsName = itemView.findViewById(R.id.goods_name);
             goodsPrice = itemView.findViewById(R.id.goods_price);
             goodsTotalFee = itemView.findViewById(R.id.total_fee);
             goodsNum = itemView.findViewById(R.id.goods_number);
         }
+    }
+    public interface OnItemClickListener{
+        void onItemClick(Goods good);
     }
 }

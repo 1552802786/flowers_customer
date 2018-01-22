@@ -54,6 +54,8 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
 
     @BindView(R.id.radio_not_pay)
     RadioButton radioNotPay;
+    @BindView(R.id.radio_not_pay_lines)
+    View radio_not_pay_lines;
 
     @BindView(R.id.radio_wait_receiving)
     RadioButton radioWaitReceiving;
@@ -79,6 +81,9 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
 
     @Override
     public void initViews(Bundle savedInstanceState) {
+        //我的订单显示  店铺订单隐藏
+        radioNotPay.setVisibility(View.VISIBLE);
+        radio_not_pay_lines.setVisibility(View.VISIBLE);
         customersOrders = new ArrayList<>();
         status = getIntent().getIntExtra("status", -1);
         bespeak = getIntent().getBooleanExtra("bespeak", false);

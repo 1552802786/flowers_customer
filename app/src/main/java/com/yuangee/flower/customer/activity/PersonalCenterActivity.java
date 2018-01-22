@@ -1,20 +1,31 @@
 package com.yuangee.flower.customer.activity;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -29,24 +40,34 @@ import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.Address;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.permission.RxPermissions;
+import com.yuangee.flower.customer.picker.AddressInitTask;
 import com.yuangee.flower.customer.util.AppManager;
+import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.qqtheme.framework.entity.City;
+import cn.qqtheme.framework.entity.County;
+import cn.qqtheme.framework.entity.Province;
+import cn.qqtheme.framework.picker.AddressPicker;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -54,8 +75,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class PersonalCenterActivity extends RxBaseActivity {
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @OnClick(R.id.pick_photo)
     void pickPhoto() {
@@ -77,18 +96,25 @@ public class PersonalCenterActivity extends RxBaseActivity {
     @BindView(R.id.person_email)
     TextView personEmail;
 
-    @BindView(R.id.person_consignee)
-    TextView personConsignee;
-
-    @BindView(R.id.person_consignee_phone)
-    TextView personConsigneePhone;
 
     @BindView(R.id.person_consignee_place)
     TextView personConsigneePlace;
 
-    @BindView(R.id.person_consignee_method)
-    TextView personConsigneeMethod;
-
+    @BindView(R.id.login_out_btn)
+    TextView loginOut;
+    @OnClick(R.id.login_out_btn)
+    void loginOut(){
+        exit();
+    }
+    @OnClick(R.id.back_btn)
+    void onBackBtn() {
+        finish();
+    }
+    @OnClick(R.id.save_info_btn)
+    void saveInfo(){
+        updateMemberInfo();
+        createMemberAddress();
+    }
     @OnClick(R.id.address_manage)
     void addressManage() {
         startActivity(new Intent(PersonalCenterActivity.this, SecAddressActivity.class));
@@ -155,34 +181,17 @@ public class PersonalCenterActivity extends RxBaseActivity {
         showEditDialog(personEmail, "邮箱");
     }
 
-    @OnClick(R.id.pick_consignee)
-    void pickConsignee() {
-        showEditDialog(personConsignee, "收货人姓名");
-    }
-
-    @OnClick(R.id.pick_consignee_phone)
-    void pickConsigneePhone() {
-        showEditDialog(personConsigneePhone, "收货人电话");
-    }
-
-    @OnClick(R.id.person_consignee_method)
-    void pickConsigneeMethod() {
-        showEditDialog(personConsigneeMethod, "收货方式");
-    }
-
-    @OnClick(R.id.person_consignee_place)
-    void pickConsigneePlace() {
-        showEditDialog(personConsigneePlace, "收货地址");
-    }
-
     @Override
     public int getLayoutId() {
         return R.layout.activity_personal_center;
     }
-
+    private Context mContext;
     @Override
     public void initViews(Bundle savedInstanceState) {
+        //loginOut.setVisibility(View.VISIBLE);
         showMember();
+        address = new Address();
+        mContext=this;
     }
 
     private void showMember() {
@@ -199,26 +208,6 @@ public class PersonalCenterActivity extends RxBaseActivity {
         personGender.setText(!member.gender ? "男" : "女");
         personPhone.setText(member.phone);
         personEmail.setText(member.email);
-    }
-
-    @Override
-    public void initToolBar() {
-        toolbar.setTitle("个人中心");
-        setSupportActionBar(toolbar);
-        if (null != getSupportActionBar()) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        updateMemberInfo();
     }
 
     private void updateMemberInfo() {
@@ -249,7 +238,6 @@ public class PersonalCenterActivity extends RxBaseActivity {
             @Override
             public void onNext(Object o) {
                 ToastUtil.showMessage(PersonalCenterActivity.this, "个人信息更新成功");
-                finish();
             }
         })));
 
@@ -276,7 +264,48 @@ public class PersonalCenterActivity extends RxBaseActivity {
                 }
             }
         }
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 0) {
+                Uri uri = data.getData();
+                if (uri != null) {
+                    ContentResolver cr = getContentResolver();
+                    Cursor cursor = cr.query(uri, null, null, null, null);
 
+                    if (cursor != null && cursor.moveToFirst()) {
+                        String username = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
+                                null,
+                                null);
+
+                        if (phone != null) {
+                            //查询该联系人的所有号码
+                            while (phone.moveToNext()) {
+                                String usernumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                Log.e("TAG", usernumber + " (" + username + ")");
+                                if (flag == 0) {
+                                    importEdit.setText(username);
+                                } else {
+                                    importEdit.setText(usernumber);
+                                }
+                                pickedPhone = usernumber;
+                                pickedName = username;
+                            }
+                            phone.close();
+                        } else {
+                            ToastUtil.showMessage(this, "未能成功获取联系人");
+                        }
+                        cursor.close();
+                    } else {
+                        ToastUtil.showMessage(this, "未能成功获取联系人");
+                    }
+                } else {
+                    ToastUtil.showMessage(this, "未能成功获取联系人");
+                }
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -306,6 +335,7 @@ public class PersonalCenterActivity extends RxBaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String s = editName.getText().toString();
                         showView.setText(s);
+                        address.street = s;
                         dialog.dismiss();
                     }
                 })
@@ -320,7 +350,7 @@ public class PersonalCenterActivity extends RxBaseActivity {
         dialog.show();
     }
 
-    public void exit(View view) {
+    public void exit() {
         dialog = new AlertDialog.Builder(this)
                 .setTitle("提示")
                 .setMessage("确定退出吗？")
@@ -343,4 +373,221 @@ public class PersonalCenterActivity extends RxBaseActivity {
         dialog.show();
 
     }
+
+    @BindView(R.id.consignee_phone)
+    TextView personConsigneePhone;
+
+    @BindView(R.id.person_consignee_place_1)
+    TextView personConsigneePlace1;
+
+    @BindView(R.id.person_consignee_place_2)
+    TextView personConsigneePlace2;
+
+    @BindView(R.id.consignee_method)
+    TextView personConsigneeMethod;
+
+    @BindView(R.id.person_consignee_name)
+    TextView personConsignee;
+    @OnClick(R.id.person_consignee_name)
+    void pickConsignee() {
+        flag = 0;
+        showPhoneImportDialog(personConsignee, "收货人姓名");
+    }
+    private int flag = 0;
+    @OnClick(R.id.consignee_phone)
+    void pickConsigneePhone() {
+        flag = 1;
+        showPhoneImportDialog(personConsigneePhone, "收货人电话");
+    }
+
+    @OnClick(R.id.consignee_method)
+    void pickConsigneeMethod() {
+        showBooleanDialog();
+    }
+
+    @OnClick(R.id.pick_consignee_place_1)
+    void pickConsigneePlace() {
+        showPickerPlace(personConsigneePlace1);
+    }
+
+    @OnClick(R.id.pick_consignee_place_2)
+    void editConsigneePlace() {
+        showEditDialog(personConsigneePlace2, "收货详细地址");
+    }
+    private Address address;
+    private void createMemberAddress() {
+        if (StringUtils.isBlank(address.shippingName)
+                || StringUtils.isBlank(address.shippingPhone) || StringUtils.isBlank(address.street)
+                || StringUtils.isBlank(address.pro)) {
+            ToastUtil.showMessage(mContext, "请将信息填写完整");
+            return;
+        }
+        Observable<Object> observable = ApiManager.getInstance().api
+                .createMemberAddress(App.getPassengerId(), address.shippingName, address.shippingPhone,
+                        address.pro, address.city, address.area, address.street, false)
+                .map(new HttpResultFunc<Object>(mContext))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(mContext, true, true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object expresses) {
+                ToastUtil.showMessage(mContext, "添加地址成功");
+                finish();
+            }
+        })));
+    }
+
+    public void showPickerPlace(final TextView tv) {
+        new AddressInitTask(this, new AddressInitTask.InitCallback() {
+            @Override
+            public void onDataInitFailure() {
+                ToastUtil.showMessage(mContext, "数据初始化失败");
+            }
+
+            @Override
+            public void onDataInitSuccess(ArrayList<Province> provinces) {
+                AddressPicker picker = new AddressPicker(PersonalCenterActivity.this, provinces);
+                picker.setOnAddressPickListener(new AddressPicker.OnAddressPickListener() {
+                    @Override
+                    public void onAddressPicked(Province province, City city, County county) {
+                        String provinceName = province.getName();
+                        String cityName = "";
+                        if (city != null) {
+                            cityName = city.getName();
+                            //忽略直辖市的二级名称
+                            if (cityName.equals("市辖区") || cityName.equals("市") || cityName.equals("县")) {
+                                cityName = "";
+                            }
+                        }
+                        String countyName = "";
+                        if (county != null) {
+                            countyName = county.getName();
+                        }
+                        address.pro = provinceName;
+                        address.city = cityName;
+                        address.area = countyName;
+                        tv.setText(provinceName + cityName + countyName);
+                    }
+                });
+                picker.show();
+            }
+        }).execute();
+    }
+
+    RxPermissions rxPermissions;
+    EditText importEdit;
+    private String pickedPhone;
+    private String pickedName;
+    private void showPhoneImportDialog(final TextView showView, String hint) {
+        View view = getLayoutInflater().inflate(R.layout.import_dialog, null);
+        importEdit = view.findViewById(R.id.edit_text);
+        importEdit.setText(showView.getText());
+        importEdit.setHint(hint);
+        if (flag == 0) {
+            importEdit.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+        } else {
+            importEdit.setInputType(EditorInfo.TYPE_CLASS_PHONE);
+        }
+        RelativeLayout rl = view.findViewById(R.id.import_book);
+        rl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rxPermissions = new RxPermissions(PersonalCenterActivity.this);
+                if (!rxPermissions.isGranted(Manifest.permission.READ_CONTACTS)) {
+                    rxPermissions.request(Manifest.permission.READ_CONTACTS)
+                            .subscribe(new Action1<Boolean>() {
+                                @Override
+                                public void call(Boolean granted) {
+                                    if (granted) {
+                                        Intent intent = new Intent(Intent.ACTION_PICK,
+                                                ContactsContract.Contacts.CONTENT_URI);
+                                        startActivityForResult(intent, 0);
+                                    } else {
+                                        ToastUtil.showMessage(PersonalCenterActivity.this, "获取联系人失败");
+                                    }
+                                }
+                            });
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            ContactsContract.Contacts.CONTENT_URI);
+                    startActivityForResult(intent, 0);
+                }
+            }
+        });
+        dialog = new AlertDialog.Builder(this)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String input = importEdit.getText().toString();
+                        showView.setText(input);
+                        if (flag == 0) {
+                            address.shippingName = input;
+                        } else {
+                            address.shippingPhone = input;
+                        }
+                        if (StringUtils.isNotBlank(pickedName) && StringUtils.isNotBlank(pickedPhone)) {
+                            if (input.equals(pickedName) || input.equals(pickedPhone)) {
+                                if (showView.getId() == R.id.person_consignee) {
+                                    personConsigneePhone.setText(pickedPhone);
+                                    address.shippingPhone = pickedPhone;
+                                } else if (showView.getId() == R.id.person_consignee_phone) {
+                                    personConsignee.setText(pickedName);
+                                    address.shippingName = pickedName;
+                                }
+                                pickedName = null;
+                                pickedPhone = null;
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setView(view)
+                .create();
+        dialog.show();
+    }
+    private void showBooleanDialog() {
+        RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setPadding(DisplayUtil.dp2px(this, 20), DisplayUtil.dp2px(this, 10), 0, 0);
+        final RadioButton trueBtn = new RadioButton(this);
+        trueBtn.setText("是");
+        RadioButton falseBtn = new RadioButton(this);
+        falseBtn.setText("否");
+        radioGroup.addView(trueBtn);
+        radioGroup.addView(falseBtn);
+        if (address.defaultAddress) {
+            trueBtn.setChecked(true);
+        } else {
+            falseBtn.setChecked(true);
+        }
+        dialog = new AlertDialog.Builder(this)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(trueBtn.isChecked()){
+                            address.defaultAddress = true;
+                        } else {
+                            address.defaultAddress = false;
+                        }
+                        personConsigneeMethod.setText(address.defaultAddress ? "是" : "否");
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setTitle("是否默认")
+                .setView(radioGroup)
+                .create();
+        dialog.show();
+    }
+
 }

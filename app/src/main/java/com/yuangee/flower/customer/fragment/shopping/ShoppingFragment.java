@@ -9,15 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.activity.GoodsActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
+import com.yuangee.flower.customer.activity.SearchAcitvity;
 import com.yuangee.flower.customer.activity.WaresDetailActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.adapter.Type2Adapter;
@@ -32,7 +31,6 @@ import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
-import com.yuangee.flower.customer.widget.GoodsDetailDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,9 +106,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     @OnClick(R.id.tv_av)
     void toSearch() {
-        if (toSpecifiedFragmentListener != null) {
-            toSpecifiedFragmentListener.toFragment(-1);
-        }
+        Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+        startActivity(intent);
     }
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;

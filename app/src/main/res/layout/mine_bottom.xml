@@ -21,7 +21,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="店铺订单"
+            android:text="我的订单"
             android:textSize="14sp" />
 
         <View
@@ -49,13 +49,13 @@
                     android:layout_height="50dp"
                     android:background="@drawable/f7_circle"
                     android:padding="11dp"
-                    app:srcCompat="@drawable/ic_all" />
+                    app:srcCompat="@drawable/all_order_mine" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="我的订单"
+                    android:text="全部"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -268,7 +268,29 @@
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
+        <LinearLayout
+            android:id="@+id/to_agreement"
+            android:layout_width="0.0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/f7_circle"
+                android:padding="11dp"
+                app:srcCompat="@drawable/ic_agreement" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="服务条款"
+                android:textSize="14sp" />
+
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/feedback"
             android:layout_width="0.0dp"
@@ -293,29 +315,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/to_agreement"
-            android:layout_width="0.0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/f7_circle"
-                android:padding="11dp"
-                app:srcCompat="@drawable/ic_agreement" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="服务条款"
-                android:textSize="14sp" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/call_service"

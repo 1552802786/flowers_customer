@@ -21,6 +21,9 @@ import com.yuangee.flower.customer.entity.UpdateWares;
 
 import org.greenrobot.greendao.AbstractDao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Description: 数据库操作类，由于greenDao的特殊性，不能在框架中搭建，
  * 所有数据库操作都可以参考该类实现自己的数据库操作管理类，不同的Dao实现
@@ -48,6 +51,15 @@ public class DbHelper {
 
     private static DBManager<Genre, Long> genreLongDBManager;
     private static DBManager<GenreSub, Long> genreSubLongDBManager;
+    private List<Genre> genreList=new ArrayList<>();
+
+    public List<Genre> getGenreList() {
+        return genreList;
+    }
+
+    public void setGenreList(List<Genre> genreList) {
+        this.genreList = genreList;
+    }
 
     private DbHelper() {
 

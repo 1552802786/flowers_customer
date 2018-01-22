@@ -32,4 +32,12 @@ public class ShoppingModel implements ShoppingContract.Model {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<PageResult<Goods>> searchGoodsData(String params, long page, long limit,String bespeak) {
+        return ApiManager.getInstance().api.searchWares(params, page * 10, limit,bespeak)
+                .map(new HttpResultFunc<PageResult<Goods>>(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

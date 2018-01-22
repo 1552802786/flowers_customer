@@ -51,9 +51,6 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
     @BindView(R.id.radio_appoint)
     RadioButton radioAppoint;
 
-    @BindView(R.id.radio_not_pay)
-    RadioButton radioNotPay;
-
     @BindView(R.id.radio_wait_receiving)
     RadioButton radioWaitReceiving;
 
@@ -88,7 +85,6 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
         }
         radioAll.setOnCheckedChangeListener(this);
         radioAppoint.setOnCheckedChangeListener(this);
-        radioNotPay.setOnCheckedChangeListener(this);
         radioWaitReceiving.setOnCheckedChangeListener(this);
 
         if (bespeak) {
@@ -96,9 +92,7 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
         } else if (status == -1) {
             status = null;
             radioAll.setChecked(true);
-        } else if (status == 0) {
-            radioNotPay.setChecked(true);
-        } else if (status == 2) {
+        } else if (status == 1) {
             radioWaitReceiving.setChecked(true);
         }
 
@@ -137,7 +131,7 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
             @Override
             public void onRefresh() {
                 recyclerView.setRefreshing(true);
-                queryOrders(status, bespeak, memberId, shopId);
+                queryOrders(status, bespeak, shopId);
             }
         });
         adapter.setZfbPay(new ShopOrderAdapter.OnStartZfbPay() {
@@ -164,13 +158,13 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
         recyclerView.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
             public void onRefresh() {
-                queryOrders(status, bespeak, memberId, shopId);
+                queryOrders(status, bespeak, shopId);
             }
 
             @Override
             public void onLoadMore() {
                 page++;
-                queryOrders(status, bespeak, memberId, shopId);
+                queryOrders(status, bespeak, shopId);
             }
         });
 
@@ -179,7 +173,7 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
     @Override
     protected void onResume() {
         super.onResume();
-        queryOrders(status, bespeak, memberId, shopId);
+        queryOrders(status, bespeak, shopId);
         recyclerView.setRefreshing(true);
     }
 
@@ -195,7 +189,7 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
                             Toast.makeText(context, getString(R.string.pay_succeed),
                                     Toast.LENGTH_SHORT).show();
 
-                            queryOrders(status, bespeak, memberId, shopId);
+                            queryOrders(status, bespeak, shopId);
 
                         } else if (result.resultStatus.equals("4000")) {
 
@@ -262,25 +256,19 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
                     status = null;
                     bespeak = false;
                     page = 0;
-                    queryOrders(status, bespeak, memberId, shopId);
+                    queryOrders(status, bespeak, shopId);
                     break;
                 case R.id.radio_appoint:
                     bespeak = true;
                     status = null;
                     page = 0;
-                    queryOrders(status, bespeak, memberId, shopId);
-                    break;
-                case R.id.radio_not_pay:
-                    bespeak = false;
-                    status = 0;
-                    page = 0;
-                    queryOrders(status, bespeak, memberId, shopId);
+                    queryOrders(status, bespeak, shopId);
                     break;
                 case R.id.radio_wait_receiving:
                     bespeak = false;
-                    status = 2;
+                    status = 1;
                     page = 0;
-                    queryOrders(status, bespeak, memberId, shopId);
+                    queryOrders(status, bespeak, shopId);
                     break;
             }
         }
@@ -292,17 +280,15 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
     /**
      * 查询店铺订单（小订单）
      *
-     * @param status
      * @param bespeak
-     * @param memberId
      * @param shopId
      */
-    private void queryOrders(Integer status, Boolean bespeak, Long memberId, Long shopId) {
-        if(!bespeak){//费预约穿Null
+    private void queryOrders(Integer status, Boolean bespeak, Long shopId) {
+        if (!bespeak) {//非预约传Null
             bespeak = null;//
         }
         Observable<PageResult<ShopOrder>> observable = ApiManager.getInstance().api
-                .findByParams(status, bespeak, memberId, shopId, (long) page * 10, (long) limit)
+                .findByParams(status, bespeak, shopId, (long) page * 10, (long) limit)
                 .map(new HttpResultFunc<PageResult<ShopOrder>>(ShopOrderActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -354,7 +340,7 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
         }
         String str = data.getExtras().getString("pay_result");
         if (str.equalsIgnoreCase("success")) {
-            queryOrders(status, bespeak, memberId, shopId);
+            queryOrders(status, bespeak, shopId);
             ToastUtil.showMessage(ShopOrderActivity.this, "支付成功");
 
 // 结果result_data为成功时，去商户后台查询一下再展示成功

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/bg_color"
     android:clickable="true"
     android:orientation="vertical">
@@ -11,13 +11,23 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/left_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:srcCompat="@drawable/left_arrow" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="35dp"
             android:layout_marginRight="55dp"
+            android:layout_toRightOf="@+id/left_back"
             android:background="@drawable/corners_bg_white_stroke"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -60,26 +70,18 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="历史记录："
-        android:layout_margin="10dp"/>
-
     <co.lujun.androidtagview.TagContainerLayout
         android:id="@+id/tag_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:padding="10dp"
+        app:container_background_color="@color/white"
+        app:container_border_radius="0dp"
+        app:container_border_width="0dp"
         app:container_enable_drag="false"
         app:horizontal_interval="10dp"
         app:tag_clickable="true"
         app:tag_corner_radius="2dp"
-        app:vertical_interval="10dp"
-        app:container_background_color="@color/white"
-        app:container_border_radius="0dp"
-        app:container_border_width="0dp"
-        />
+        app:vertical_interval="10dp" />
 
 </LinearLayout>

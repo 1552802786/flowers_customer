@@ -13,6 +13,7 @@ import com.youth.banner.transformer.DepthPageTransformer;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.MessageActivity;
+import com.yuangee.flower.customer.activity.SearchAcitvity;
 import com.yuangee.flower.customer.activity.SupplierActivity;
 import com.yuangee.flower.customer.activity.WebActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
@@ -74,9 +75,8 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
 
     @OnClick(R.id.tv_av)
     void toSearch() {
-        if (null != toSpecifiedFragmentListener) {
-            toSpecifiedFragmentListener.toFragment(-1);
-        }
+        Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -155,20 +155,20 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         mSectionedAdapter.addSection(new HomeBigGenreSelection(genreList, getActivity(), new StatelessSection.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (null != toSpecifiedFragmentListener) {
-                    Genre genre = genreList.get(position);
-                    toSpecifiedFragmentListener.toShoppingByParams(genre.genreName, null, null);
-                }
+                Genre genre = genreList.get(position);
+                Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+                intent.putExtra("params",genre.genreName);
+                startActivity(intent);
             }
         }));
 
         mSectionedAdapter.addSection(new HomeRecommedSelection(recommends, getActivity(), new StatelessSection.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (null != toSpecifiedFragmentListener) {
-                    Recommend recommend = recommends.get(position);
-                    toSpecifiedFragmentListener.toShoppingByParams(null, null, recommend.keywords);
-                }
+                Recommend recommend = recommends.get(position);
+                Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+                intent.putExtra("params",recommend.keywords);
+                startActivity(intent);
             }
         }));
 

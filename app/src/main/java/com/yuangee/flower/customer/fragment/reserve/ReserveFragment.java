@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.R;
-import com.yuangee.flower.customer.activity.GoodsActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
+import com.yuangee.flower.customer.activity.SearchAcitvity;
 import com.yuangee.flower.customer.activity.WaresDetailActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.adapter.Type2Adapter;
@@ -29,13 +29,9 @@ import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.BackPressedHandler;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
-import com.yuangee.flower.customer.fragment.shopping.ShoppingModel;
-import com.yuangee.flower.customer.fragment.shopping.ShoppingPresenter;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.StringUtils;
-import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
-import com.yuangee.flower.customer.widget.GoodsDetailDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,9 +107,9 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     @OnClick(R.id.tv_av)
     void toSearch() {
-        if (toSpecifiedFragmentListener != null) {
-            toSpecifiedFragmentListener.toFragment(-2);
-        }
+        Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+        intent.putExtra("bespeak","1");
+        startActivity(intent);
     }
 
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;

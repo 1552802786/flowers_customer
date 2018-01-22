@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/parent_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -78,7 +79,8 @@
             android:layout_width="0.1dp"
             android:layout_height="110dp"
             android:layout_toLeftOf="@+id/right_con"
-            android:background="@color/line_color" />
+            android:background="@color/line_color"
+            android:visibility="invisible" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -109,32 +111,22 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/order"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorAccent"
-                android:gravity="center"
-                android:text="减\n库\n存"
-                android:textColor="@color/white" />
-
-            <TextView
                 android:id="@+id/change"
-                android:layout_width="40dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
                 android:layout_marginLeft="5dp"
+                android:background="@color/green"
                 android:gravity="center"
-                android:text="修\n改"
+                android:text="修改"
                 android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/delete"
-                android:layout_width="40dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
                 android:background="@color/colorAccent"
                 android:gravity="center"
-                android:text="删\n除"
+                android:text="删除"
                 android:textColor="@color/white" />
         </LinearLayout>
     </FrameLayout>

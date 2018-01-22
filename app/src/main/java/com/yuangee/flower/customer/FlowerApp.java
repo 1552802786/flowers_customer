@@ -5,6 +5,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.facebook.stetho.Stetho;
 import com.yuangee.flower.customer.db.DbHelper;
+import com.yuangee.flower.customer.util.CrashHandler;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -21,9 +22,12 @@ public class FlowerApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        CrashHandler.getInstance(this);
         mInstance = this;
-        init();
         App.initApp(this);
+        init();
+
+
     }
 
     public static Context getContext() {

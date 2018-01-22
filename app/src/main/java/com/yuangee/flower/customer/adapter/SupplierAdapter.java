@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -79,7 +80,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         View view = View.inflate(context, R.layout.supplier_goods_item, null);
         GoodsHolder holder = new GoodsHolder(view);
 
-        holder.layoutView = view;    //将布局view保存起来用作点击事件
+        holder.layoutView = view.findViewById(R.id.parent_layout);    //将布局view保存起来用作点击事件
 
         holder.goodsImg = view.findViewById(R.id.goods_img);
         holder.goodsName = view.findViewById(R.id.goods_name);
@@ -90,7 +91,6 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         holder.goodsMoney = view.findViewById(R.id.goods_money);
         holder.changeGoods = view.findViewById(R.id.change);
         holder.deleteGoodsp = view.findViewById(R.id.delete);
-        holder.ordering = view.findViewById(R.id.order);
 //        holder.goodsNum = view.findViewById(R.id.goods_num);
 
         return holder;
@@ -158,12 +158,10 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
             }
         });
 
-        holder.ordering.setOnClickListener(new View.OnClickListener() {
+        holder.layoutView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (null != mOnItemClickListener) {
-                    mOnItemClickListener.onOrdering(bean);
-                }
+                mOnItemClickListener.onOrdering(bean);
             }
         });
     }
@@ -179,9 +177,9 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
 
         GoodsHolder(View itemView) {
             super(itemView);
-        }
 
-        View layoutView;
+        }
+        RelativeLayout layoutView;
         ImageView goodsImg;
         TextView goodsName;
         TextView goodsGrade;
@@ -193,7 +191,6 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
 
         TextView changeGoods;
         TextView deleteGoodsp;
-        TextView ordering;
     }
 
 }

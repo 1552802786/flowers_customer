@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.GenreSub;
 import com.yuangee.flower.customer.entity.Goods;
@@ -41,12 +43,17 @@ import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import ch.ielse.view.SwitchView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -149,11 +156,22 @@ public class GoodsActivity extends RxBaseActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     boolean flag = false;
+                                    for (int b = 0; b < not_nead_layout.getChildCount(); b++) {
+                                        not_nead_layout.getChildAt(b).setVisibility(View.GONE);
+                                    }
                                     for (int i1 = 0; i1 < genre.genreSubs.size(); i1++) {
                                         RadioButton btn = (RadioButton) group.getChildAt(i1);
                                         if (btn.isChecked()) {
                                             goods.genreSubId = genre.genreSubs.get(i1).id;
                                             goods.genreSubName = genre.genreSubs.get(i1).name;
+                                            String[] depictStr = genre.genreSubs.get(i1).depictName.split(",");
+                                            for (int a = 0; a < depictStr.length; a++) {
+                                                not_nead_layout.setVisibility(View.VISIBLE);
+                                                not_nead_layout.getChildAt(a * 2).setVisibility(View.VISIBLE);
+                                                not_nead_layout.getChildAt(a * 2 + 1).setVisibility(View.VISIBLE);
+                                                LinearLayout linearLayout = (LinearLayout) not_nead_layout.getChildAt(a * 2);
+                                                ((TextView) linearLayout.getChildAt(1)).setText(depictStr[a]);
+                                            }
                                             flag = true;
                                             break;
                                         }
@@ -190,6 +208,7 @@ public class GoodsActivity extends RxBaseActivity {
         grades.add("B");
         grades.add("C");
         grades.add("D");
+
         final RadioGroup group = new RadioGroup(this);
         group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
         for (String s : grades) {
@@ -233,16 +252,6 @@ public class GoodsActivity extends RxBaseActivity {
                 .setView(group)
                 .create();
         dialog.show();
-    }
-
-    @OnClick(R.id.color)
-    void editColor() {
-        showEditDialog(color, "输入颜色");
-    }
-
-    @OnClick(R.id.spec)
-    void editSpec() {
-        showEditDialog(spec, "输入规格");
     }
 
     @OnClick(R.id.unit)
@@ -302,20 +311,109 @@ public class GoodsActivity extends RxBaseActivity {
         dialog.show();
     }
 
-    @OnClick(R.id.sales_value)
-    void editSalesNum() {
-        showEditDialog(salesValue, "输入可售量");
+    @OnClick(R.id.goods_apply_date)
+    void chooseDate() {
+        final List<String> date = new ArrayList<>();
+        date.add("全天");
+        for (int i = 0; i < 24; i++) {
+            if (i < 10) {
+                date.add("0" + i + "点");
+            } else {
+                date.add(i + "点");
+            }
+        }
+        ScrollView scrollView = new ScrollView(GoodsActivity.this);
+        final RadioGroup group = new RadioGroup(this);
+        scrollView.addView(group);
+        group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
+        for (String s : date) {
+            RadioButton btn = new RadioButton(this);
+            btn.setText(s);
+            group.addView(btn);
+            if (StringUtils.isNotBlank(goods.startDeliver) && goods.startDeliver.equals(s)) {
+                btn.setChecked(true);
+            } else {
+                btn.setChecked(false);
+            }
+        }
+        dialog = new AlertDialog.Builder(this)
+                .setTitle("选择发货时间")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        boolean flag = false;
+                        for (int i1 = 0; i1 < date.size(); i1++) {
+                            RadioButton btn = (RadioButton) group.getChildAt(i1);
+                            if (btn.isChecked()) {
+                                goods.startDeliver = date.get(i1);
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (!flag) {
+                            ToastUtil.showMessage(GoodsActivity.this, "请选择时间");
+                        } else {
+                            receiveDate.setText(goods.startDeliver);
+                            dialogInterface.dismiss();
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setView(scrollView)
+                .create();
+        dialog.show();
     }
 
-    @OnClick(R.id.goods_price)
-    void editPrice() {
-        showEditDialog(goodsPrice, "输入单价");
+    @OnClick(R.id.is_reserve_switch)
+    void isReserveSwitch() {
+        if (!isReserve.isOpened()) {
+            reserveNeedIocn.setVisibility(View.INVISIBLE);
+            reserveInputLayout.setVisibility(View.INVISIBLE);
+        } else {
+            reserveNeedIocn.setVisibility(View.VISIBLE);
+            reserveInputLayout.setVisibility(View.VISIBLE);
+        }
     }
 
-    @OnClick(R.id.goods_name)
-    void editName() {
-        showEditDialog(goodsName, "输入名称");
+    @OnClick(R.id.is_jingpai_switch)
+    void isJingpaiSwitch() {
+        if (!isJinpai.isOpened()) {
+            jingpaiNeedIocn.setVisibility(View.INVISIBLE);
+            jingpaiInputLayout.setVisibility(View.INVISIBLE);
+        } else {
+            jingpaiNeedIocn.setVisibility(View.VISIBLE);
+            jingpaiInputLayout.setVisibility(View.VISIBLE);
+        }
     }
+
+    //参与预约
+    @BindView(R.id.is_reserve_switch)
+    SwitchView isReserve;
+    @BindView(R.id.reserve_need_icon)
+    ImageView reserveNeedIocn;
+    @BindView(R.id.reserve_input_layout)
+    View reserveInputLayout;
+    @BindView(R.id.goods_reserve_count)
+    EditText reserveCount;
+
+    //参与竞拍
+    @BindView(R.id.is_jingpai_switch)
+    SwitchView isJinpai;
+    @BindView(R.id.jingpai_need_icon)
+    ImageView jingpaiNeedIocn;
+    @BindView(R.id.jingpai_input_layout)
+    View jingpaiInputLayout;
+    @BindView(R.id.goods_jingpai_count)
+    EditText jingpaiPrice;
+
+
+    @BindView(R.id.goods_apply_date)
+    TextView receiveDate;
 
     @BindView(R.id.genre_first)
     TextView genreFirst;
@@ -327,22 +425,22 @@ public class GoodsActivity extends RxBaseActivity {
     TextView grade;
 
     @BindView(R.id.color)
-    TextView color;
+    EditText color;
 
     @BindView(R.id.spec)
-    TextView spec;
+    EditText specLength;
 
     @BindView(R.id.unit)
     TextView unit;
 
     @BindView(R.id.sales_value)
-    TextView salesValue;
+    EditText salesValue;
 
     @BindView(R.id.goods_price)
-    TextView goodsPrice;
+    EditText goodsPrice;
 
     @BindView(R.id.goods_name)
-    TextView goodsName;
+    EditText goodsName;
 
     @BindView(R.id.ic_right_1)
     ImageView icRight1;
@@ -372,21 +470,40 @@ public class GoodsActivity extends RxBaseActivity {
     @BindView(R.id.change_or_add_hint)
     TextView changeOrAdd;
 
+    @BindView(R.id.goods_first_chooseAble_label)
+    TextView first_chooseAble_label;
+    @BindView(R.id.goods_first_chooseAble_text)
+    EditText first_chooseAble_Text;
+
+    @BindView(R.id.goods_second_chooseAble_label)
+    TextView second_chooseAble_label;
+    @BindView(R.id.goods_second_chooseAble_text)
+    EditText second_chooseAble_Text;
+
+    @BindView(R.id.goods_third_chooseAble_label)
+    TextView third_chooseAble_label;
+    @BindView(R.id.goods_third_chooseAble_text)
+    EditText third_chooseAble_Text;
+
+    @BindView(R.id.goods_fourth_chooseAble_label)
+    TextView fourth_chooseAble_label;
+    @BindView(R.id.goods_fourth_chooseAble_text)
+    EditText fourth_chooseAble_Text;
+
+    @BindView(R.id.not_need_option)
+    LinearLayout not_nead_layout;
+    @BindView(R.id.user_message_text)
+    EditText userMessage;
+
     @OnClick(R.id.apply)
     void apply() {
         goods.grade = grade.getText().toString();
         goods.color = color.getText().toString();
-        goods.spec = spec.getText().toString();
+        goods.spec = specLength.getText().toString();
         goods.unit = unit.getText().toString();
         goods.name = goodsName.getText().toString();
-        try {
-            goods.salesVolume = Integer.parseInt(salesValue.getText().toString());
-            goods.unitPrice = Double.parseDouble(goodsPrice.getText().toString());
-        } catch (NumberFormatException e) {
-            ToastUtil.showMessage(GoodsActivity.this, "请填写合法的单价或可售量");
-            return;
-        }
-        createOrUpdate();
+        subCheck();
+
     }
 
     @OnClick(R.id.goods_img)
@@ -450,18 +567,26 @@ public class GoodsActivity extends RxBaseActivity {
         shopId = getIntent().getLongExtra("shopId", -1);
         shopName = getIntent().getStringExtra("shopName");
         goods = (Goods) getIntent().getSerializableExtra("goods");
-
         if (null != goods) {
+            not_nead_layout.setVisibility(View.VISIBLE);
             genreFirst.setText(goods.genreName);
             genreSub.setText(goods.genreSubName);
             grade.setText(goods.grade);
             color.setText(goods.color);
-            spec.setText(goods.spec);
+            specLength.setText(goods.spec);
             unit.setText(goods.unit);
             salesValue.setText("" + goods.salesVolume);
             goodsName.setText(goods.name);
             goodsPrice.setText("" + goods.unitPrice);
-
+            isReserve.setOpened(goods.bespeak);
+            isReserveSwitch();
+            isJinpai.setOpened(goods.auction);
+            isJingpaiSwitch();
+            receiveDate.setText(goods.startDeliver);
+            userMessage.setText(goods.memo);
+            reserveCount.setText("" + goods.bespeakNum);
+            jingpaiPrice.setText("" + goods.mumPrice);
+            setDetail();
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(change ? R.drawable.ic_add_img : R.color.color_f6)
@@ -495,27 +620,70 @@ public class GoodsActivity extends RxBaseActivity {
             genreFirst.setClickable(false);
             genreSub.setClickable(false);
             grade.setClickable(false);
-            color.setClickable(false);
-            spec.setClickable(false);
+            color.setEnabled(false);
+            specLength.setEnabled(false);
             unit.setClickable(false);
-            salesValue.setClickable(false);
+            salesValue.setEnabled(false);
             goodsImg.setClickable(false);
-            goodsPrice.setClickable(false);
-            goodsName.setClickable(false);
+            goodsPrice.setEnabled(false);
+            goodsName.setEnabled(false);
 
             apply.setVisibility(View.GONE);
         } else {
             changeOrAdd.setVisibility(View.VISIBLE);
             if (goods == null) {
-                apply.setText("创建商品");
+                apply.setText("发布");
             } else {
-                apply.setText("修改商品");
+                apply.setText("修改");
             }
         }
 
 
         if (goods == null) {
             goods = new Goods();
+        }
+    }
+
+
+    //设置包装说明
+    private void setDetail() {
+        for (int i = 0; i < DbHelper.getInstance().getGenreList().size(); i++) {
+            final Genre genre = DbHelper.getInstance().getGenreList().get(i);
+            if (genre.id == goods.genreId) {
+                for (GenreSub sub : genre.genreSubs) {
+                    if (goods.genreSubId == sub.id) {
+                        String[] depictStr = sub.depictName.split(",");
+                        for (int a = 0; a < depictStr.length; a++) {
+                            not_nead_layout.setVisibility(View.VISIBLE);
+                            not_nead_layout.getChildAt(a * 2).setVisibility(View.VISIBLE);
+                            not_nead_layout.getChildAt(a * 2 + 1).setVisibility(View.VISIBLE);
+                            LinearLayout linearLayout = (LinearLayout) not_nead_layout.getChildAt(a * 2);
+                            ((TextView) linearLayout.getChildAt(1)).setText(depictStr[a]);
+                        }
+                    }
+                }
+            }
+        }
+        try {
+            JSONObject obj = new JSONObject(goods.depict);
+            String value = obj.getString(first_chooseAble_label.getText().toString().trim());
+            if (!TextUtils.isEmpty(value)) {
+                first_chooseAble_Text.setText(value);
+            }
+            value = obj.getString(second_chooseAble_label.getText().toString().trim());
+            if (!TextUtils.isEmpty(value)) {
+                second_chooseAble_Text.setText(value);
+            }
+            value = obj.getString(third_chooseAble_label.getText().toString().trim());
+            if (!TextUtils.isEmpty(value)) {
+                third_chooseAble_Text.setText(value);
+            }
+            value = obj.getString(fourth_chooseAble_label.getText().toString().trim());
+            if (!TextUtils.isEmpty(value)) {
+                fourth_chooseAble_Text.setText(value);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -568,10 +736,36 @@ public class GoodsActivity extends RxBaseActivity {
         MultipartBody.Part salesVolumePart = MultipartBody.Part.createFormData("salesVolume", String.valueOf(goods.salesVolume));
         MultipartBody.Part shopIdPart = MultipartBody.Part.createFormData("shopId", String.valueOf(shopId));
         MultipartBody.Part shopNamePart = MultipartBody.Part.createFormData("shopName", String.valueOf(shopName));
-
-        if (apply.getText().toString().contains("创建")) {
+        MultipartBody.Part actionPart;
+        MultipartBody.Part bespeakPart;
+        MultipartBody.Part bespeakNumPart = MultipartBody.Part.createFormData("bespeakNum", reserveCount.getText().toString());
+        if (isReserve.isOpened()) {
+            bespeakPart = MultipartBody.Part.createFormData("bespeak", String.valueOf(1));
+        } else {
+            bespeakPart = MultipartBody.Part.createFormData("bespeak", String.valueOf(0));
+        }
+        if (isJinpai.isOpened()) {
+            actionPart = MultipartBody.Part.createFormData("auction", String.valueOf(1));
+        } else {
+            actionPart = MultipartBody.Part.createFormData("auction", String.valueOf(0));
+        }
+        JSONObject object = new JSONObject();
+        try {
+            object.put(first_chooseAble_label.getText().toString().trim(), first_chooseAble_Text.getText().toString().trim());
+            object.put(second_chooseAble_label.getText().toString().trim(), second_chooseAble_Text.getText().toString().trim());
+            object.put(third_chooseAble_label.getText().toString().trim(), third_chooseAble_Text.getText().toString().trim());
+            object.put(fourth_chooseAble_label.getText().toString().trim(), fourth_chooseAble_Text.getText().toString().trim());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MultipartBody.Part depictPart = MultipartBody.Part.createFormData("depict", object.toString());
+        MultipartBody.Part memoPart = MultipartBody.Part.createFormData("memo", userMessage.getText().toString().trim());
+        MultipartBody.Part mumPricePart = MultipartBody.Part.createFormData("mumPrice", jingpaiPrice.getText().toString().trim());
+        MultipartBody.Part deliverPart = MultipartBody.Part.createFormData("startDeliver", receiveDate.getText().toString().trim());
+        if (apply.getText().toString().contains("发布")) {
             Observable<Object> observable = ApiManager.getInstance().api
-                    .createWares(waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart)
+                    .createWares(waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart,
+                            actionPart, bespeakPart, bespeakNumPart, depictPart, memoPart, mumPricePart, deliverPart)
                     .map(new HttpResultFunc<>(GoodsActivity.this))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -579,13 +773,14 @@ public class GoodsActivity extends RxBaseActivity {
             mRxManager.add(observable.subscribe(new MySubscriber<>(GoodsActivity.this, true, false, new NoErrSubscriberListener<Object>() {
                 @Override
                 public void onNext(Object o) {
-                    ToastUtil.showMessage(GoodsActivity.this, "商品创建成功");
+                    ToastUtil.showMessage(GoodsActivity.this, "商品发布成功");
                     finish();
                 }
             })));
         } else {
             Observable<Object> observable = ApiManager.getInstance().api
-                    .updateWares(idPart, waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart)
+                    .updateWares(idPart, waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart,
+                            actionPart, bespeakPart, bespeakNumPart, depictPart, memoPart, mumPricePart, deliverPart)
                     .map(new HttpResultFunc<>(GoodsActivity.this))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -598,6 +793,60 @@ public class GoodsActivity extends RxBaseActivity {
                 }
             })));
         }
+    }
+
+    private void subCheck() {
+        boolean a1 = isReserve.isOpened() && TextUtils.isEmpty(reserveCount.getText().toString());
+        boolean a2 = isJinpai.isOpened() && TextUtils.isEmpty(jingpaiPrice.getText().toString());
+        if (a1) {
+            ToastUtil.showMessage(this, "请填写预约数");
+            return;
+        }
+        else if (a2) {
+            ToastUtil.showMessage(this, "请填写竞拍价");
+            return;
+        }else if (StringUtils.isBlank(genreFirst.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请选择类别");
+            return;
+        }
+        else if (StringUtils.isBlank(genreSub.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请选择子类");
+            return;
+        }
+        else if (StringUtils.isBlank(goodsName.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请填写名字");
+            return;
+        }
+        else if (TextUtils.isEmpty(grade.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请选择等级");
+            return;
+        }
+        else if (TextUtils.isEmpty(color.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请填写颜色");
+            return;
+        }
+        else if (TextUtils.isEmpty(specLength.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请填写规格");
+            return;
+        }
+        else if (TextUtils.isEmpty(unit.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请选择单位");
+            return;
+        }
+        if (TextUtils.isEmpty(goodsPrice.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请填写价格");
+            return;
+        }
+        else if (TextUtils.isEmpty(salesValue.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请填写数量");
+            return;
+        }
+        else if (TextUtils.isEmpty(receiveDate.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请填写数量");
+            return;
+        }
+
+        createOrUpdate();
     }
 
     private void showEditDialog(final TextView showView, String hint) {

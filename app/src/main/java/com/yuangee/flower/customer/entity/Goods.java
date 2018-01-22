@@ -26,7 +26,7 @@ public class Goods implements Serializable {
 
     public String color;//颜色
 
-    public String spec;//说明
+    public String spec;//规格
 
     public String unit;//单位
 
@@ -42,4 +42,10 @@ public class Goods implements Serializable {
 
     public long selectedNum;//选中的商品数量
 
+    public String startDeliver;//发货时间
+    public boolean bespeak; //是否参与预约
+    public String depict; //详细说明
+    public String memo; //备注
+    public int mumPrice;//竞拍价
+    public boolean auction;
 }

@@ -28,6 +28,7 @@ import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.Express;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.OrderWare;
 import com.yuangee.flower.customer.entity.PayResult;
 import com.yuangee.flower.customer.entity.ShopOrder;
@@ -168,6 +169,14 @@ public class CusOrderDetailActivity extends RxBaseActivity {
         }
         initHandler();
         adapter = new OrderWareAdapter(this);
+        adapter.setOnItemClickListener(new OrderWareAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Goods good) {
+                Intent intent = new Intent(CusOrderDetailActivity.this, WaresDetailActivity.class);
+                intent.putExtra("goods", good);
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
         List<OrderWare> orderWaresList = new ArrayList<>();
         for (ShopOrder shopOrder : cusOrder.orderList) {

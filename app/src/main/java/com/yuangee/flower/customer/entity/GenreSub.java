@@ -24,16 +24,18 @@ public class GenreSub {
 
     @Property
     public String name;
-
+    public String depictName;
     @Transient
     public boolean clicked;
 
-    @Generated(hash = 1900212015)
-    public GenreSub(long id, long genreId, String genreName, String name) {
+    @Generated(hash = 588478636)
+    public GenreSub(long id, long genreId, String genreName, String name,
+            String depictName) {
         this.id = id;
         this.genreId = genreId;
         this.genreName = genreName;
         this.name = name;
+        this.depictName = depictName;
     }
 
     @Generated(hash = 773338725)
@@ -70,5 +72,13 @@ public class GenreSub {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDepictName() {
+        return this.depictName;
+    }
+
+    public void setDepictName(String depictName) {
+        this.depictName = depictName;
     }
 }

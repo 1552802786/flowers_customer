@@ -29,6 +29,7 @@ public interface ShoppingContract {
         abstract void getGoodsData(String genreName, String genreSubName,
                                    String params, int page, int limit
                 ,Long shopId);
+        abstract void searchGoodsData(String params, int page, int limit,String bespeak);
     }
 
     interface Model {
@@ -37,5 +38,9 @@ public interface ShoppingContract {
          */
         Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName,
                                                    String params, long page, long limit,Long shopId);
+        /**
+         * 获取banner数据
+         */
+        Observable<PageResult<Goods>> searchGoodsData(String params, long page, long limit,String bespeak);
     }
 }

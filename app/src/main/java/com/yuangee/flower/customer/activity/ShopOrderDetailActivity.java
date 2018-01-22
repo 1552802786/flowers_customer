@@ -12,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.yuangee.flower.customer.adapter.OrderWareAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Express;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.ShopOrder;
 import com.yuangee.flower.customer.entity.OrderWare;
 import com.yuangee.flower.customer.entity.PayResult;
@@ -34,6 +37,7 @@ import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
@@ -128,6 +132,12 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
     @BindView(R.id.memo_text)
     TextView memoText;
 
+    @BindView(R.id.add)
+    View shopOrderPrice;
+    @BindView(R.id.other_info)
+    LinearLayout otherInfo;
+    @BindView(R.id.scroll_view)
+    ScrollView scrollView;
     private ShopOrder shopOrder;
     OrderWareAdapter adapter;
 
@@ -157,6 +167,7 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
+        shopOrderPrice.setVisibility(View.GONE);
         shopOrder = (ShopOrder) getIntent().getSerializableExtra("shopOrder");
         isShop = getIntent().getBooleanExtra("isShop", false);
         if (null == shopOrder) {
@@ -165,6 +176,14 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
         }
         initHandler();
         adapter = new OrderWareAdapter(this);
+        adapter.setOnItemClickListener(new OrderWareAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Goods good) {
+                Intent intent = new Intent(ShopOrderDetailActivity.this, WaresDetailActivity.class);
+                intent.putExtra("goods", good);
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
         adapter.setOrderWares(shopOrder.orderWaresList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,
@@ -205,18 +224,29 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
         //订单基本信息
         orderNo.setText(shopOrder.orderNo);
         createdTime.setText(shopOrder.created);
-        if (!shopOrder.bespeak) {
-            bespeakMoneyCon.setVisibility(View.GONE);
-            bespeakTimeCon.setVisibility(View.GONE);
-        } else {
-            bespeakTime.setText(shopOrder.bespeakDateStr);
-            bespeakMoney.setText("¥" + shopOrder.bespeakMoney);
-        }
-        if (StringUtils.isBlank(shopOrder.memo)) {
+        if ("供货商手动添加订单".equalsIgnoreCase(shopOrder.memo)){
+            otherInfo.setVisibility(View.GONE);
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1, -2);
+            scrollView.setLayoutParams(params);
+            ((TextView)bespeakTimeCon.getChildAt(0)).setText("订单状态");
+            bespeakTime.setText("已完成");
+            ((TextView)bespeakMoneyCon.getChildAt(0)).setText("订单类型");
+            bespeakMoney.setText("线下订单");
             memoCon.setVisibility(View.GONE);
-        } else {
-            memoCon.setVisibility(View.VISIBLE);
-            memoText.setText(shopOrder.memo);
+        }else {
+            if (!shopOrder.bespeak) {
+                bespeakMoneyCon.setVisibility(View.GONE);
+                bespeakTimeCon.setVisibility(View.GONE);
+            } else {
+                bespeakTime.setText(shopOrder.bespeakDateStr);
+                bespeakMoney.setText("¥" + shopOrder.bespeakMoney);
+            }
+            if (StringUtils.isBlank(shopOrder.memo)) {
+                memoCon.setVisibility(View.GONE);
+            } else {
+                memoCon.setVisibility(View.VISIBLE);
+                memoText.setText(shopOrder.memo);
+            }
         }
 
         //客户基本信息
@@ -239,16 +269,16 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
 
     private void initBtn() {
 
-            if (shopOrder.status == ShopOrder.ORDER_STATUS_WAIT) {
-                leftBtn.setVisibility(View.VISIBLE);
-                rightBtn.setVisibility(View.GONE);
-                leftBtn.setText("确认发货");
-                leftBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        fahuo(shopOrder);
-                    }
-                });
+        if (shopOrder.status == ShopOrder.ORDER_STATUS_WAIT) {
+            leftBtn.setVisibility(View.VISIBLE);
+            rightBtn.setVisibility(View.GONE);
+            leftBtn.setText("确认发货");
+            leftBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fahuo(shopOrder);
+                }
+            });
         }
     }
 

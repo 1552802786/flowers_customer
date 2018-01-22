@@ -50,6 +50,22 @@ public class ShoppingPresenter extends ShoppingContract.Presenter {
                 })));
     }
 
+    @Override
+    public void searchGoodsData(String params,final int page, final int limit,String bespeak) {
+        mRxManager.add(mModel.searchGoodsData(params, page, limit,bespeak)
+                .subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<PageResult<Goods>>() {
+                    @Override
+                    public void onNext(PageResult<Goods> pageResult) {
+                        mView.showGoods(page, limit, pageResult);
+                    }
+
+                    @Override
+                    public void onError(int code) {
+                        mView.showEmptyView(code);
+                    }
+                })));
+    }
+
 //    private List<Goods> createGoods() {
 //        List<Goods> goodsList = new ArrayList<>();
 //        for (int i = 0; i < 20; i++) {

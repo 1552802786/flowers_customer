@@ -50,17 +50,39 @@
                 android:background="@color/white"
                 android:orientation="vertical">
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/genre_first_con"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
                         android:text="类别"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/genre_first"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_1"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:hint="请选择类别"
+                        android:text=""
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -70,36 +92,45 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
-
-                    <TextView
-                        android:id="@+id/genre_first"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_1"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
                     android:background="@color/line_color" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/genre_sub_con"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
                         android:text="品类"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/genre_sub"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_2"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:hint="请选择品类"
+                        android:text=""
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -110,230 +141,49 @@
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
 
-                    <TextView
-                        android:id="@+id/genre_sub"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_2"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
                     android:background="@color/line_color" />
 
-                <RelativeLayout
-                    android:id="@+id/grade_con"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
-                        android:text="等级"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:id="@+id/ic_right_3"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_chevron" />
-
-                    <TextView
-                        android:id="@+id/grade"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_3"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:background="@color/line_color" />
-
-                <RelativeLayout
-                    android:id="@+id/color_con"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
-                        android:text="颜色"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:id="@+id/ic_right_4"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_chevron" />
-
-                    <TextView
-                        android:id="@+id/color"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_4"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:background="@color/line_color" />
-
-                <RelativeLayout
-                    android:id="@+id/spec_con"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
-                        android:text="规格"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:id="@+id/ic_right_5"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_chevron" />
-
-                    <TextView
-                        android:id="@+id/spec"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_5"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:background="@color/line_color" />
-
-                <RelativeLayout
-                    android:id="@+id/unit_con"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
-                        android:text="单位"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:id="@+id/ic_right_6"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_chevron" />
-
-                    <TextView
-                        android:id="@+id/unit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_6"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:background="@color/line_color" />
-
-                <RelativeLayout
-                    android:id="@+id/sales_value_con"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
-                        android:text="可售量"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:id="@+id/ic_right_7"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_chevron" />
-
-                    <TextView
-                        android:id="@+id/sales_value"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_7"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:background="@color/line_color" />
-
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/goods_name_con"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
-                        android:text="商品名称"
+                        android:text="品名"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/goods_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_8"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="right"
+                        android:hint="请输入品名"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:text=""
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -344,35 +194,252 @@
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
 
-                    <TextView
-                        android:id="@+id/goods_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_8"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
                     android:background="@color/line_color" />
 
-                <RelativeLayout
-                    android:id="@+id/goods_price_con"
+                <LinearLayout
+                    android:id="@+id/grade_con"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
+                        android:text="等级"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/grade"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_3"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:hint="请选择等级"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ic_right_3"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron" />
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+                <LinearLayout
+                    android:id="@+id/color_con"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="颜色"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_4"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="right"
+                        android:hint="请输入颜色"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ic_right_4"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron" />
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+                <LinearLayout
+                    android:id="@+id/spec_con"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="长度"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/spec"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="right"
+                        android:hint="请输入长度"
+                        android:inputType="number"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ic_right_5"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+                <LinearLayout
+                    android:id="@+id/unit_con"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="单位"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/unit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_6"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:hint="请选择单位"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ic_right_6"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron" />
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+                <LinearLayout
+                    android:id="@+id/goods_price_con"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:text="单价"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/goods_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_9"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="right"
+                        android:hint="请输入单价"
+                        android:inputType="number"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:text=""
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -383,31 +450,519 @@
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
 
-                    <TextView
-                        android:id="@+id/goods_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="80dp"
-                        android:layout_toLeftOf="@+id/ic_right_9"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
                     android:background="@color/line_color" />
 
+                <LinearLayout
+                    android:id="@+id/sales_value_con"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="可售量"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/sales_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toLeftOf="@+id/ic_right_7"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="right"
+                        android:hint="请输入可售量"
+                        android:inputType="number"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ic_right_7"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron" />
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+                <LinearLayout
+                    android:id="@+id/goods_apply_date_con"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="发货时间"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/goods_apply_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:hint="请选择时间段"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ic_right_10"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        app:srcCompat="@drawable/ic_chevron" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+                <!--非必填项目-->
+                <LinearLayout
+                    android:id="@+id/not_need_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/goods_first_chooseAble_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="10dp"
+                            android:src="@drawable/add_goods_star"
+                            android:visibility="invisible" />
+
+                        <TextView
+                            android:id="@+id/goods_first_chooseAble_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/goods_first_chooseAble_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:gravity="right"
+                            android:hint="请输入值"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/ic_chevron" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:background="@color/line_color"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/goods_second_chooseAble_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="10dp"
+                            android:src="@drawable/add_goods_star"
+                            android:visibility="invisible" />
+
+                        <TextView
+                            android:id="@+id/goods_second_chooseAble_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/goods_second_chooseAble_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:gravity="right"
+                            android:hint="请输入值"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/ic_chevron" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:background="@color/line_color"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/goods_third_chooseAble_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="10dp"
+                            android:src="@drawable/add_goods_star"
+                            android:visibility="invisible" />
+
+                        <TextView
+                            android:id="@+id/goods_third_chooseAble_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/goods_third_chooseAble_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:gravity="right"
+                            android:hint="请输入值"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/ic_chevron" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:background="@color/line_color"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/goods_fourth_chooseAble_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="10dp"
+                            android:src="@drawable/add_goods_star"
+                            android:visibility="invisible" />
+
+                        <TextView
+                            android:id="@+id/goods_fourth_chooseAble_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/goods_fourth_chooseAble_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:gravity="right"
+                            android:hint="请输入值"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/ic_chevron" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:background="@color/line_color"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/user_message_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="备注"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/user_message_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="right"
+                        android:hint="请输入备注"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        app:srcCompat="@drawable/ic_chevron" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+                <!--是否预约-->
+                <LinearLayout
+                    android:id="@+id/goods_is_reserve"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/reserve_need_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="参与预约"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ch.ielse.view.SwitchView
+                        android:id="@+id/is_reserve_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="8dp" />
+
+                    <LinearLayout
+                        android:id="@+id/reserve_input_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:visibility="invisible">
+
+                        <EditText
+                            android:id="@+id/goods_reserve_count"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:gravity="right"
+                            android:hint="请输入可售数量"
+                            android:inputType="number"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/ic_chevron" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+                <!--是否竞拍-->
+                <LinearLayout
+                    android:id="@+id/goods_is_jingpai"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/jingpai_need_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="10dp"
+                        android:src="@drawable/add_goods_star"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="参与竞拍"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ch.ielse.view.SwitchView
+                        android:id="@+id/is_jingpai_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="8dp" />
+
+                    <LinearLayout
+                        android:id="@+id/jingpai_input_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:visibility="invisible">
+
+                        <EditText
+                            android:id="@+id/goods_jingpai_count"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@color/white"
+                            android:gravity="right"
+                            android:hint="请输入可售数量"
+                            android:inputType="number"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/ic_chevron" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center_vertical"
+                    android:text="*为必填项目"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp" />
+
                 <Button
                     android:id="@+id/apply"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:background="@drawable/corners_login_btn"
-                    android:text="修改/创建"
+                    android:text="修改/发布"
                     android:textColor="@color/white" />
 
             </LinearLayout>

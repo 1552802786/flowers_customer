@@ -15,6 +15,7 @@ import com.yuangee.flower.customer.entity.PersonResult;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Setting;
 import com.yuangee.flower.customer.entity.Shop;
+import com.yuangee.flower.customer.entity.SystomConfig;
 import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
@@ -97,7 +98,11 @@ public interface ApiService {
                                                         @Query("bespeak") boolean bespeak,
                                                         @Query("limit") Long Limit,
                                                         @Query("shopId") Long shopId);
-
+    @GET("rest/wares/findWares")
+    Observable<BaseResult<PageResult<Goods>>> searchWares(@Query("waresName") String waresName,
+                                                        @Query("offset") Long offset,
+                                                        @Query("limit") Long Limit,
+                                                          @Query("bespeak") String bespeak);
     /**
      * 根据用户id查询店铺信息
      *
@@ -141,7 +146,14 @@ public interface ApiService {
                                                @Part MultipartBody.Part unitPrice,
                                                @Part MultipartBody.Part salesVolume,
                                                @Part MultipartBody.Part shopId,
-                                               @Part MultipartBody.Part shopName);
+                                               @Part MultipartBody.Part shopName,
+                                               @Part MultipartBody.Part auction,
+                                               @Part MultipartBody.Part bespeak,
+                                               @Part MultipartBody.Part bespeakNum,
+                                               @Part MultipartBody.Part depict,
+                                               @Part MultipartBody.Part memo,
+                                               @Part MultipartBody.Part mumPrice,
+                                               @Part MultipartBody.Part startDeliver);
 
     /**
      * 修改商品
@@ -179,7 +191,14 @@ public interface ApiService {
                                                @Part MultipartBody.Part unitPrice,
                                                @Part MultipartBody.Part salesVolume,
                                                @Part MultipartBody.Part shopId,
-                                               @Part MultipartBody.Part shopName);
+                                               @Part MultipartBody.Part shopName,
+                                               @Part MultipartBody.Part auction,
+                                               @Part MultipartBody.Part bespeak,
+                                               @Part MultipartBody.Part bespeakNum,
+                                               @Part MultipartBody.Part depict,
+                                               @Part MultipartBody.Part memo,
+                                               @Part MultipartBody.Part mumPrice,
+                                               @Part MultipartBody.Part startDeliver);
 
     /**
      * 删除商品
@@ -195,7 +214,6 @@ public interface ApiService {
      *
      * @param status   订单状态 0：未支付1：未发货2：未收货3：确认收货4：预约订单，已支付预约金，未完成支付 5：订单取消
      * @param bespeak  是否为预约订单
-     * @param memberId 客户id
      * @param shopId   店铺id
      * @param offset
      * @param limit
@@ -204,7 +222,6 @@ public interface ApiService {
     @GET("rest/order/findByParams")
     Observable<BaseResult<PageResult<ShopOrder>>> findByParams(@Query("status") Integer status,
                                                                @Query("bespeak") Boolean bespeak,
-                                                               @Query("memberId") Long memberId,
                                                                @Query("shopId") Long shopId,
                                                                @Query("offset") Long offset,
                                                                @Query("limit") Long limit);
@@ -316,6 +333,12 @@ public interface ApiService {
     @GET("rest/member/findById")
     Observable<BaseResult<PersonResult>> findById(@Query("id") Long id);
 
+    /**
+     * 获取系统确认字符串
+     * @return
+     */
+    @GET("rest/system/conf")
+    Observable<BaseResult<SystomConfig>> systemConfig();
     /**
      * 修改用户信息
      *

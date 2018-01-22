@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,6 +36,8 @@ import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.entity.SystomConfig;
+import com.yuangee.flower.customer.entity.UserAgreeMent;
 import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
@@ -47,6 +50,7 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.BaseResult;
+import com.yuangee.flower.customer.result.SuppStatus;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
@@ -58,6 +62,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import q.rorbin.badgeview.Badge;
@@ -81,21 +86,6 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     @BindView(R.id.bnve)
     BottomNavigationViewEx bnve;
 
-    @BindView(R.id.search_frame)
-    LinearLayout searchFrame;
-
-    @BindView(R.id.edit_suggest)
-    EditText editSuggest;
-
-    @BindView(R.id.clear_edit)
-    ImageView clearEdit;
-
-    @BindView(R.id.cancel_action)
-    TextView cancelAction;
-
-    @BindView(R.id.tag_container)
-    TagContainerLayout tagContainerLayout;
-
     @BindView(R.id.activity_main)
     RelativeLayout rootView;
 
@@ -109,11 +99,18 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         initView();
         initData();
         initEvent();
+        getSystemConfig();
     }
 
     @Override
     public void initToolBar() {
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        vp.setCurrentItem(2);
     }
 
     /**
@@ -123,89 +120,6 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         bnve.enableShiftingMode(false);
         bnve.enableAnimation(true);
         bnve.enableItemShiftingMode(false);
-
-        editSuggest.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_SEARCH) {
-                    searchFrame.setVisibility(View.GONE);
-                    String params = textView.getText().toString();
-                    if (null != shoppingFragment) {
-                        if (position == -1) {
-                            bnve.setCurrentItem(1);
-                            shoppingFragment.findWares(params);
-                        } else {
-                            bnve.setCurrentItem(3);
-                            reserveFragment.findWares(params);
-                        }
-                    }
-                    String str = App.me().getSharedPreferences().getString("history", "");
-                    SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
-                    if (StringUtils.isBlank(str)) {
-                        editor.putString("history", params);
-                    } else {
-                        boolean exist = false;
-                        if (str.contains(",")) {
-                            String[] array = str.split(",");
-                            for (String s : array) {
-                                if (s.equals(params)) {
-                                    exist = true;
-                                }
-                            }
-                        } else {
-                            if (str.equals(params)) {
-                                exist = true;
-                            }
-                        }
-                        if (!exist) {
-                            str += "," + params;
-                            editor.putString("history", str);
-                        }
-                    }
-                    editor.apply();
-                    return true;
-                }
-                return false;
-            }
-        });
-        editSuggest.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (null != editable) {
-                    String s = editable.toString();
-                    if (StringUtils.isEmpty(s)) {
-                        clearEdit.setVisibility(View.GONE);
-                    } else {
-                        clearEdit.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    clearEdit.setVisibility(View.GONE);
-                }
-            }
-        });
-        cancelAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchFrame.setVisibility(View.GONE);
-                PhoneUtil.hideKeyboard(MainActivity.this);
-            }
-        });
-        clearEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editSuggest.setText("");
-            }
-        });
     }
 
     /**
@@ -275,7 +189,6 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                 int position = items.get(item.getItemId());
                 if (previousPosition != position) {
                     // only set item when item changed
-                    searchFrame.setVisibility(View.GONE);
                     previousPosition = position;
                     Log.i(TAG, "-----bnve-------- previous item:" + bnve.getCurrentItem() + " current item:" + position + " ------------------");
                     vp.setCurrentItem(position);
@@ -315,46 +228,8 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     @Override
     public void toFragment(int position) {
         if (position == -1 || position == -2) {
-            this.position = position;
-            tagContainerLayout.removeAllTags();
-            showTag();
-            searchFrame.setVisibility(View.VISIBLE);
-            editSuggest.requestFocus();
-            InputMethodManager inputManager = (InputMethodManager) editSuggest.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInput(editSuggest, 0);
         } else {
             vp.setCurrentItem(position);
-        }
-    }
-
-    private void showTag() {
-        String str = App.me().getSharedPreferences().getString("history", "");
-        if (StringUtils.isNotBlank(str)) {
-            if (str.contains(",")) {
-                String[] array = str.split(",");
-                for (String s : array) {
-                    tagContainerLayout.addTag(s);
-                }
-            } else {
-                tagContainerLayout.addTag(str);
-            }
-            tagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
-                @Override
-                public void onTagClick(int position, String text) {
-                    editSuggest.setText(text);
-                    editSuggest.setSelection(text.length());
-                }
-
-                @Override
-                public void onTagLongClick(int position, String text) {
-
-                }
-
-                @Override
-                public void onTagCrossClick(int position) {
-
-                }
-            });
         }
     }
 
@@ -406,16 +281,12 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
     @Override
     public void onBackPressed() {
-        if (searchFrame.getVisibility() == View.VISIBLE) {
-            searchFrame.setVisibility(View.GONE);
-        } else {
-            if (vp.getCurrentItem() == 1) {
-                if (shoppingFragment.onBackPressed()) {
-                    return;
-                }
+        if (vp.getCurrentItem() == 1) {
+            if (shoppingFragment.onBackPressed()) {
+                return;
             }
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
 
     private Badge badge;
@@ -433,5 +304,24 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
     public static List<Genre> getGenre() {
         return DbHelper.getInstance().getGenreLongDBManager().loadAll();
+    }
+    private SystomConfig  config;
+
+    public  SystomConfig getConfig() {
+        return config;
+    }
+
+    private void getSystemConfig(){
+        Observable<SystomConfig> observable = ApiManager.getInstance()
+                .api.systemConfig()
+                .map(new HttpResultFunc<SystomConfig>(MainActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new NoErrSubscriberListener<SystomConfig>() {
+            @Override
+            public void onNext(SystomConfig o) {
+                config=o;
+            }
+        })));
     }
 }

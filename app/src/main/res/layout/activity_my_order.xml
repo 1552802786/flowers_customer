@@ -22,6 +22,8 @@
             android:text="全部" />
 
         <View
+            android:visibility="gone"
+            android:id="@+id/radio_not_pay_lines"
             android:layout_width="0.1dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -29,6 +31,7 @@
             android:background="@color/colorGray" />
 
         <RadioButton
+            android:visibility="gone"
             android:id="@+id/radio_not_pay"
             style="@style/cus_radio_button"
             android:layout_width="0.0dp"

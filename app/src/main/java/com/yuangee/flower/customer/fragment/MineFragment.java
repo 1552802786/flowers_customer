@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
@@ -16,8 +17,10 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.CustomerAgreementActivity;
 import com.yuangee.flower.customer.activity.CustomerOrderActivity;
 import com.yuangee.flower.customer.activity.FeedbackActivity;
+import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.activity.ShopOrderActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
@@ -142,24 +145,29 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.to_agreement)
     void toAgreement() {
-        ToastUtil.showMessage(getActivity(), "服务条款");
+        gotoAgreementActivity("服务条款",((MainActivity)getActivity()).getConfig().agreement.serviceAgreement);
     }
 
     @OnClick(R.id.shouhou_rule)
     void shoufeiRule() {
-        ToastUtil.showMessage(getActivity(), "售后规则");
+        gotoAgreementActivity("售后规则",((MainActivity)getActivity()).getConfig().agreement.customerServiceAgreement);
     }
 
     @OnClick(R.id.yunfei_rule)
     void yunfeiRule() {
-        ToastUtil.showMessage(getActivity(), "运费规则");
+        gotoAgreementActivity("运费规则",((MainActivity)getActivity()).getConfig().agreement.freightAgreement);
     }
 
     @OnClick(R.id.feedback)
     void feedback() {
         startActivity(new Intent(getActivity(), FeedbackActivity.class));
     }
-
+    private void gotoAgreementActivity(String title,String agreement){
+        Intent it=new Intent(getActivity(), CustomerAgreementActivity.class);
+        it.putExtra("title_agreement",title);
+        it.putExtra("web_string",agreement);
+        startActivity(it);
+    }
     @OnClick(R.id.call_service)
     void callService() {
 //        PhoneUtil.call(getActivity(), "15102875535");
@@ -222,7 +230,9 @@ public class MineFragment extends RxLazyFragment {
                 personName.setText(o.name);
                 personVip.setText("普通会员");
                 if (o.shop != null) {
+                    personVip.setText("供货商");
                     shopId = o.shop.id;
+                    App.me().getSharedPreferences().edit().putLong("shopId",shopId).commit();
                     shopName = o.shop.shopName;
                 } else {
 //                    supplierText.setText("申请成为供货商");
@@ -245,10 +255,9 @@ public class MineFragment extends RxLazyFragment {
                     myAllOrder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(getActivity(), ShopOrderActivity.class);
+                            Intent intent = new Intent(getActivity(), CustomerOrderActivity.class);
                             intent.putExtra("status", -1);
                             intent.putExtra("bespeak", false);
-                            intent.putExtra("isShop", true);
                             startActivity(intent);
                         }
                     });

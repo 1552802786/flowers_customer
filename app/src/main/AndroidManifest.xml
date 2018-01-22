@@ -61,6 +61,7 @@
 
         <activity
             android:name=".activity.MainActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
@@ -79,7 +80,8 @@
         <activity
             android:name=".activity.GoodsActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.PictureExternalPreviewActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
@@ -110,6 +112,18 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.MessageActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SearchAcitvity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CustomerAgreementActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CustomerAddLocalOrderActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="portrait" />
         <activity

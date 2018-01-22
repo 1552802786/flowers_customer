@@ -12,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
@@ -31,6 +34,7 @@ import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
+ * 我的店铺
  * Created by developerLzh on 2017/11/8 0008.
  */
 
@@ -75,7 +80,7 @@ public class SupplierActivity extends RxBaseActivity {
 
     private long shopId;
     private String shopName;
-
+    private FloatingActionMenu actionMenu;
     private List<Goods> goodsList;
 
     @Override
@@ -93,7 +98,9 @@ public class SupplierActivity extends RxBaseActivity {
         adapter.setOnOrderingClickListener(new SupplierAdapter.OnOrderIngClick() {
             @Override
             public void onOrdering(Goods goods) {
-                showCusDialog(goods);
+                Intent intent = new Intent(SupplierActivity.this, WaresDetailActivity.class);
+                intent.putExtra("goods", goods);
+                startActivity(intent);
             }
         });
         goodRecycler.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -113,6 +120,7 @@ public class SupplierActivity extends RxBaseActivity {
                 getGoodsData();
             }
         });
+        initFloatPath();
     }
 
     private int qua;
@@ -322,5 +330,96 @@ public class SupplierActivity extends RxBaseActivity {
                 getGoodsData();
             }
         })));
+    }
+
+    private void initFloatPath() {
+        final ImageView main_float_icon = new ImageView(this);
+        main_float_icon.setImageDrawable(getResources().getDrawable(R.drawable.my_shop_order));
+        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                .setContentView(main_float_icon)
+                .build();
+       // repeat many times:
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        ImageView orderall = new ImageView(this);
+
+        orderall.setImageDrawable(getResources().getDrawable(R.drawable.my_ordre_all));
+        SubActionButton orderallBtn = itemBuilder.setContentView(orderall).build();
+        orderallBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SupplierActivity.this, ShopOrderActivity.class);
+                intent.putExtra("status", -1);
+                intent.putExtra("bespeak", false);
+                intent.putExtra("isShop", true);
+                startActivity(intent);
+                actionMenu.close(true);
+            }
+        });
+// repeat many times:
+        SubActionButton.Builder itemBuilder1 = new SubActionButton.Builder(this);
+        ImageView orderWaitReceive = new ImageView(this);
+        orderWaitReceive.setImageDrawable(getResources().getDrawable(R.drawable.my_order_wait_recevi));
+        SubActionButton orderWaitReceiveBtn = itemBuilder1.setContentView(orderWaitReceive).build();
+        orderWaitReceiveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SupplierActivity.this, ShopOrderActivity.class);
+                intent.putExtra("status", 1);
+                intent.putExtra("bespeak", false);
+                intent.putExtra("isShop", true);
+                startActivity(intent);
+                actionMenu.close(true);
+            }
+        });
+        // repeat many times:
+        SubActionButton.Builder itemBuilder2 = new SubActionButton.Builder(this);
+        ImageView orderReserve= new ImageView(this);
+        orderReserve.setImageDrawable(getResources().getDrawable(R.drawable.my_order_reserve));
+        SubActionButton orderReserveBtn = itemBuilder2.setContentView(orderReserve).build();
+        orderReserveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SupplierActivity.this, ShopOrderActivity.class);
+                intent.putExtra("bespeak", true);
+                intent.putExtra("isShop", true);
+                startActivity(intent);
+                actionMenu.close(true);
+            }
+        });
+        // repeat many times:
+        SubActionButton.Builder itemBuilder3= new SubActionButton.Builder(this);
+        ImageView orderAdd= new ImageView(this);
+        orderAdd.setImageDrawable(getResources().getDrawable(R.drawable.my_order_add));
+        SubActionButton orderAddBtn = itemBuilder3.setContentView(orderAdd).build();
+        orderAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SupplierActivity.this, CustomerAddLocalOrderActivity.class);
+                intent.putExtra("goods", (Serializable) goodsList);
+                intent.putExtra("shopId",shopId);
+                startActivity(intent);
+                actionMenu.close(true);
+            }
+        });
+        // 添加菜单项
+        actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(orderAddBtn)
+                .addSubActionView(orderReserveBtn)
+                .addSubActionView(orderWaitReceiveBtn)
+                .addSubActionView(orderallBtn)
+                // ...
+                .attachTo(actionButton)
+                .build();
+        actionMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+            @Override
+            public void onMenuOpened(FloatingActionMenu floatingActionMenu) {
+                main_float_icon.setImageDrawable(getResources().getDrawable(R.drawable.my_shop_order_grey));
+            }
+
+            @Override
+            public void onMenuClosed(FloatingActionMenu floatingActionMenu) {
+                main_float_icon.setImageDrawable(getResources().getDrawable(R.drawable.my_shop_order));
+            }
+        });
     }
 }

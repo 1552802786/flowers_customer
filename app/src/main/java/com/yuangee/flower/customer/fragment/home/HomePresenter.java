@@ -78,6 +78,7 @@ public class HomePresenter extends HomeContract.Presenter {
                 DbHelper.getInstance().getGenreLongDBManager().deleteAll();
                 DbHelper.getInstance().getGenreSubLongDBManager().deleteAll();
                 DbHelper.getInstance().getGenreLongDBManager().insertInTx(orderList);
+                DbHelper.getInstance().setGenreList(orderList);
                 mView.showGenre(orderList);
                 mView.hideEmptyView();
             }
