@@ -1,9 +1,13 @@
 package com.yuangee.flower.customer.fragment;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -87,6 +91,8 @@ public class MineFragment extends RxLazyFragment {
 
     @BindView(R.id.my_all_order)
     TextView myAllOrder;
+    private String phone;
+
 
     @OnClick(R.id.notification_icon)
     void toMessage() {
@@ -145,35 +151,53 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.to_agreement)
     void toAgreement() {
-        gotoAgreementActivity("服务条款",((MainActivity)getActivity()).getConfig().agreement.serviceAgreement);
+        gotoAgreementActivity("服务条款", ((MainActivity) getActivity()).getConfig().agreement.serviceAgreement);
     }
 
     @OnClick(R.id.shouhou_rule)
     void shoufeiRule() {
-        gotoAgreementActivity("售后规则",((MainActivity)getActivity()).getConfig().agreement.customerServiceAgreement);
+        gotoAgreementActivity("售后规则", ((MainActivity) getActivity()).getConfig().agreement.customerServiceAgreement);
     }
 
     @OnClick(R.id.yunfei_rule)
     void yunfeiRule() {
-        gotoAgreementActivity("运费规则",((MainActivity)getActivity()).getConfig().agreement.freightAgreement);
+        gotoAgreementActivity("运费规则", ((MainActivity) getActivity()).getConfig().agreement.freightAgreement);
     }
 
     @OnClick(R.id.feedback)
     void feedback() {
         startActivity(new Intent(getActivity(), FeedbackActivity.class));
     }
-    private void gotoAgreementActivity(String title,String agreement){
-        Intent it=new Intent(getActivity(), CustomerAgreementActivity.class);
-        it.putExtra("title_agreement",title);
-        it.putExtra("web_string",agreement);
+
+    private void gotoAgreementActivity(String title, String agreement) {
+        Intent it = new Intent(getActivity(), CustomerAgreementActivity.class);
+        it.putExtra("title_agreement", title);
+        it.putExtra("web_string", agreement);
         startActivity(it);
     }
+
     @OnClick(R.id.call_service)
     void callService() {
-//        PhoneUtil.call(getActivity(), "15102875535");
-        String phone = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId()).customServicePhone;
+
+        phone = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId()).customServicePhone;
         if (StringUtils.isNotBlank(phone)) {
-            PhoneUtil.call(getActivity(), phone);
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(phone)
+                    .setPositiveButton("呼叫", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (getActivity().checkSelfPermission("android.permission.CALL_PHONE") != PackageManager.PERMISSION_GRANTED) {
+                                getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 4343);
+                            }else {
+                                PhoneUtil.call(getActivity(), phone);
+                            }
+                        }
+                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            }).create().show();
         } else {
             ToastUtil.showMessage(getActivity(), "无效的电话号码");
         }
@@ -232,7 +256,7 @@ public class MineFragment extends RxLazyFragment {
                 if (o.shop != null) {
                     personVip.setText("供货商");
                     shopId = o.shop.id;
-                    App.me().getSharedPreferences().edit().putLong("shopId",shopId).commit();
+                    App.me().getSharedPreferences().edit().putLong("shopId", shopId).commit();
                     shopName = o.shop.shopName;
                 } else {
 //                    supplierText.setText("申请成为供货商");
@@ -329,4 +353,20 @@ public class MineFragment extends RxLazyFragment {
                     }
                 })));
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 4343:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    PhoneUtil.call(getActivity(), phone);
+                } else {
+                    ToastUtil.showMessage(getActivity(),"你没有开启权限");
+                }
+                break;
+            }
+
+        }
 }

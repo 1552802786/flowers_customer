@@ -34,7 +34,7 @@ public class CustomerAgreementActivity extends RxBaseActivity {
         String html = getIntent().getStringExtra("web_string");
         webView.getSettings().setDefaultTextEncodingName("UTF -8");
 
-        webView.loadData(html, "text/html", "UTF-8");
+        webView.loadData(html, "text/html; charset=UTF-8", null);
     }
 
     @Override

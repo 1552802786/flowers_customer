@@ -36,9 +36,8 @@ public class PhoneUtil {
     public static void call(Context context, String phoneNum) {
 
         try {
-            Intent phoneIntent = new Intent(Intent.ACTION_CALL,
-                    Uri.parse("tel:" + phoneNum));
-            context.startActivity(phoneIntent);
+            Intent intentPhone = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNum));
+            context.startActivity(intentPhone);
         } catch (SecurityException e) {
             e.printStackTrace();
             ToastUtil.showMessage(context, "拨打电话失败");
