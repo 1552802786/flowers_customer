@@ -17,6 +17,7 @@ import com.yuangee.flower.customer.entity.Setting;
 import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.entity.SystomConfig;
 import com.yuangee.flower.customer.entity.ZfbResult;
+import com.yuangee.flower.customer.fragment.shopping.FeeCreatOrderResult;
 import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.result.QueryCartResult;
@@ -92,17 +93,21 @@ public interface ApiService {
      */
     @GET("rest/wares/findWares")
     Observable<BaseResult<PageResult<Goods>>> findWares(@Query("genreName") String genreName,
-                                                        @Query("genreSubName") String genreSubName,
+                                                        @Query("genreSubNames") String genreSubName,
                                                         @Query("params") String params,
                                                         @Query("offset") Long offset,
-                                                        @Query("bespeak") boolean bespeak,
+                                                        @Query("bespeak") String bespeak,
                                                         @Query("limit") Long Limit,
                                                         @Query("shopId") Long shopId);
+
     @GET("rest/wares/findWares")
     Observable<BaseResult<PageResult<Goods>>> searchWares(@Query("waresName") String waresName,
-                                                        @Query("offset") Long offset,
-                                                        @Query("limit") Long Limit,
+                                                          @Query("genreSubNames") String genreSubName,
+                                                          @Query("params") String params,
+                                                          @Query("offset") Long offset,
+                                                          @Query("limit") Long Limit,
                                                           @Query("bespeak") String bespeak);
+
     /**
      * 根据用户id查询店铺信息
      *
@@ -212,9 +217,9 @@ public interface ApiService {
     /**
      * 根据条件分页查询订单
      *
-     * @param status   订单状态 0：未支付1：未发货2：未收货3：确认收货4：预约订单，已支付预约金，未完成支付 5：订单取消
-     * @param bespeak  是否为预约订单
-     * @param shopId   店铺id
+     * @param status  订单状态 0：未支付1：未发货2：未收货3：确认收货4：预约订单，已支付预约金，未完成支付 5：订单取消
+     * @param bespeak 是否为预约订单
+     * @param shopId  店铺id
      * @param offset
      * @param limit
      * @return
@@ -238,7 +243,7 @@ public interface ApiService {
     Observable<BaseResult<CartItem>> addCartItem(@Query("memberId") Long memberId,
                                                  @Query("waresId") Long waresId,
                                                  @Query("num") Integer num,
-                                                 @Query("bespeak") boolean bespeak
+                                                 @Query("bespeak") Boolean bespeak
     );
 
     /**
@@ -295,13 +300,15 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("rest/order/confirmOrderMulti")
     Observable<BaseResult<CustomerOrder>> confirmOrderMulti(@Field("memberId") Long memberId,
-                                                        @Field("receiverName") String receiverName,
-                                                        @Field("receiverPhone") String receiverPhone,
-                                                        @Field("receiverAddress") String receiverAddress,
-                                                        @Field("expressId") Long expressId,
-                                                        @Field("couponId") Long couponId,
-                                                        @Field("cartItemIds") Long[] cartItemIds
-    );
+                                                            @Field("receiverName") String receiverName,
+                                                            @Field("receiverPhone") String receiverPhone,
+                                                            @Field("receiverAddress") String receiverAddress,
+                                                            @Field("expressId") Long expressId,
+                                                            @Field("couponId") Long couponId,
+                                                            @Field("cartItemIds") Long[] cartItemIds,
+                                                            @Field("memo") String memo,
+                                                            @Field("startLat") Double lat,
+                                                            @Field("startLng") Double lng);
 
     /**
      * @param memberId
@@ -315,13 +322,13 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("rest/order/bespeakOrderMulti")
     Observable<BaseResult<CustomerOrder>> bespeakOrderMulti(@Field("memberId") Long memberId,
-                                                        @Field("receiverName") String receiverName,
-                                                        @Field("receiverPhone") String receiverPhone,
-                                                        @Field("receiverAddress") String receiverAddress,
-                                                        @Field("expressId") Long expressId,
-                                                        @Field("bespeakDate") String bespeakDate,
-                                                        @Field("couponId") Long couponId,
-                                                        @Field("cartItemIds") Long[] cartItemIds
+                                                            @Field("receiverName") String receiverName,
+                                                            @Field("receiverPhone") String receiverPhone,
+                                                            @Field("receiverAddress") String receiverAddress,
+                                                            @Field("expressId") Long expressId,
+                                                            @Field("bespeakDate") String bespeakDate,
+                                                            @Field("couponId") Long couponId,
+                                                            @Field("cartItemIds") Long[] cartItemIds
     );
 
     /**
@@ -335,10 +342,12 @@ public interface ApiService {
 
     /**
      * 获取系统确认字符串
+     *
      * @return
      */
     @GET("rest/system/conf")
     Observable<BaseResult<SystomConfig>> systemConfig();
+
     /**
      * 修改用户信息
      *
@@ -357,7 +366,8 @@ public interface ApiService {
                                                 @Part MultipartBody.Part gender,
                                                 @Part MultipartBody.Part phone,
                                                 @Part MultipartBody.Part email,
-                                                @Part MultipartBody.Part photo
+                                                @Part MultipartBody.Part photo,
+                                                @Part MultipartBody.Part deliverId
     );
 
     /**
@@ -382,6 +392,8 @@ public interface ApiService {
                                                        @Field("city") String city,
                                                        @Field("area") String area,
                                                        @Field("street") String street,
+                                                       @Field("latitude") Double lat,
+                                                       @Field("longitude") Double lng,
                                                        @Field("defaultAddress") Boolean defaultAddress
     );
 
@@ -400,16 +412,38 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("rest/member/updateMemberAddress")
-    Observable<BaseResult<Object>> updateMemberAddress(@Field("shippingId") Long shippingId,
+    Observable<BaseResult<Object>> updateMemberAddress(@Field("id") Long id,
+                                                       @Field("shippingId") Long shippingId,
                                                        @Field("shippingName") String shippingName,
                                                        @Field("shippingPhone") String phone,
                                                        @Field("pro") String pro,
                                                        @Field("city") String city,
                                                        @Field("area") String area,
                                                        @Field("street") String street,
+                                                       @Field("latitude") Double lat,
+                                                       @Field("longitude") Double lng,
                                                        @Field("defaultAddress") Boolean defaultAddress
     );
 
+    /**
+     * 获取确认订单的费用
+     * @param itmeIds
+     * @param expressId
+     * @param expressName
+     * @param expressPhone
+     * @param address
+     * @param lat
+     * @param lng
+     * @return
+     */
+    @GET("rest/order/computeOtherPrice")
+    Observable<BaseResult<FeeCreatOrderResult>> getAllfeeCreatOrder(@Query("itmeIds") Long[] itmeIds,
+                                                                    @Query("expressId") Long expressId,
+                                                                    @Query("expressName") String expressName,
+                                                                    @Query("expressPhone") String expressPhone,
+                                                                    @Query("address") String address,
+                                                                    @Query("lat") Double lat,
+                                                                    @Query("lng") Double lng);
     /**
      * 申请成为供货商
      *
@@ -490,8 +524,9 @@ public interface ApiService {
      */
     @GET("rest/wares/findWares")
     Observable<BaseResult<PageResult<Goods>>> findWares(@Query("shopId") Long shopId,
-                                                        @Query("offset") int offset,
-                                                        @Query("limit") int limit);
+                                                        @Query("offset") Integer offset,
+                                                        @Query("waresName") String waresName,
+                                                        @Query("limit") Integer limit);
 
     /**
      * 获取banner
@@ -576,7 +611,7 @@ public interface ApiService {
                                             @Field("phone") String phone,
                                             @Field("memberId") Long memberId,
                                             @Field("waresJson") String waresJson,
-                                            @Field("shopId") long shopIp
+                                            @Field("shopId") Long shopIp
     );
 
     /**

@@ -23,6 +23,7 @@ import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.CustomerAgreementActivity;
 import com.yuangee.flower.customer.activity.CustomerOrderActivity;
+import com.yuangee.flower.customer.activity.CustomerOrderPayActivity;
 import com.yuangee.flower.customer.activity.FeedbackActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
@@ -146,22 +147,28 @@ public class MineFragment extends RxLazyFragment {
 
     @OnClick(R.id.jingpai)
     void jingpai() {
+
         ToastUtil.showMessage(getActivity(), "竞拍");
     }
 
     @OnClick(R.id.to_agreement)
     void toAgreement() {
-        gotoAgreementActivity("服务条款", ((MainActivity) getActivity()).getConfig().agreement.serviceAgreement);
+        if (((MainActivity) getActivity()).getConfig().agreement.serviceAgreement != null)
+
+            gotoAgreementActivity("服务条款", ((MainActivity) getActivity()).getConfig().agreement.serviceAgreement);
     }
 
     @OnClick(R.id.shouhou_rule)
     void shoufeiRule() {
-        gotoAgreementActivity("售后规则", ((MainActivity) getActivity()).getConfig().agreement.customerServiceAgreement);
+        if (((MainActivity) getActivity()).getConfig().agreement.customerServiceAgreement != null)
+            gotoAgreementActivity("售后规则", ((MainActivity) getActivity()).getConfig().agreement.customerServiceAgreement);
     }
 
     @OnClick(R.id.yunfei_rule)
     void yunfeiRule() {
-        gotoAgreementActivity("运费规则", ((MainActivity) getActivity()).getConfig().agreement.freightAgreement);
+        if (((MainActivity) getActivity()).getConfig().agreement.freightAgreement != null)
+
+            gotoAgreementActivity("运费规则", ((MainActivity) getActivity()).getConfig().agreement.freightAgreement);
     }
 
     @OnClick(R.id.feedback)
@@ -188,7 +195,7 @@ public class MineFragment extends RxLazyFragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             if (getActivity().checkSelfPermission("android.permission.CALL_PHONE") != PackageManager.PERMISSION_GRANTED) {
                                 getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 4343);
-                            }else {
+                            } else {
                                 PhoneUtil.call(getActivity(), phone);
                             }
                         }
@@ -363,10 +370,10 @@ public class MineFragment extends RxLazyFragment {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     PhoneUtil.call(getActivity(), phone);
                 } else {
-                    ToastUtil.showMessage(getActivity(),"你没有开启权限");
+                    ToastUtil.showMessage(getActivity(), "你没有开启权限");
                 }
                 break;
-            }
-
         }
+
+    }
 }

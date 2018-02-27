@@ -2,17 +2,22 @@ package com.yuangee.flower.customer.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.squareup.otto.Subscribe;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
@@ -26,14 +31,20 @@ import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.util.TimeUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -60,7 +71,7 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
     @BindView(R.id.radio_wait_receiving)
     RadioButton radioWaitReceiving;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.order_recycler_view)
     PullLoadMoreRecyclerView recyclerView;
 
     @BindView(R.id.empty)
@@ -127,6 +138,7 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
     }
 
     Handler handler;
+    private Timer timer = new Timer();
 
     @Override
     public void initRecyclerView() {
@@ -141,30 +153,31 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
                 queryOrders(status, bespeak, memberId);
             }
         });
-        adapter.setZfbPay(new CustomerOrderAdapter.OnStartZfbPay() {
-            @Override
-            public void pay(final String s) {
-                new Thread() {
-                    public void run() {
-
-                        PayTask alipay = new PayTask(CustomerOrderActivity.this);
-                        String result = alipay
-                                .pay(s, true);
-
-                        Message msg = new Message();
-                        msg.what = 0;
-                        msg.obj = result;
-                        handler.sendMessage(msg);
-                    }
-                }.start();
-            }
-        });
+//        adapter.setZfbPay(new CustomerOrderAdapter.OnStartZfbPay() {
+//            @Override
+//            public void pay(final String s) {
+//                new Thread() {
+//                    public void run() {
+//
+//                        PayTask alipay = new PayTask(CustomerOrderActivity.this);
+//                        String result = alipay
+//                                .pay(s, true);
+//
+//                        Message msg = new Message();
+//                        msg.what = 0;
+//                        msg.obj = result;
+//                        handler.sendMessage(msg);
+//                    }
+//                }.start();
+//            }
+//        });
         recyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
 
         recyclerView.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
             public void onRefresh() {
+                page=0;
                 queryOrders(status, bespeak, memberId);
             }
 
@@ -174,7 +187,12 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
                 queryOrders(status, bespeak, memberId);
             }
         });
-
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(runnable);
+            }
+        }, 1000, 1000);
     }
 
     @Override
@@ -298,7 +316,7 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
      * @param memberId
      */
     private void queryOrders(Integer status, Boolean bespeak, Long memberId) {
-        if(!bespeak){//费预约穿Null
+        if (!bespeak) {//费预约穿Null
             bespeak = null;//
         }
         Observable<PageResult<CustomerOrder>> observable = ApiManager.getInstance().api
@@ -362,6 +380,27 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
             ToastUtil.showMessage(CustomerOrderActivity.this, "支付失败！");
         } else if (str.equalsIgnoreCase("cancel")) {
             ToastUtil.showMessage(CustomerOrderActivity.this, "你已取消了本次订单的支付！");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            adapter.notifyDataSetChanged();
+        }
+    };
+
+    @Subscribe
+    public void paySuccess(Boolean success) {
+        if (success) {
+            queryOrders(status, bespeak, memberId);
         }
     }
 }

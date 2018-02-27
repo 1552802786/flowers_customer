@@ -12,11 +12,11 @@
         android:layout_height="?android:attr/actionBarSize">
 
         <ImageView
+            android:id="@+id/back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:onClick="backAction"
             android:padding="8dp"
             app:srcCompat="@drawable/ic_left_row"/>
 

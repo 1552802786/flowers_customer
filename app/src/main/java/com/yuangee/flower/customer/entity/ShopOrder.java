@@ -65,7 +65,6 @@ public class ShopOrder implements Serializable{
 
     public BigDecimal customerBrokerage;//收取客户手续费
 
-
     @SerializedName("preparePrice")
     public BigDecimal peihuoFee;//配货费
 
@@ -100,7 +99,7 @@ public class ShopOrder implements Serializable{
         } else if(status == ORDER_STATUS_FINISH){
             return "已完成";
         } else if(status == ORDER_STATUS_BE_BACK){
-            return "已支付预约金";
+            return "预约中";
         } else if(status == ORDER_STATUS_CANCEL){
             return "已取消";
         }

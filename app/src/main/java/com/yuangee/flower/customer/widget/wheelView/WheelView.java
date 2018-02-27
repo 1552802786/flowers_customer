@@ -356,7 +356,7 @@ public class WheelView extends View {
             initPosition = adapter.getItemsCount()-1;
         }
         //可见的item数组
-        Object visibles[] = new Object[itemsVisible];
+        String visibles[] = new String[itemsVisible];
         //滚动的Y值高度除去每行Item的高度，得到滚动了多少个item，即change数
         change = (int)(totalScrollY / itemHeight);
 
@@ -392,13 +392,13 @@ public class WheelView extends View {
             //判断是否循环，如果是循环数据源也使用相对循环的position获取对应的item值，如果不是循环则超出数据源范围使用""空白字符串填充，在界面上形成空白无数据的item项
             if (isLoop) {
                 index = getLoopMappingIndex(index);
-                visibles[counter] = adapter.getItem(index);
+                visibles[counter] = (String) adapter.getItem(index);
             } else if (index < 0) {
                 visibles[counter] = "";
             } else if (index > adapter.getItemsCount() - 1) {
                 visibles[counter] = "";
             } else {
-                visibles[counter] = adapter.getItem(index);
+                visibles[counter] = (String) adapter.getItem(index);
             }
 
             counter++;

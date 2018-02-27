@@ -32,7 +32,10 @@ public class AddressDao extends AbstractDao<Address, Long> {
         public final static Property City = new Property(5, String.class, "city", false, "CITY");
         public final static Property Area = new Property(6, String.class, "area", false, "AREA");
         public final static Property Street = new Property(7, String.class, "street", false, "STREET");
-        public final static Property DefaultAddress = new Property(8, boolean.class, "defaultAddress", false, "DEFAULT_ADDRESS");
+        public final static Property Type = new Property(8, int.class, "type", false, "TYPE");
+        public final static Property Longitude = new Property(9, double.class, "longitude", false, "LONGITUDE");
+        public final static Property Latitude = new Property(10, double.class, "latitude", false, "LATITUDE");
+        public final static Property DefaultAddress = new Property(11, boolean.class, "defaultAddress", false, "DEFAULT_ADDRESS");
     }
 
 
@@ -56,7 +59,10 @@ public class AddressDao extends AbstractDao<Address, Long> {
                 "\"CITY\" TEXT," + // 5: city
                 "\"AREA\" TEXT," + // 6: area
                 "\"STREET\" TEXT," + // 7: street
-                "\"DEFAULT_ADDRESS\" INTEGER NOT NULL );"); // 8: defaultAddress
+                "\"TYPE\" INTEGER NOT NULL ," + // 8: type
+                "\"LONGITUDE\" REAL NOT NULL ," + // 9: longitude
+                "\"LATITUDE\" REAL NOT NULL ," + // 10: latitude
+                "\"DEFAULT_ADDRESS\" INTEGER NOT NULL );"); // 11: defaultAddress
     }
 
     /** Drops the underlying database table. */
@@ -100,7 +106,10 @@ public class AddressDao extends AbstractDao<Address, Long> {
         if (street != null) {
             stmt.bindString(8, street);
         }
-        stmt.bindLong(9, entity.getDefaultAddress() ? 1L: 0L);
+        stmt.bindLong(9, entity.getType());
+        stmt.bindDouble(10, entity.getLongitude());
+        stmt.bindDouble(11, entity.getLatitude());
+        stmt.bindLong(12, entity.getDefaultAddress() ? 1L: 0L);
     }
 
     @Override
@@ -138,7 +147,10 @@ public class AddressDao extends AbstractDao<Address, Long> {
         if (street != null) {
             stmt.bindString(8, street);
         }
-        stmt.bindLong(9, entity.getDefaultAddress() ? 1L: 0L);
+        stmt.bindLong(9, entity.getType());
+        stmt.bindDouble(10, entity.getLongitude());
+        stmt.bindDouble(11, entity.getLatitude());
+        stmt.bindLong(12, entity.getDefaultAddress() ? 1L: 0L);
     }
 
     @Override
@@ -157,7 +169,10 @@ public class AddressDao extends AbstractDao<Address, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // city
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // area
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // street
-            cursor.getShort(offset + 8) != 0 // defaultAddress
+            cursor.getInt(offset + 8), // type
+            cursor.getDouble(offset + 9), // longitude
+            cursor.getDouble(offset + 10), // latitude
+            cursor.getShort(offset + 11) != 0 // defaultAddress
         );
         return entity;
     }
@@ -172,7 +187,10 @@ public class AddressDao extends AbstractDao<Address, Long> {
         entity.setCity(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setArea(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setStreet(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setDefaultAddress(cursor.getShort(offset + 8) != 0);
+        entity.setType(cursor.getInt(offset + 8));
+        entity.setLongitude(cursor.getDouble(offset + 9));
+        entity.setLatitude(cursor.getDouble(offset + 10));
+        entity.setDefaultAddress(cursor.getShort(offset + 11) != 0);
      }
     
     @Override

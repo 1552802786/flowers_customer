@@ -209,7 +209,9 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         return data.size();
     }
 
-
+    public Goods getItem(int i){
+        return data.get(i);
+    }
     //自定义holder
     class GoodsHolder extends RecyclerView.ViewHolder {
 

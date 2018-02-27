@@ -55,27 +55,28 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
+                    android:background="@mipmap/person_bg"
                     android:id="@+id/pick_photo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="110dp"
                     android:paddingBottom="8dp"
                     android:paddingLeft="8dp"
-                    android:paddingTop="8dp">
+                    android:paddingTop="24dp">
 
                     <ImageView
                         android:id="@+id/ic_photo"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="25dp"
                         app:srcCompat="@drawable/ic_default_photo_gray" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_toRightOf="@+id/ic_photo"
-                        android:text="点击修改头像"
+                        android:text=""
                         android:textColor="@color/colorGray"
                         android:textSize="16sp" />
 
@@ -84,6 +85,7 @@
                         android:layout_height="35dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:visibility="gone"
                         app:srcCompat="@drawable/ic_chevron" />
 
                 </RelativeLayout>
@@ -151,14 +153,27 @@
                         android:layout_centerVertical="true"
                         app:srcCompat="@drawable/ic_chevron" />
 
-                    <TextView
-                        android:id="@+id/person_gender"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <RadioGroup
+                        android:id="@+id/sexy_choice"
+                        android:orientation="horizontal"
+                        android:layout_toLeftOf="@id/ic_right_2"
                         android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/ic_right_2"
-                        android:text="男"
-                        android:textSize="16sp" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <RadioButton
+                            android:id="@+id/man_radio"
+                            android:text="男"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <RadioButton
+                            android:layout_marginLeft="8dp"
+                            android:id="@+id/woman_radio"
+                            android:text="女"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </RadioGroup>
 
                 </RelativeLayout>
 
@@ -244,7 +259,8 @@
                 <RelativeLayout
                     android:id="@+id/address_manage"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="40dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -467,16 +483,19 @@
                         android:textSize="16sp" />
 
 
-                    <TextView
+                    <EditText
                         android:id="@+id/person_consignee_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="1"
+                        android:background="@color/white"
                         android:gravity="right"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
                         android:text=""
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:layout_width="35dp"
@@ -505,14 +524,17 @@
                         android:text="收货电话"
                         android:textSize="16sp" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/consignee_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="1"
+                        android:background="@color/white"
                         android:gravity="right"
+                        android:inputType="number"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
                         android:text=""
                         android:textSize="16sp" />
 
@@ -530,42 +552,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
                     android:background="@color/line_color" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@color/white"
-                    android:gravity="center_vertical"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="13dp"
-                        android:text="默认地址"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/consignee_method"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_chevron" />
-
-
-                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -587,6 +573,7 @@
                         android:layout_marginLeft="13dp"
                         android:text="收货地址(省市区)"
                         android:textSize="14sp" />
+
 
                     <TextView
                         android:id="@+id/person_consignee_place_1"
@@ -632,6 +619,9 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:background="@color/white"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
                         android:id="@+id/person_consignee_place_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -659,6 +649,31 @@
                     android:layout_marginBottom="8dp"
                     android:background="@color/line_color" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:text="配送方式:"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/kuaidi_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp" />
+            </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 

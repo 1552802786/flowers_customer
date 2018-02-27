@@ -75,7 +75,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     @OnClick(R.id.menu_icon)
     void openDawer() {
         myDrawerLayout.openDrawer(Gravity.LEFT);
-        initDrawer();
+        initDrawer(null);
     }
 
     @BindView(R.id.type_recycler)
@@ -86,21 +86,15 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     @OnClick(R.id.reset_sub)
     void resetSub() {
-        for (GenreSub detailType : detailTypes) {
-            detailType.clicked = false;
-        }
-        detailTypeAdapter.setData(detailTypes);
-        genreSubName = "";
-
-        for (Genre type : types) {
-            type.clicked = false;
-        }
-        typeAdapter.setData(types);
-        genreName = "";
+        resetDrawer();
     }
 
     @OnClick(R.id.sure)
     void sure() {
+        Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+        intent.putExtra("genreSubNames", genreSubName);
+        startActivity(intent);
+        resetDrawer();
         myDrawerLayout.closeDrawer(Gravity.LEFT);
     }
 
@@ -142,6 +136,10 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         this.addAnimateListener = addAnimateListener;
     }
 
+    public void showDrawer() {
+        myDrawerLayout.openDrawer(Gravity.LEFT);
+    }
+
     @Override
     public int getLayoutResId() {
         return R.layout.fragment_shopping;
@@ -165,7 +163,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         isPrepared = false;
     }
 
-    private void initDrawer() {
+    public void initDrawer(String tuijian) {
         typeAdapter = new Type2Adapter(getActivity());
         typeRecycler.setAdapter(typeAdapter);
         LinearLayoutManager linManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -182,9 +180,20 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 }
             }
         });
-        createType();
-        typeAdapter.setData(types);
 
+        createType();
+        if (tuijian != null) {
+            for (int j = 0; j < types.size(); j++) {
+                if (types.get(j).genreName.equalsIgnoreCase(tuijian)) {
+                    types.get(j).clicked = true;
+                    createDetailType(j);
+                    detailTypes.get(0).clicked = true;
+                    genreSubName = detailTypes.get(0).name;
+                    break;
+                }
+            }
+        }
+        typeAdapter.setData(types);
 
         detailTypeAdapter = new Type3Adapter(getActivity());
         detailRecycler.setAdapter(detailTypeAdapter);
@@ -225,8 +234,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                page = 0;
-                presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+
             }
 
             @Override
@@ -237,6 +245,20 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         detailTypeAdapter.setData(detailTypes);
     }
 
+    private void resetDrawer() {
+        for (GenreSub detailType : detailTypes) {
+            detailType.clicked = false;
+        }
+        detailTypeAdapter.setData(detailTypes);
+        genreSubName = "";
+
+        for (Genre type : types) {
+            type.clicked = false;
+        }
+        typeAdapter.setData(types);
+        genreName = "";
+    }
+
     private void createType() {
         types.clear();
         types.addAll(MainActivity.getGenre());
@@ -244,7 +266,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     private void createDetailType(int position) {
         detailTypes.clear();
-        if (MainActivity.getGenre().size() > 0) {
+        if (MainActivity.getGenre().size() > 0 && MainActivity.getGenre().get(position).genreSubs != null) {
             detailTypes.addAll(MainActivity.getGenre().get(position).genreSubs);
         }
     }
@@ -381,24 +403,24 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     @Override
     public boolean onBackPressed() {
-        if (myDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            myDrawerLayout.closeDrawer(Gravity.LEFT);
-            return true;
-        } else {
-            return false;
+        if (myDrawerLayout != null) {
+            if (myDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                myDrawerLayout.closeDrawer(Gravity.LEFT);
+                return true;
+            }
         }
+        return false;
     }
 
     public void findWares(String params) {
         this.params = params;
-        tvSearch.setText("  "+params);
+        tvSearch.setText("  " + params);
         page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 
     public void findWares(String genreName, String genreSubName, String params) {
         this.params = params;
-        tvSearch.setText("  "+params);
         page = 0;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }

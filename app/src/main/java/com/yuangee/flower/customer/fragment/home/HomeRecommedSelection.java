@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
@@ -70,7 +71,6 @@ public class HomeRecommedSelection extends StatelessSection {
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         Glide.with(mContext)
                 .load(Config.BASE_URL + bean.image)
-//                .load("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg")
                 .apply(options)
                 .into(orderHolder.imageView);
 

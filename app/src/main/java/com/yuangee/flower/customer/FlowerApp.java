@@ -3,7 +3,9 @@ package com.yuangee.flower.customer;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.util.CrashHandler;
 
@@ -26,6 +28,7 @@ public class FlowerApp extends MultiDexApplication {
         mInstance = this;
         App.initApp(this);
         init();
+        CrashReport.initCrashReport(getApplicationContext(), "268b4c9966", false);
 
 
     }
@@ -44,6 +47,7 @@ public class FlowerApp extends MultiDexApplication {
 
         initDataBase();
         initJPush();
+        SDKInitializer.initialize(this);
     }
 
     private void initJPush() {

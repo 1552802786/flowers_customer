@@ -87,6 +87,25 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     @OnClick(R.id.reset_sub)
     void resetSub() {
+        resetDrawer();
+    }
+
+    @OnClick(R.id.sure)
+    void sure() {
+        Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+        intent.putExtra("genreSubNames", genreSubName);
+        startActivity(intent);
+        resetDrawer();
+        myDrawerLayout.closeDrawer(Gravity.LEFT);
+    }
+
+    @OnClick(R.id.tv_av)
+    void toSearch() {
+        Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+        intent.putExtra("bespeak","1");
+        startActivity(intent);
+    }
+    private void resetDrawer(){
         for (GenreSub detailType : detailTypes) {
             detailType.clicked = false;
         }
@@ -99,19 +118,6 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         typeAdapter.setData(types);
         genreName = "";
     }
-
-    @OnClick(R.id.sure)
-    void sure() {
-        myDrawerLayout.closeDrawer(Gravity.LEFT);
-    }
-
-    @OnClick(R.id.tv_av)
-    void toSearch() {
-        Intent intent = new Intent(getActivity(), SearchAcitvity.class);
-        intent.putExtra("bespeak","1");
-        startActivity(intent);
-    }
-
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
 
     private AddAnimateListener addAnimateListener;
@@ -132,9 +138,9 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     private int limit = 10;
 
     private Long shopId = null;
-    private String genreName = "";
-    private String genreSubName = "";
-    private String params = "";//关键字
+    private String genreName = null;
+    private String genreSubName = null;
+    private String params =null;//关键字
 
     public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
         this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
@@ -366,7 +372,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
     @Override
     public void onRefresh() {
-        this.params = "";
+        this.params = null;
         tvSearch.setText("  搜索");
         page = 0;
         goodsList.clear();

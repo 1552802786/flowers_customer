@@ -21,15 +21,14 @@ public class TextChooseAdapter implements WheelAdapter {
     }
 
     @Override
-    public Object getItem(int index) {
+    public String getItem(int index) {
 
         return data.get(index);
 
     }
 
     @Override
-    public int indexOf(Object o) {
-
-        return data.indexOf(o);
+    public int indexOf(String o) {
+        return data.indexOf(o)<0?0:data.indexOf(o);
     }
 }

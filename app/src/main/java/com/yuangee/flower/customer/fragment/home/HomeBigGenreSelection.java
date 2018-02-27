@@ -87,9 +87,6 @@ public class HomeBigGenreSelection extends StatelessSection {
         @BindView(R.id.type_recycler)
         RecyclerView recyclerView;
 
-        @BindView(R.id.left_row)
-        ImageView leftRow;
-
         @BindView(R.id.right_row)
         ImageView rightRow;
 
@@ -107,16 +104,10 @@ public class HomeBigGenreSelection extends StatelessSection {
 
     public void showOrHideRow(RecyclerView recyclerView, BigGenerHolder holder) {
         boolean isBottom = !recyclerView.canScrollHorizontally(1);//返回false不能往右滑动，即代表到最右边了
-        boolean isTop = !recyclerView.canScrollHorizontally(-1);//返回false不能往左滑动，即代表到最左边了
         if (isBottom) {
             holder.rightRow.setVisibility(View.INVISIBLE);
         } else {
             holder.rightRow.setVisibility(View.VISIBLE);
-        }
-        if (isTop) {
-            holder.leftRow.setVisibility(View.INVISIBLE);
-        } else {
-            holder.leftRow.setVisibility(View.VISIBLE);
         }
     }
 }

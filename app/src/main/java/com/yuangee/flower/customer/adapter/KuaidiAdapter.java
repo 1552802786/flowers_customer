@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
+import com.yuangee.flower.customer.AppBus;
 import com.yuangee.flower.customer.entity.Express;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class KuaidiAdapter extends RecyclerView.Adapter<KuaidiAdapter.ViewHolder
     private Express clickedExpress;
 
     private List<RadioButton> buttons;
+    private long deliverId;
 
     public KuaidiAdapter(Context context) {
         this.context = context;
@@ -31,10 +33,12 @@ public class KuaidiAdapter extends RecyclerView.Adapter<KuaidiAdapter.ViewHolder
         expressList = new ArrayList<>();
     }
 
-    public void setExpressList(List<Express> expressList) {
+    public void setExpressList(List<Express> expressList, long deliverId) {
         this.expressList = expressList;
         buttons.clear();
+        this.deliverId = deliverId;
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -47,14 +51,21 @@ public class KuaidiAdapter extends RecyclerView.Adapter<KuaidiAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, int position) {
         buttons.add(holder.button);
         final Express express = expressList.get(position);
-        String text = express.expressDeliveryName + "(" + express.expressDeliveryMoney + "元)";
+        String text = express.expressDeliveryName;
         holder.button.setText(text);
+        if (deliverId == express.id) {
+            clickedExpress = express;
+            holder.button.setChecked(true);
+        }else {
+            holder.button.setChecked(false);
+        }
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 resetAllButton();
                 holder.button.setChecked(true);
                 clickedExpress = express;
+                AppBus.getInstance().post(clickedExpress);
             }
         });
     }

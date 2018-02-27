@@ -244,7 +244,8 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public void toShoppingByParams(String genre, String genreSub, String params) {
         vp.setCurrentItem(1);
         if (null != shoppingFragment) {
-            shoppingFragment.findWares(genre, genreSub, params);
+            shoppingFragment.showDrawer();
+            shoppingFragment.initDrawer(genre);
         }
     }
 
@@ -324,4 +325,5 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
             }
         })));
     }
+
 }

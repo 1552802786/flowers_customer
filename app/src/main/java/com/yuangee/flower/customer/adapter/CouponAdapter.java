@@ -5,9 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.yuangee.flower.customer.AppBus;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Coupon;
 import com.yuangee.flower.customer.entity.Express;
@@ -73,21 +75,29 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ViewHolder
 
         if (orderMoney > coupon.couponFullMoney) {
             buttons.add(holder.button);
-            holder.root.setBackgroundColor(context.getResources().getColor(R.color.white));
+            holder.conpouIcon.setImageResource(R.drawable.youhui_pic);
+            holder.root.setBackgroundResource(R.drawable.youhui_bac);
             holder.root.setEnabled(true);
             holder.button.setEnabled(true);
         } else {
-            holder.root.setBackgroundColor(context.getResources().getColor(R.color.gray_light));
+            holder.conpouIcon.setImageResource(R.drawable.youhui_pic2);
+            holder.root.setBackgroundResource(R.drawable.youhui_bac);
             holder.root.setEnabled(false);
             holder.button.setEnabled(false);
         }
 
-        holder.root.setOnClickListener(new View.OnClickListener() {
+        holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 resetAllButton();
-                holder.button.setChecked(true);
-                clickedCoupon = coupon;
+                if (clickedCoupon != null) {
+                    AppBus.getInstance().post(-clickedCoupon.money);
+                    clickedCoupon = null;
+                } else {
+                    AppBus.getInstance().post(clickedCoupon.money);
+                    holder.button.setChecked(true);
+                    clickedCoupon = coupon;
+                }
             }
         });
     }
@@ -112,11 +122,13 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ViewHolder
         TextView couponMoney;
         TextView couponTime;
         TextView couponFullMoney;
+        ImageView conpouIcon;
         View root;
 
         public ViewHolder(View itemView) {
             super(itemView);
             root = itemView;
+            conpouIcon = itemView.findViewById(R.id.ic_youhuijuan);
             button = itemView.findViewById(R.id.coupon_button);
             couponMoney = itemView.findViewById(R.id.coupon_money);
             couponTime = itemView.findViewById(R.id.coupon_time);

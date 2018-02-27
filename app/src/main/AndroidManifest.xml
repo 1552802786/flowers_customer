@@ -38,7 +38,7 @@
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-
+    <uses-permission android:name="android.permission.READ_LOGS" />
     <application
         android:name=".FlowerApp"
         android:allowBackup="true"
@@ -72,6 +72,7 @@
         <activity
             android:name=".activity.PersonalCenterActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CusOrderDetailActivity"
@@ -119,12 +120,18 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"/>
+        <activity
             android:name=".activity.CustomerAgreementActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CustomerAddLocalOrderActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ShopOrderActivity"
@@ -133,6 +140,7 @@
         <activity
             android:name=".activity.SupplierActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ShopOrderDetailActivity"
@@ -142,7 +150,17 @@
             android:name=".activity.CustomerOrderActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".activity.CustomerPlaceSearchActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CustomerOrderPayActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="portrait" />
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="NjovFUrPmtvfItYzFO8CHWz4W8ys6G1w" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

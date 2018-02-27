@@ -38,7 +38,8 @@ public class MemberDao extends AbstractDao<Member, Long> {
         public final static Property IsRecycle = new Property(11, boolean.class, "isRecycle", false, "IS_RECYCLE");
         public final static Property InFirst = new Property(12, boolean.class, "inFirst", false, "IN_FIRST");
         public final static Property Balance = new Property(13, double.class, "balance", false, "BALANCE");
-        public final static Property CustomServicePhone = new Property(14, String.class, "customServicePhone", false, "CUSTOM_SERVICE_PHONE");
+        public final static Property ExpressDeliveryId = new Property(14, int.class, "expressDeliveryId", false, "EXPRESS_DELIVERY_ID");
+        public final static Property CustomServicePhone = new Property(15, String.class, "customServicePhone", false, "CUSTOM_SERVICE_PHONE");
     }
 
 
@@ -68,7 +69,8 @@ public class MemberDao extends AbstractDao<Member, Long> {
                 "\"IS_RECYCLE\" INTEGER NOT NULL ," + // 11: isRecycle
                 "\"IN_FIRST\" INTEGER NOT NULL ," + // 12: inFirst
                 "\"BALANCE\" REAL NOT NULL ," + // 13: balance
-                "\"CUSTOM_SERVICE_PHONE\" TEXT);"); // 14: customServicePhone
+                "\"EXPRESS_DELIVERY_ID\" INTEGER NOT NULL ," + // 14: expressDeliveryId
+                "\"CUSTOM_SERVICE_PHONE\" TEXT);"); // 15: customServicePhone
     }
 
     /** Drops the underlying database table. */
@@ -126,10 +128,11 @@ public class MemberDao extends AbstractDao<Member, Long> {
         stmt.bindLong(12, entity.getIsRecycle() ? 1L: 0L);
         stmt.bindLong(13, entity.getInFirst() ? 1L: 0L);
         stmt.bindDouble(14, entity.getBalance());
+        stmt.bindLong(15, entity.getExpressDeliveryId());
  
         String customServicePhone = entity.getCustomServicePhone();
         if (customServicePhone != null) {
-            stmt.bindString(15, customServicePhone);
+            stmt.bindString(16, customServicePhone);
         }
     }
 
@@ -182,10 +185,11 @@ public class MemberDao extends AbstractDao<Member, Long> {
         stmt.bindLong(12, entity.getIsRecycle() ? 1L: 0L);
         stmt.bindLong(13, entity.getInFirst() ? 1L: 0L);
         stmt.bindDouble(14, entity.getBalance());
+        stmt.bindLong(15, entity.getExpressDeliveryId());
  
         String customServicePhone = entity.getCustomServicePhone();
         if (customServicePhone != null) {
-            stmt.bindString(15, customServicePhone);
+            stmt.bindString(16, customServicePhone);
         }
     }
 
@@ -211,7 +215,8 @@ public class MemberDao extends AbstractDao<Member, Long> {
             cursor.getShort(offset + 11) != 0, // isRecycle
             cursor.getShort(offset + 12) != 0, // inFirst
             cursor.getDouble(offset + 13), // balance
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // customServicePhone
+            cursor.getInt(offset + 14), // expressDeliveryId
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // customServicePhone
         );
         return entity;
     }
@@ -232,7 +237,8 @@ public class MemberDao extends AbstractDao<Member, Long> {
         entity.setIsRecycle(cursor.getShort(offset + 11) != 0);
         entity.setInFirst(cursor.getShort(offset + 12) != 0);
         entity.setBalance(cursor.getDouble(offset + 13));
-        entity.setCustomServicePhone(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setExpressDeliveryId(cursor.getInt(offset + 14));
+        entity.setCustomServicePhone(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
      }
     
     @Override

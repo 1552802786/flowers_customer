@@ -54,12 +54,11 @@
 
                     <ImageView
                         android:id="@+id/shop_icon"
-                        android:visibility="gone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
-                        android:padding="5dp"
+                        android:visibility="gone"
                         app:srcCompat="@drawable/ic_shops" />
 
                     <TextView
@@ -69,12 +68,12 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="45dp"
                         android:layout_marginRight="45dp"
-                        android:background="@drawable/corners_alpha_white"
+                        android:background="@drawable/corners_bg_white_5"
                         android:drawableLeft="@drawable/ic_search_white_24dp"
                         android:gravity="center_vertical"
                         android:paddingLeft="8dp"
                         android:text="  搜索"
-                        android:textColor="@color/white"
+                        android:textColor="#999999"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -104,7 +103,9 @@
         <com.yuangee.flower.customer.widget.SwipeRecyclerView
             android:id="@+id/swipe_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingLeft="2.5dp"
+            android:paddingRight="2.5dp" />
 
         <com.yuangee.flower.customer.widget.CustomEmptyView
             android:id="@+id/empty_layout"

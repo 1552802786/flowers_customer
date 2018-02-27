@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.AppBus;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.CartItem;
@@ -23,6 +25,7 @@ import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.util.RxManager;
+import com.yuangee.flower.customer.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,6 +143,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 } else {
                     bean.selected = false;
                 }
+                AppBus.getInstance().post("changed");
             }
         });
 

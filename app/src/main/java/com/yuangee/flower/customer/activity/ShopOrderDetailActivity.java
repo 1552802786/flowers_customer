@@ -138,6 +138,19 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
     LinearLayout otherInfo;
     @BindView(R.id.scroll_view)
     ScrollView scrollView;
+
+    @BindView(R.id.layout_customer_name)
+    LinearLayout layout_customer_name;
+    @BindView(R.id.layout_customer_phone)
+    LinearLayout layout_phone;
+    @BindView(R.id.orderTimeLabel)
+    TextView orderTimeLabel;
+    @BindView(R.id.orderNoLabel)
+    TextView orderNoLabel;
+    @BindView(R.id.order_status)
+    TextView orderStatus;
+    @BindView(R.id.order_type)
+    TextView orderType;
     private ShopOrder shopOrder;
     OrderWareAdapter adapter;
 
@@ -167,7 +180,7 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        shopOrderPrice.setVisibility(View.GONE);
+        otherInfo.setVisibility(View.GONE);
         shopOrder = (ShopOrder) getIntent().getSerializableExtra("shopOrder");
         isShop = getIntent().getBooleanExtra("isShop", false);
         if (null == shopOrder) {
@@ -195,6 +208,7 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
             }
         }
         totalFee.setText("¥" + totalMoney);
+        hejiFee.setText("" + totalMoney + "元");
         shouxuFei.setText("¥" + shopOrder.customerBrokerage);
         yunFei.setText("¥" + shopOrder.expressDeliveryMoney);
 
@@ -218,40 +232,43 @@ public class ShopOrderDetailActivity extends RxBaseActivity {
         if (null != shopOrder.couponMoney) {
             totalMoney = totalMoney.add(shopOrder.couponMoney);
         }
-
-        hejiFee.setText("" + totalMoney.doubleValue() + "元");
-
+        orderTimeLabel.setText("订单编号:");
+        orderNoLabel.setText("下单时间:");
         //订单基本信息
-        orderNo.setText(shopOrder.orderNo);
-        createdTime.setText(shopOrder.created);
-        if ("供货商手动添加订单".equalsIgnoreCase(shopOrder.memo)){
+        createdTime.setText(shopOrder.orderNo);
+        orderNo.setText(shopOrder.created);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        params.bottomMargin = 10;
+        scrollView.setLayoutParams(params);
+        orderStatus.setText(shopOrder.getStatusStr());
+        if ("供货商手动添加订单".equalsIgnoreCase(shopOrder.memo)) {
+            shopOrderPrice.setVisibility(View.GONE);
+            orderType.setText("线下订单");
+            layout_customer_name.setVisibility(View.VISIBLE);
+            layout_phone.setVisibility(View.VISIBLE);
+            bespeakMoneyCon.setVisibility(View.GONE);
+            bespeakTimeCon.setVisibility(View.GONE);
+        } else {
             otherInfo.setVisibility(View.GONE);
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1, -2);
-            scrollView.setLayoutParams(params);
-            ((TextView)bespeakTimeCon.getChildAt(0)).setText("订单状态");
-            bespeakTime.setText("已完成");
-            ((TextView)bespeakMoneyCon.getChildAt(0)).setText("订单类型");
-            bespeakMoney.setText("线下订单");
-            memoCon.setVisibility(View.GONE);
-        }else {
             if (!shopOrder.bespeak) {
+                orderType.setText("普通订单");
                 bespeakMoneyCon.setVisibility(View.GONE);
                 bespeakTimeCon.setVisibility(View.GONE);
             } else {
+                orderType.setText("预约订单");
                 bespeakTime.setText(shopOrder.bespeakDateStr);
                 bespeakMoney.setText("¥" + shopOrder.bespeakMoney);
             }
-            if (StringUtils.isBlank(shopOrder.memo)) {
-                memoCon.setVisibility(View.GONE);
-            } else {
-                memoCon.setVisibility(View.VISIBLE);
-                memoText.setText(shopOrder.memo);
-            }
         }
-
+        memoCon.setVisibility(View.VISIBLE);
+        if (StringUtils.isBlank(shopOrder.memo)) {
+            memoText.setText("<暂无>");
+        } else {
+            memoText.setText(shopOrder.memo);
+        }
         //客户基本信息
-        customerName.setText(shopOrder.memberName);
-        customerPhone.setText(shopOrder.memberPhone);
+        customerName.setText(shopOrder.receiverPhone);
+        customerPhone.setText(shopOrder.receiverName);
 
         //收货信息
         receiverName.setText(shopOrder.receiverName);

@@ -3,6 +3,7 @@ package com.yuangee.flower.customer;
 import android.util.Log;
 
 import com.yuangee.flower.customer.network.api.ApiService;
+import com.yuangee.flower.customer.util.MyHttpLoggingInterceptor;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class ApiManager {
     private ApiManager() {
         File cacheFile = new File(FlowerApp.getContext().getCacheDir(), "cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 2); //2M
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();   //拦截器用来输出请求日志方便调试
+        MyHttpLoggingInterceptor logInterceptor = new MyHttpLoggingInterceptor();   //拦截器用来输出请求日志方便调试
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY); //日志输出等级为BODY(打印请求和返回值的头部和body信息)
 
         final String token = App.me().getSharedPreferences().getString("token", "");

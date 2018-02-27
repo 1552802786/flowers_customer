@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.CusOrderDetailActivity;
+import com.yuangee.flower.customer.activity.CustomerOrderPayActivity;
 import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.OrderWare;
 import com.yuangee.flower.customer.entity.ShopOrder;
@@ -33,6 +36,7 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.RxManager;
+import com.yuangee.flower.customer.util.TimeUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import org.json.JSONException;
@@ -40,8 +44,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -51,13 +57,17 @@ import rx.schedulers.Schedulers;
 public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdapter.OrderHolder> {
 
     private Context context;
-    private List<CustomerOrder> data;
+    public List<CustomerOrder> data;
 
     private OnRefresh onRefresh;   //声明监听器接口
 
     private RxManager rxManager;
 
     private boolean isShop = false;
+
+    public CustomerOrderAdapter() {
+
+    }
 
     public interface OnItemClickListener {
         /**
@@ -99,7 +109,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
 
         View view = View.inflate(context, R.layout.orders_item, null);
         OrderHolder holder = new OrderHolder(view);
-
+        view.setTag(holder);
         holder.root = view;    //将布局view保存起来用作点击事件
         holder.img1 = view.findViewById(R.id.img_1);
         holder.img2 = view.findViewById(R.id.img_2);
@@ -112,6 +122,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         holder.tvOrderMoney = view.findViewById(R.id.order_fee);
         holder.tvOrderStatus = view.findViewById(R.id.order_status);
         holder.tvOrderTime = view.findViewById(R.id.order_time);
+        holder.clock_icon = view.findViewById(R.id.clock_icon);
 
         return holder;
     }
@@ -127,9 +138,19 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
 
         final CustomerOrder bean = data.get(position);
 
-        holder.tvOrderTime.setText("下单时间：" + bean.created);
+        holder.tvOrderTime.setText("订单编号：" + bean.orderNo);
         holder.tvOrderStatus.setText(bean.getStatusStr());
-        holder.tvOrderMoney.setText("¥" + bean.payable);
+        if (bean.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
+            holder.tvOrderMoney.setTextColor(Color.RED);
+            holder.tvOrderMoney.setText(getPayLeftTime(bean.bespeakDate));
+            holder.leftBtn.setBackgroundResource(R.drawable.corners_color_gray);
+            holder.clock_icon.setVisibility(View.VISIBLE);
+        } else {
+            holder.leftBtn.setBackgroundResource(R.drawable.corners_color_green);
+            holder.tvOrderMoney.setTextColor(Color.GRAY);
+            holder.tvOrderMoney.setText("¥" + bean.realPay);
+            holder.clock_icon.setVisibility(View.GONE);
+        }
 
         int totalWares = 0;
         if (null != bean.orderList) {
@@ -212,6 +233,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                 holder.rightBtn.setVisibility(View.GONE);
             } else if (bean.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
                 holder.leftBtn.setVisibility(View.VISIBLE);
+                holder.leftBtn.setEnabled(false);
                 holder.rightBtn.setVisibility(View.VISIBLE);
                 holder.leftBtn.setText("支付尾款");
                 holder.rightBtn.setText("取消订单");
@@ -266,37 +288,9 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
     }
 
     private void payOrder(final CustomerOrder shopOrder) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setMessage("请选择支付方式")
-                .setPositiveButton("支付宝支付", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (shopOrder.bespeak) {
-                            if (shopOrder.status == CustomerOrder.ORDER_STATUS_NOTPAY) {
-                                payYuyueZfb(shopOrder.id);//预约单支付预约金
-                            } else if (shopOrder.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
-                                confirmOrder(shopOrder);
-                            }
-                        } else {
-                            payJishiZfb(shopOrder.id, 0);//即时单支付全款
-                        }
-                    }
-                })
-                .setNegativeButton("微信支付", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (shopOrder.bespeak) {
-                            if (shopOrder.status == CustomerOrder.ORDER_STATUS_NOTPAY) {
-                                payYuyueWx(shopOrder.id);//预约单支付预约金
-                            } else if (shopOrder.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
-                                payJishiWx(shopOrder.id, 1);//预约单支付尾款
-                            }
-                        } else {
-                            payJishiWx(shopOrder.id, 0);//即时单支付全款
-                        }
-                    }
-                }).create();
-        alertDialog.show();
+        Intent it = new Intent(context, CustomerOrderPayActivity.class);
+        it.putExtra("order", shopOrder);
+        context.startActivity(it);
     }
 
     private void cancelOrder(final CustomerOrder shopOrder) {
@@ -320,121 +314,121 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         dialog.show();
     }
 
-    private void confirmOrder(CustomerOrder shopOrder) {
-        Observable<CustomerOrder> observable = ApiManager.getInstance().api
-                .confirmMoney(shopOrder.id)
-                .map(new HttpResultFunc<CustomerOrder>(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        rxManager.add(observable.subscribe(new MySubscriber<CustomerOrder>(context, true,
-                true, new NoErrSubscriberListener<CustomerOrder>() {
-            @Override
-            public void onNext(CustomerOrder o) {
-                payJishiZfb(o.id, 1);//预约单支付尾款
-            }
-        })));
-    }
-
-    /**
-     * @param orderId
-     * @param type    0 即时单支付 1预约单支付尾款
-     */
-    private void payJishiWx(Long orderId, Integer type) {
-        Observable<JsonElement> observable = ApiManager.getInstance().api
-                .payJishiSingleWx(orderId, type)
-                .map(new HttpResultFunc<JsonElement>(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        rxManager.add(observable.subscribe(new MySubscriber<JsonElement>(context, true,
-                false, new NoErrSubscriberListener<JsonElement>() {
-            @Override
-            public void onNext(JsonElement jsonElement) {
-                detailWxPay(jsonElement);
-            }
-        })));
-    }
-
-    private void payYuyueWx(Long orderId) {
-        Observable<JsonElement> observable = ApiManager.getInstance().api
-                .payYuyueSingleWx(orderId)
-                .map(new HttpResultFunc<JsonElement>(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        rxManager.add(observable.subscribe(new MySubscriber<JsonElement>(context, true,
-                false, new NoErrSubscriberListener<JsonElement>() {
-            @Override
-            public void onNext(JsonElement jsonElement) {
-                detailWxPay(jsonElement);
-            }
-        })));
-    }
-
-    private void detailWxPay(JsonElement jsonElement) {
-        try {
-            JSONObject json = new JSONObject(jsonElement.toString());
-            if (null != json && !json.has("retcode")) {
-                PayReq req = new PayReq();
-                req.appId = json.getString("appid");
-                req.partnerId = json.getString("partnerid");
-                req.prepayId = json.getString("prepayid");
-                req.nonceStr = json.getString("noncestr");
-                req.timeStamp = json.getString("timestamp");
-                req.packageValue = json.getString("package");
-                req.sign = json.getString("sign");
-                req.extData = "app data"; // optional
-                Log.e("wxPay", "正常调起支付");
-
-                IWXAPI api = WXAPIFactory.createWXAPI(context, req.appId);
-
-                api.sendReq(req);
-            } else {
-                Log.d("PAY_GET", "返回错误" + json.getString("retmsg"));
-                Toast.makeText(context, "返回错误：" + json.getString("retmsg"), Toast.LENGTH_SHORT).show();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param orderId
-     * @param type    0 即时单支付 1预约单支付尾款
-     */
-    private void payJishiZfb(Long orderId, Integer type) {
-        Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payJishiSingleZfb(orderId, type)
-                .map(new HttpResultFunc<ZfbResult>(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        rxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(context, true,
-                false, new NoErrSubscriberListener<ZfbResult>() {
-            @Override
-            public void onNext(ZfbResult s) {
-                detailZfb(s.orderInfo);
-            }
-        })));
-    }
-
-    private void payYuyueZfb(Long orderId) {
-        Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payYuyueSingleZfb(orderId)
-                .map(new HttpResultFunc<ZfbResult>(context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        rxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(context, true,
-                false, new NoErrSubscriberListener<ZfbResult>() {
-            @Override
-            public void onNext(ZfbResult s) {
-                detailZfb(s.orderInfo);
-            }
-        })));
-    }
-
-    private void detailZfb(final String s) {
-        if (null != zfbPay) {
-            zfbPay.pay(s);
-        }
-    }
+//    private void confirmOrder(CustomerOrder shopOrder) {
+//        Observable<CustomerOrder> observable = ApiManager.getInstance().api
+//                .confirmMoney(shopOrder.id)
+//                .map(new HttpResultFunc<CustomerOrder>(context))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        rxManager.add(observable.subscribe(new MySubscriber<CustomerOrder>(context, true,
+//                true, new NoErrSubscriberListener<CustomerOrder>() {
+//            @Override
+//            public void onNext(CustomerOrder o) {
+//                payJishiZfb(o.id, 1);//预约单支付尾款
+//            }
+//        })));
+//    }
+//
+//    /**
+//     * @param orderId
+//     * @param type    0 即时单支付 1预约单支付尾款
+//     */
+//    private void payJishiWx(Long orderId, Integer type) {
+//        Observable<JsonElement> observable = ApiManager.getInstance().api
+//                .payJishiSingleWx(orderId, type)
+//                .map(new HttpResultFunc<JsonElement>(context))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        rxManager.add(observable.subscribe(new MySubscriber<JsonElement>(context, true,
+//                false, new NoErrSubscriberListener<JsonElement>() {
+//            @Override
+//            public void onNext(JsonElement jsonElement) {
+//                detailWxPay(jsonElement);
+//            }
+//        })));
+//    }
+//
+//    private void payYuyueWx(Long orderId) {
+//        Observable<JsonElement> observable = ApiManager.getInstance().api
+//                .payYuyueSingleWx(orderId)
+//                .map(new HttpResultFunc<JsonElement>(context))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        rxManager.add(observable.subscribe(new MySubscriber<JsonElement>(context, true,
+//                false, new NoErrSubscriberListener<JsonElement>() {
+//            @Override
+//            public void onNext(JsonElement jsonElement) {
+//                detailWxPay(jsonElement);
+//            }
+//        })));
+//    }
+//
+//    private void detailWxPay(JsonElement jsonElement) {
+//        try {
+//            JSONObject json = new JSONObject(jsonElement.toString());
+//            if (null != json && !json.has("retcode")) {
+//                PayReq req = new PayReq();
+//                req.appId = json.getString("appid");
+//                req.partnerId = json.getString("partnerid");
+//                req.prepayId = json.getString("prepayid");
+//                req.nonceStr = json.getString("noncestr");
+//                req.timeStamp = json.getString("timestamp");
+//                req.packageValue = json.getString("package");
+//                req.sign = json.getString("sign");
+//                req.extData = "app data"; // optional
+//                Log.e("wxPay", "正常调起支付");
+//
+//                IWXAPI api = WXAPIFactory.createWXAPI(context, req.appId);
+//
+//                api.sendReq(req);
+//            } else {
+//                Log.d("PAY_GET", "返回错误" + json.getString("retmsg"));
+//                Toast.makeText(context, "返回错误：" + json.getString("retmsg"), Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    /**
+//     * @param orderId
+//     * @param type    0 即时单支付 1预约单支付尾款
+//     */
+//    private void payJishiZfb(Long orderId, Integer type) {
+//        Observable<ZfbResult> observable = ApiManager.getInstance().api
+//                .payJishiSingleZfb(orderId, type)
+//                .map(new HttpResultFunc<ZfbResult>(context))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        rxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(context, true,
+//                false, new NoErrSubscriberListener<ZfbResult>() {
+//            @Override
+//            public void onNext(ZfbResult s) {
+//                detailZfb(s.orderInfo);
+//            }
+//        })));
+//    }
+//
+//    private void payYuyueZfb(Long orderId) {
+//        Observable<ZfbResult> observable = ApiManager.getInstance().api
+//                .payYuyueSingleZfb(orderId)
+//                .map(new HttpResultFunc<ZfbResult>(context))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        rxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(context, true,
+//                false, new NoErrSubscriberListener<ZfbResult>() {
+//            @Override
+//            public void onNext(ZfbResult s) {
+//                detailZfb(s.orderInfo);
+//            }
+//        })));
+//    }
+//
+//    private void detailZfb(final String s) {
+//        if (null != zfbPay) {
+//            zfbPay.pay(s);
+//        }
+//    }
 
     private void updateOrderStatus(long orderId, int status) {
         Observable<Object> observable = ApiManager.getInstance().api
@@ -466,14 +460,44 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                 .into(imageView);
     }
 
+    /**
+     * 支付剩余时间计算
+     */
+    private String getPayLeftTime(long deadLine) {
+        long leftMillis = deadLine - System.currentTimeMillis();
+
+        if (leftMillis < 0) {
+            return "支付已超时";
+        } else {
+            long day = leftMillis / (1000 * 60 * 60 * 24);
+            long h = leftMillis / (1000 * 60 * 60) % 24;
+            long m = leftMillis / (1000 * 60) % 60;
+            long s = leftMillis / 1000 % 60;
+            StringBuilder sb = new StringBuilder();
+            sb.append("距离预约时间: ");
+            if (day > 0) {
+                sb.append(day).append("天 ");
+            }
+            if (h > 0) {
+                sb.append(h).append(":");
+            }
+            if (m > 0) {
+                sb.append(m).append(":");
+            }
+            if (s > 0) {
+                sb.append(s);
+            }
+            return sb.toString();
+        }
+    }
+
     @Override
     public int getItemCount() {
         return data.size();
     }
 
-
     //自定义holder
-    class OrderHolder extends RecyclerView.ViewHolder {
+    public class OrderHolder extends RecyclerView.ViewHolder {
 
         public OrderHolder(View itemView) {
             super(itemView);
@@ -483,7 +507,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         TextView tvOrderTime;
         TextView tvOrderStatus;
         TextView tvGoodsKind;
-        TextView tvOrderMoney;
+        public TextView tvOrderMoney;
         Button rightBtn;
         Button leftBtn;
         ImageView img1;
@@ -491,6 +515,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         ImageView img3;
         ImageView img4;
         ImageView img5;
+        ImageView clock_icon;
     }
 
 }

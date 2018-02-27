@@ -20,5 +20,5 @@ public interface WheelAdapter<T> {
 	 * @param o
 	 * @return the maximum item length or -1
      */
-	int indexOf(T o);
+	int indexOf(String o);
 }

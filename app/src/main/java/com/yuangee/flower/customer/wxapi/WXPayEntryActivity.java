@@ -7,13 +7,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.yuangee.flower.customer.AppBus;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
@@ -40,6 +43,12 @@ public class WXPayEntryActivity extends RxBaseActivity implements IWXAPIEventHan
 
         api = WXAPIFactory.createWXAPI(this, Config.wxJKAppId);
         api.handleIntent(getIntent(), this);
+        findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -81,6 +90,7 @@ public class WXPayEntryActivity extends RxBaseActivity implements IWXAPIEventHan
         errcode = resp.errCode;
         Log.e("datadata", "resp.code--->" + resp.errCode);
         if (errcode == 0) {
+            AppBus.getInstance().post(true);
             payResult.setText("支付成功");
             WXPayEntryActivity.this.finish();
         } else {

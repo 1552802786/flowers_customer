@@ -1,12 +1,20 @@
 package com.yuangee.flower.customer.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -82,6 +90,7 @@ public class SupplierActivity extends RxBaseActivity {
     private String shopName;
     private FloatingActionMenu actionMenu;
     private List<Goods> goodsList;
+    private String waresNames;
 
     @Override
     public int getLayoutId() {
@@ -120,102 +129,44 @@ public class SupplierActivity extends RxBaseActivity {
                 getGoodsData();
             }
         });
+        editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_SEARCH) {
+                    hideSoft();
+                    waresNames = editSearch.getText().toString();
+                    getGoodsData();
+                    return true;
+                }
+                return false;
+            }
+        });
+        editSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (TextUtils.isEmpty(editable.toString().trim())) {
+                    getGoodsData();
+                }
+            }
+        });
         initFloatPath();
     }
 
-    private int qua;
-
-    AlertDialog dialog;
-
-    private void showCusDialog(final Goods goods) {
-        View view = LayoutInflater.from(this).inflate(R.layout.change_num_dialog, null);
-        final ImageView sub = view.findViewById(R.id.num_sub);
-        final ImageView add = view.findViewById(R.id.num_add);
-        TextView cancel = view.findViewById(R.id.cancel);
-        TextView confirm = view.findViewById(R.id.confirm);
-        final TextView num = view.findViewById(R.id.goods_num);
-
-        qua = 1;
-        sub.setEnabled(false);
-        if (qua < goods.salesVolume) {
-            add.setEnabled(true);
-        }
-
-        sub.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String str = num.getText().toString();
-                if (StringUtils.isNotBlank(str)) {
-                    qua = Integer.parseInt(str);
-                } else {
-                    qua = 0;
-                }
-                qua--;
-                num.setText(String.valueOf(qua));
-                if (qua <= 1) {
-                    sub.setEnabled(false);
-                } else {
-                    sub.setEnabled(true);
-                }
-                if (qua >= goods.salesVolume) {
-                    add.setEnabled(false);
-                } else {
-                    add.setEnabled(true);
-                }
-            }
-        });
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String str = num.getText().toString();
-                if (StringUtils.isNotBlank(str)) {
-                    qua = Integer.parseInt(str);
-                } else {
-                    qua = 0;
-                }
-                qua++;
-                num.setText(String.valueOf(qua));
-                if (qua <= 1) {
-                    sub.setEnabled(false);
-                } else {
-                    sub.setEnabled(true);
-                }
-                if (qua >= goods.salesVolume) {
-                    add.setEnabled(false);
-                } else {
-                    add.setEnabled(true);
-                }
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String str = num.getText().toString();
-                if (StringUtils.isNotBlank(str)) {
-                    qua = Integer.parseInt(str);
-                } else {
-                    qua = 0;
-                }
-                if (qua != 0 && qua <= goods.salesVolume) {
-                    dialog.dismiss();
-                    orderIng(goods.id, qua);
-                } else if (qua == 0) {
-                    ToastUtil.showMessage(SupplierActivity.this, "数量必须大于0");
-                } else {
-                    ToastUtil.showMessage(SupplierActivity.this, "数量必须小于最大可售量" + goods.salesVolume);
-                }
-            }
-        });
-        dialog = new AlertDialog.Builder(this)
-                .setView(view)
-                .create();
-        dialog.show();
+    private void hideSoft() {
+        // 先隐藏键盘
+        ((InputMethodManager) editSearch.getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(SupplierActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @Override
@@ -227,7 +178,7 @@ public class SupplierActivity extends RxBaseActivity {
 
     private void getGoodsData() {
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api
-                .findWares(shopId, page * 10, limit)
+                .findWares(shopId, page * 10, waresNames, limit)
                 .map(new HttpResultFunc<PageResult<Goods>>(SupplierActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -306,39 +257,13 @@ public class SupplierActivity extends RxBaseActivity {
         onBackPressed();
     }
 
-    private void orderIng(long waresId, int num) {
-
-        WaresNumber number = new WaresNumber();
-        number.waresId = waresId;
-        number.quantity = num;
-        Gson gson = new Gson();
-
-        List<WaresNumber> waresNumbers = new ArrayList<>();
-        waresNumbers.add(number);
-
-        Member member = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId());
-        Observable<Object> observable = ApiManager.getInstance().api
-                .cusOrder(member.name, member.phone, member.id, gson.toJson(waresNumbers), shopId)
-                .map(new HttpResultFunc<>(this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new NoErrSubscriberListener<Object>() {
-            @Override
-            public void onNext(Object o) {
-                goodRecycler.setRefreshing(true);
-                getGoodsData();
-            }
-        })));
-    }
-
     private void initFloatPath() {
         final ImageView main_float_icon = new ImageView(this);
         main_float_icon.setImageDrawable(getResources().getDrawable(R.drawable.my_shop_order));
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
                 .setContentView(main_float_icon)
                 .build();
-       // repeat many times:
+        // repeat many times:
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
         ImageView orderall = new ImageView(this);
 
@@ -373,7 +298,7 @@ public class SupplierActivity extends RxBaseActivity {
         });
         // repeat many times:
         SubActionButton.Builder itemBuilder2 = new SubActionButton.Builder(this);
-        ImageView orderReserve= new ImageView(this);
+        ImageView orderReserve = new ImageView(this);
         orderReserve.setImageDrawable(getResources().getDrawable(R.drawable.my_order_reserve));
         SubActionButton orderReserveBtn = itemBuilder2.setContentView(orderReserve).build();
         orderReserveBtn.setOnClickListener(new View.OnClickListener() {
@@ -387,16 +312,15 @@ public class SupplierActivity extends RxBaseActivity {
             }
         });
         // repeat many times:
-        SubActionButton.Builder itemBuilder3= new SubActionButton.Builder(this);
-        ImageView orderAdd= new ImageView(this);
+        SubActionButton.Builder itemBuilder3 = new SubActionButton.Builder(this);
+        ImageView orderAdd = new ImageView(this);
         orderAdd.setImageDrawable(getResources().getDrawable(R.drawable.my_order_add));
         SubActionButton orderAddBtn = itemBuilder3.setContentView(orderAdd).build();
         orderAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SupplierActivity.this, CustomerAddLocalOrderActivity.class);
-                intent.putExtra("goods", (Serializable) goodsList);
-                intent.putExtra("shopId",shopId);
+                intent.putExtra("shopId", shopId);
                 startActivity(intent);
                 actionMenu.close(true);
             }

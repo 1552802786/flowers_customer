@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.google.gson.JsonElement;
+import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -37,6 +39,7 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.StringUtils;
+import com.yuangee.flower.customer.util.TimeUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import org.json.JSONException;
@@ -45,6 +48,8 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -126,16 +131,29 @@ public class CusOrderDetailActivity extends RxBaseActivity {
     @BindView(R.id.receiver_kuaidi)
     TextView receiverKuaidi;
 
-    @BindView(R.id.memo_con)
+    @BindView(R.id.user_message)
     LinearLayout memoCon;
 
-    @BindView(R.id.memo_text)
+    @BindView(R.id.user_message_txt)
     TextView memoText;
 
+    @BindView(R.id.order_status)
+    TextView orderStatus;
+    @BindView(R.id.order_type)
+    TextView orderType;
+
+    @BindView(R.id.price_layout)
+    View shopOrderPrice;
+    @BindView(R.id.cutdown_text)
+    TextView cutdownTime;
+
+    @BindView(R.id.cutdown_layout)
+    LinearLayout cutdownLayout;
     private CustomerOrder cusOrder;
     OrderWareAdapter adapter;
 
     private boolean isShop = false;
+    private Timer timer = new Timer();
 
     @Override
     public int getLayoutId() {
@@ -198,14 +216,14 @@ public class CusOrderDetailActivity extends RxBaseActivity {
         peihuoFee.setText("¥" + cusOrder.peihuoFee);
         baozhuangFee.setText("¥" + cusOrder.baozhuangFee);
 
-        if(StringUtils.isNotBlank(String.valueOf(cusOrder.couponMoney))){
-            if(String.valueOf(cusOrder.couponMoney).equals("null")){
-                couponFee.setText("¥"+"0");
+        if (StringUtils.isNotBlank(String.valueOf(cusOrder.couponMoney))) {
+            if (String.valueOf(cusOrder.couponMoney).equals("null")) {
+                couponFee.setText("¥" + "0");
             } else {
-                couponFee.setText("¥"+cusOrder.couponMoney);
+                couponFee.setText("¥" + cusOrder.couponMoney);
             }
         } else {
-            couponFee.setText("¥"+"0");
+            couponFee.setText("¥" + "0");
         }
 
         if (null != cusOrder.peihuoFee) {
@@ -224,22 +242,29 @@ public class CusOrderDetailActivity extends RxBaseActivity {
             totalMoney = totalMoney.subtract(cusOrder.couponMoney);
         }
 
-        hejiFee.setText("" + totalMoney.doubleValue() + "元");
+        hejiFee.setText("" + cusOrder.realPay + "元");
 
         //订单基本信息
         orderNo.setText(cusOrder.orderNo);
         createdTime.setText(cusOrder.created);
+        orderStatus.setText(cusOrder.getStatusStr());
         if (!cusOrder.bespeak) {
+            orderType.setText("普通订单");
             bespeakMoneyCon.setVisibility(View.GONE);
             bespeakTimeCon.setVisibility(View.GONE);
+
         } else {
-            bespeakTime.setText(cusOrder.bespeakDateStr);
+            orderType.setText("预约订单");
+            ((TextView) bespeakTimeCon.getChildAt(0)).setText("预约日期");
+            ((TextView) bespeakMoneyCon.getChildAt(0)).setText("预约金");
+            bespeakTime.setText(TimeUtil.getTime(TimeUtil.YMD_2, cusOrder.bespeakDate));
             bespeakMoney.setText("¥" + cusOrder.bespeakMoney);
         }
+        memoCon.setVisibility(View.VISIBLE);
         if (StringUtils.isBlank(cusOrder.memo)) {
-            memoCon.setVisibility(View.GONE);
+            memoText.setText("<暂无>");
         } else {
-            memoCon.setVisibility(View.VISIBLE);
+
             memoText.setText(cusOrder.memo);
         }
 
@@ -254,7 +279,7 @@ public class CusOrderDetailActivity extends RxBaseActivity {
         String s = "";
         Express express = DbHelper.getInstance().getExpressLongDBManager().load(cusOrder.expressId);
         if (express != null) {
-            s = express.expressDeliveryName + "<" + express.expressDeliveryMoney + "元>";
+            s = express.expressDeliveryName;
         }
         receiverKuaidi.setText(s);
 
@@ -267,7 +292,7 @@ public class CusOrderDetailActivity extends RxBaseActivity {
                 leftBtn.setVisibility(View.VISIBLE);
                 rightBtn.setVisibility(View.VISIBLE);
                 if (!cusOrder.bespeak) {
-                    leftBtn.setText("去支付");
+                    leftBtn.setText("付款");
                 } else {
                     leftBtn.setText("支付预约金");
                 }
@@ -312,12 +337,22 @@ public class CusOrderDetailActivity extends RxBaseActivity {
                 rightBtn.setVisibility(View.VISIBLE);
                 leftBtn.setText("支付尾款");
                 rightBtn.setText("取消订单");
+                leftBtn.setEnabled(false);
+                leftBtn.setBackgroundColor(Color.GRAY);
+                shopOrderPrice.setVisibility(View.INVISIBLE);
                 leftBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         payOrder(cusOrder);
                     }
                 });
+                cutdownLayout.setVisibility(View.VISIBLE);
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        handler.post(runnable);
+                    }
+                }, 1000, 1000);
                 rightBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -449,108 +484,108 @@ public class CusOrderDetailActivity extends RxBaseActivity {
         updateOrderStatus(cusOrder.id, ShopOrder.ORDER_STATUS_FINISH);
     }
 
-    private void payJishiWx(Long orderId, Integer type) {
-        Observable<JsonElement> observable = ApiManager.getInstance().api
-                .payJishiSingleWx(orderId, type)
-                .map(new HttpResultFunc<JsonElement>(CusOrderDetailActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<JsonElement>(CusOrderDetailActivity.this, true,
-                false, new NoErrSubscriberListener<JsonElement>() {
-            @Override
-            public void onNext(JsonElement jsonElement) {
-                detailWxPay(jsonElement);
-            }
-        })));
-    }
-
-    private void payYuyueWx(Long orderId) {
-        Observable<JsonElement> observable = ApiManager.getInstance().api
-                .payYuyueSingleWx(orderId)
-                .map(new HttpResultFunc<JsonElement>(CusOrderDetailActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<>(CusOrderDetailActivity.this, true,
-                false, new NoErrSubscriberListener<JsonElement>() {
-            @Override
-            public void onNext(JsonElement jsonElement) {
-                detailWxPay(jsonElement);
-            }
-        })));
-    }
-
-    private void detailWxPay(JsonElement jsonElement) {
-        try {
-            JSONObject json = new JSONObject(jsonElement.toString());
-            if (!json.has("retcode")) {
-                PayReq req = new PayReq();
-                req.appId = json.getString("appid");
-                req.partnerId = json.getString("partnerid");
-                req.prepayId = json.getString("prepayid");
-                req.nonceStr = json.getString("noncestr");
-                req.timeStamp = json.getString("timestamp");
-                req.packageValue = json.getString("package");
-                req.sign = json.getString("sign");
-                req.extData = "app data"; // optional
-                Log.e("wxPay", "正常调起支付");
-
-                IWXAPI api = WXAPIFactory.createWXAPI(CusOrderDetailActivity.this, req.appId);
-
-                api.sendReq(req);
-            } else {
-                Log.d("PAY_GET", "返回错误" + json.getString("retmsg"));
-                Toast.makeText(CusOrderDetailActivity.this, "返回错误：" + json.getString("retmsg"), Toast.LENGTH_SHORT).show();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void payJishiZfb(Long orderId, Integer type) {
-        Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payJishiSingleZfb(orderId, type)
-                .map(new HttpResultFunc<ZfbResult>(CusOrderDetailActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(CusOrderDetailActivity.this, true,
-                false, new NoErrSubscriberListener<ZfbResult>() {
-            @Override
-            public void onNext(ZfbResult s) {
-                detailZfb(s.orderInfo);
-            }
-        })));
-    }
-
-    private void payYuyueZfb(Long orderId) {
-        Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payYuyueSingleZfb(orderId)
-                .map(new HttpResultFunc<ZfbResult>(CusOrderDetailActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<>(CusOrderDetailActivity.this, true,
-                false, new NoErrSubscriberListener<ZfbResult>() {
-            @Override
-            public void onNext(ZfbResult s) {
-                detailZfb(s.orderInfo);
-            }
-        })));
-    }
-
-    private void detailZfb(final String s) {
-        new Thread() {
-            public void run() {
-
-                PayTask alipay = new PayTask(CusOrderDetailActivity.this);
-                String result = alipay
-                        .pay(s, true);
-
-                Message msg = new Message();
-                msg.what = 0;
-                msg.obj = result;
-                handler.sendMessage(msg);
-            }
-        }.start();
-    }
+//    private void payJishiWx(Long orderId, Integer type) {
+//        Observable<JsonElement> observable = ApiManager.getInstance().api
+//                .payJishiSingleWx(orderId, type)
+//                .map(new HttpResultFunc<JsonElement>(CusOrderDetailActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        mRxManager.add(observable.subscribe(new MySubscriber<JsonElement>(CusOrderDetailActivity.this, true,
+//                false, new NoErrSubscriberListener<JsonElement>() {
+//            @Override
+//            public void onNext(JsonElement jsonElement) {
+//                detailWxPay(jsonElement);
+//            }
+//        })));
+//    }
+//
+//    private void payYuyueWx(Long orderId) {
+//        Observable<JsonElement> observable = ApiManager.getInstance().api
+//                .payYuyueSingleWx(orderId)
+//                .map(new HttpResultFunc<JsonElement>(CusOrderDetailActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        mRxManager.add(observable.subscribe(new MySubscriber<>(CusOrderDetailActivity.this, true,
+//                false, new NoErrSubscriberListener<JsonElement>() {
+//            @Override
+//            public void onNext(JsonElement jsonElement) {
+//                detailWxPay(jsonElement);
+//            }
+//        })));
+//    }
+//
+//    private void detailWxPay(JsonElement jsonElement) {
+//        try {
+//            JSONObject json = new JSONObject(jsonElement.toString());
+//            if (!json.has("retcode")) {
+//                PayReq req = new PayReq();
+//                req.appId = json.getString("appid");
+//                req.partnerId = json.getString("partnerid");
+//                req.prepayId = json.getString("prepayid");
+//                req.nonceStr = json.getString("noncestr");
+//                req.timeStamp = json.getString("timestamp");
+//                req.packageValue = json.getString("package");
+//                req.sign = json.getString("sign");
+//                req.extData = "app data"; // optional
+//                Log.e("wxPay", "正常调起支付");
+//
+//                IWXAPI api = WXAPIFactory.createWXAPI(CusOrderDetailActivity.this, req.appId);
+//
+//                api.sendReq(req);
+//            } else {
+//                Log.d("PAY_GET", "返回错误" + json.getString("retmsg"));
+//                Toast.makeText(CusOrderDetailActivity.this, "返回错误：" + json.getString("retmsg"), Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void payJishiZfb(Long orderId, Integer type) {
+//        Observable<ZfbResult> observable = ApiManager.getInstance().api
+//                .payJishiSingleZfb(orderId, type)
+//                .map(new HttpResultFunc<ZfbResult>(CusOrderDetailActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        mRxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(CusOrderDetailActivity.this, true,
+//                false, new NoErrSubscriberListener<ZfbResult>() {
+//            @Override
+//            public void onNext(ZfbResult s) {
+//                detailZfb(s.orderInfo);
+//            }
+//        })));
+//    }
+//
+//    private void payYuyueZfb(Long orderId) {
+//        Observable<ZfbResult> observable = ApiManager.getInstance().api
+//                .payYuyueSingleZfb(orderId)
+//                .map(new HttpResultFunc<ZfbResult>(CusOrderDetailActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        mRxManager.add(observable.subscribe(new MySubscriber<>(CusOrderDetailActivity.this, true,
+//                false, new NoErrSubscriberListener<ZfbResult>() {
+//            @Override
+//            public void onNext(ZfbResult s) {
+//                detailZfb(s.orderInfo);
+//            }
+//        })));
+//    }
+//
+//    private void detailZfb(final String s) {
+//        new Thread() {
+//            public void run() {
+//
+//                PayTask alipay = new PayTask(CusOrderDetailActivity.this);
+//                String result = alipay
+//                        .pay(s, true);
+//
+//                Message msg = new Message();
+//                msg.what = 0;
+//                msg.obj = result;
+//                handler.sendMessage(msg);
+//            }
+//        }.start();
+//    }
 
     private void updateOrderStatus(long orderId, int status) {
         Observable<Object> observable = ApiManager.getInstance().api
@@ -571,37 +606,10 @@ public class CusOrderDetailActivity extends RxBaseActivity {
     }
 
     private void payOrder(final CustomerOrder cusOrder) {
-        AlertDialog alertDialog = new AlertDialog.Builder(CusOrderDetailActivity.this)
-                .setMessage("请选择支付方式")
-                .setPositiveButton("支付宝支付", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (cusOrder.bespeak) {
-                            if (cusOrder.status == ShopOrder.ORDER_STATUS_NOTPAY) {
-                                payYuyueZfb(cusOrder.id);//预约单支付预约金
-                            } else if (cusOrder.status == ShopOrder.ORDER_STATUS_BE_BACK) {
-                                payJishiZfb(cusOrder.id, 1);//预约单支付尾款
-                            }
-                        } else {
-                            payJishiZfb(cusOrder.id, 0);//即时单支付全款
-                        }
-                    }
-                })
-                .setNegativeButton("微信支付", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (cusOrder.bespeak) {
-                            if (cusOrder.status == ShopOrder.ORDER_STATUS_NOTPAY) {
-                                payYuyueWx(cusOrder.id);//预约单支付预约金
-                            } else if (cusOrder.status == ShopOrder.ORDER_STATUS_BE_BACK) {
-                                payJishiWx(cusOrder.id, 1);//预约单支付尾款
-                            }
-                        } else {
-                            payJishiWx(cusOrder.id, 0);//即时单支付全款
-                        }
-                    }
-                }).create();
-        alertDialog.show();
+
+        Intent it = new Intent(CusOrderDetailActivity.this, CustomerOrderPayActivity.class);
+        it.putExtra("order", cusOrder);
+        startActivity(it);
     }
 
     @Override
@@ -620,6 +628,63 @@ public class CusOrderDetailActivity extends RxBaseActivity {
             ToastUtil.showMessage(CusOrderDetailActivity.this, "支付失败！");
         } else if (str.equalsIgnoreCase("cancel")) {
             ToastUtil.showMessage(CusOrderDetailActivity.this, "你已取消了本次订单的支付！");
+        }
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            cutdownTime.setText(getPayLeftTime(cusOrder.bespeakDate));
+        }
+    };
+
+    /**
+     * 支付剩余时间计算
+     */
+    private String getPayLeftTime(long deadLine) {
+        long leftMillis = deadLine - System.currentTimeMillis();
+
+        if (leftMillis < 0) {
+            return "支付已超时";
+        } else {
+            long day = leftMillis / (1000 * 60 * 60 * 24);
+            long h = leftMillis / (1000 * 60 * 60) % 24;
+            long m = leftMillis / (1000 * 60) % 60;
+            long s = leftMillis / 1000 % 60;
+            StringBuilder sb = new StringBuilder();
+            sb.append("距离预约时间: ");
+            if (day > 0) {
+                sb.append(day).append("天 ");
+            }
+            if (h > 0) {
+                sb.append(h).append(":");
+            }
+            if (m > 0) {
+                sb.append(m).append(":");
+            }
+            if (s > 0) {
+                sb.append(s);
+            }
+            return sb.toString();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    @Subscribe
+    public void paySuccess(Boolean success) {
+        if (success) {
+            cusOrder.status = ShopOrder.ORDER_STATUS_WAIT;
+            initBtn();
+            ToastUtil.showMessage(CusOrderDetailActivity.this, "支付成功");
+            // 结果result_data为成功时，去商户后台查询一下再展示成功
+        } else {
+            ToastUtil.showMessage(CusOrderDetailActivity.this, "支付失败！");
         }
     }
 }

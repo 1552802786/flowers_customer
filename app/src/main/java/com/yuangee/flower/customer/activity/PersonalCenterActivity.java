@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -28,6 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,6 +43,7 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.adapter.KuaidiAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.Address;
 import com.yuangee.flower.customer.entity.Member;
@@ -49,8 +54,10 @@ import com.yuangee.flower.customer.permission.RxPermissions;
 import com.yuangee.flower.customer.picker.AddressInitTask;
 import com.yuangee.flower.customer.util.AppManager;
 import com.yuangee.flower.customer.util.DisplayUtil;
+import com.yuangee.flower.customer.util.GlideCircleTransform;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
+import com.yuangee.flower.customer.widget.MyRadioGroup;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,6 +83,11 @@ import rx.schedulers.Schedulers;
 
 public class PersonalCenterActivity extends RxBaseActivity {
 
+    private int flag;
+    private KuaidiAdapter kuaidiAdapter;
+    private Member member;
+    private PoiInfo poiInfo;
+
     @OnClick(R.id.pick_photo)
     void pickPhoto() {
         choosePic(1, 1);
@@ -87,8 +99,8 @@ public class PersonalCenterActivity extends RxBaseActivity {
     @BindView(R.id.person_name)
     TextView personName;
 
-    @BindView(R.id.person_gender)
-    TextView personGender;
+    @BindView(R.id.sexy_choice)
+    RadioGroup sexy_choice;
 
     @BindView(R.id.person_phone)
     TextView personPhone;
@@ -102,19 +114,29 @@ public class PersonalCenterActivity extends RxBaseActivity {
 
     @BindView(R.id.login_out_btn)
     TextView loginOut;
+
+    @BindView(R.id.kuaidi_recycler)
+    RecyclerView kuaidiRecycler;
     @OnClick(R.id.login_out_btn)
-    void loginOut(){
+    void loginOut() {
         exit();
     }
+
     @OnClick(R.id.back_btn)
     void onBackBtn() {
         finish();
     }
+
     @OnClick(R.id.save_info_btn)
-    void saveInfo(){
+    void saveInfo() {
         updateMemberInfo();
-        createMemberAddress();
+        if (isCreateAdrress) {
+            createMemberAddress();
+        }else {
+            updateMemberAddress();
+        }
     }
+
     @OnClick(R.id.address_manage)
     void addressManage() {
         startActivity(new Intent(PersonalCenterActivity.this, SecAddressActivity.class));
@@ -127,49 +149,6 @@ public class PersonalCenterActivity extends RxBaseActivity {
         showEditDialog(personName, "姓名");
     }
 
-    @OnClick(R.id.pick_gender)
-    void pickGender() {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.gender_select_layout, null);
-        RadioButton maleRadio = view.findViewById(R.id.male_radio);
-        RadioButton femaleRadio = view.findViewById(R.id.female_radio);
-        if (personGender.getText().toString().equals("男")) {
-            maleRadio.setChecked(true);
-        } else {
-            femaleRadio.setChecked(true);
-        }
-        maleRadio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    personGender.setText("男");
-                    dialog.dismiss();
-//                    updateMemberInfo(null, null, "1");
-                }
-            }
-        });
-        femaleRadio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    personGender.setText("女");
-                    dialog.dismiss();
-//                    updateMemberInfo(null, null, "0");
-                }
-            }
-        });
-        dialog = new AlertDialog.Builder(this)
-                .setTitle("性别")
-                .setView(view)
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-        dialog.show();
-    }
 
     @OnClick(R.id.pick_phone)
     void pickPhone() {
@@ -185,19 +164,28 @@ public class PersonalCenterActivity extends RxBaseActivity {
     public int getLayoutId() {
         return R.layout.activity_personal_center;
     }
+
     private Context mContext;
+
     @Override
     public void initViews(Bundle savedInstanceState) {
         //loginOut.setVisibility(View.VISIBLE);
         showMember();
-        address = new Address();
-        mContext=this;
+
+        mContext = this;
     }
 
     private void showMember() {
-        Member member = App.me().getMemberInfo();
+        member = App.me().getMemberInfo();
+        if (member.memberAddressList.size() > 0) {
+            address = member.memberAddressList.get(0);
+            isCreateAdrress=false;
+        } else {
+            address = new Address();
+        }
         RequestOptions options = new RequestOptions()
                 .centerCrop()
+                .transform(new GlideCircleTransform())
                 .placeholder(R.drawable.ic_default_photo_gray)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         Glide.with(this)
@@ -205,15 +193,20 @@ public class PersonalCenterActivity extends RxBaseActivity {
                 .apply(options)
                 .into(icPhoto);
         personName.setText(member.name);
-        personGender.setText(!member.gender ? "男" : "女");
+        if (member.gender) {
+            sexy_choice.check(R.id.man_radio);
+        } else {
+            sexy_choice.check(R.id.woman_radio);
+        }
         personPhone.setText(member.phone);
         personEmail.setText(member.email);
+        showAdrress();
     }
 
     private void updateMemberInfo() {
         long id = App.getPassengerId();
         String name = personName.getText().toString();
-        boolean gender = personGender.getText().toString().equals("女");
+        boolean gender = sexy_choice.getCheckedRadioButtonId() == R.id.man_radio;
         String phone = personPhone.getText().toString();
         String email = personEmail.getText().toString();
 
@@ -222,14 +215,14 @@ public class PersonalCenterActivity extends RxBaseActivity {
         MultipartBody.Part genderPart = MultipartBody.Part.createFormData("gender", String.valueOf(gender));
         MultipartBody.Part phonePart = MultipartBody.Part.createFormData("phone", String.valueOf(phone));
         MultipartBody.Part emailPart = MultipartBody.Part.createFormData("email", String.valueOf(email));
-
+        MultipartBody.Part deliverPart = MultipartBody.Part.createFormData("expressDeliveryId", String.valueOf(kuaidiAdapter.getClicked().id));
         MultipartBody.Part photoPart = null;
         if (StringUtils.isNotBlank(secPhoto)) {
             photoPart = MultipartBody.Part.createFormData("photo", "photo.png", RequestBody.create(MediaType.parse("image/png"), new File(secPhoto)));
         }
 
         Observable<Object> observable = ApiManager.getInstance().api
-                .updateMember(idPart, namePart, genderPart, phonePart, emailPart, photoPart)
+                .updateMember(idPart, namePart, genderPart, phonePart, emailPart, photoPart,deliverPart)
                 .map(new HttpResultFunc<>(PersonalCenterActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -264,6 +257,13 @@ public class PersonalCenterActivity extends RxBaseActivity {
                 }
             }
         }
+        if (requestCode == 10065 && resultCode == RESULT_OK) {
+            poiInfo = data.getParcelableExtra("result");
+            address.longitude = poiInfo.location.longitude;
+            address.latitude = poiInfo.location.latitude;
+            address.street = poiInfo.name;
+            personConsigneePlace2.setText(poiInfo.name);
+        }
         if (resultCode == RESULT_OK) {
             if (requestCode == 0) {
                 Uri uri = data.getData();
@@ -290,8 +290,6 @@ public class PersonalCenterActivity extends RxBaseActivity {
                                 } else {
                                     importEdit.setText(usernumber);
                                 }
-                                pickedPhone = usernumber;
-                                pickedName = username;
                             }
                             phone.close();
                         } else {
@@ -335,7 +333,6 @@ public class PersonalCenterActivity extends RxBaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String s = editName.getText().toString();
                         showView.setText(s);
-                        address.street = s;
                         dialog.dismiss();
                     }
                 })
@@ -375,7 +372,7 @@ public class PersonalCenterActivity extends RxBaseActivity {
     }
 
     @BindView(R.id.consignee_phone)
-    TextView personConsigneePhone;
+    EditText personConsigneePhone;
 
     @BindView(R.id.person_consignee_place_1)
     TextView personConsigneePlace1;
@@ -383,39 +380,22 @@ public class PersonalCenterActivity extends RxBaseActivity {
     @BindView(R.id.person_consignee_place_2)
     TextView personConsigneePlace2;
 
-    @BindView(R.id.consignee_method)
-    TextView personConsigneeMethod;
-
     @BindView(R.id.person_consignee_name)
-    TextView personConsignee;
-    @OnClick(R.id.person_consignee_name)
-    void pickConsignee() {
-        flag = 0;
-        showPhoneImportDialog(personConsignee, "收货人姓名");
-    }
-    private int flag = 0;
-    @OnClick(R.id.consignee_phone)
-    void pickConsigneePhone() {
-        flag = 1;
-        showPhoneImportDialog(personConsigneePhone, "收货人电话");
-    }
+    EditText personConsignee;
 
-    @OnClick(R.id.consignee_method)
-    void pickConsigneeMethod() {
-        showBooleanDialog();
-    }
 
     @OnClick(R.id.pick_consignee_place_1)
     void pickConsigneePlace() {
         showPickerPlace(personConsigneePlace1);
     }
 
-    @OnClick(R.id.pick_consignee_place_2)
-    void editConsigneePlace() {
-        showEditDialog(personConsigneePlace2, "收货详细地址");
-    }
+    private boolean isCreateAdrress = true;
     private Address address;
+
     private void createMemberAddress() {
+        address.shippingName = personConsignee.getText().toString();
+        address.shippingPhone = personPhone.getText().toString();
+        address.street = personConsigneePlace1.getText().toString();
         if (StringUtils.isBlank(address.shippingName)
                 || StringUtils.isBlank(address.shippingPhone) || StringUtils.isBlank(address.street)
                 || StringUtils.isBlank(address.pro)) {
@@ -424,8 +404,8 @@ public class PersonalCenterActivity extends RxBaseActivity {
         }
         Observable<Object> observable = ApiManager.getInstance().api
                 .createMemberAddress(App.getPassengerId(), address.shippingName, address.shippingPhone,
-                        address.pro, address.city, address.area, address.street, false)
-                .map(new HttpResultFunc<Object>(mContext))
+                        address.pro, address.city, address.area, address.street, address.latitude,address.longitude,true)
+                .map(new HttpResultFunc<>(mContext))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
@@ -475,119 +455,58 @@ public class PersonalCenterActivity extends RxBaseActivity {
         }).execute();
     }
 
-    RxPermissions rxPermissions;
     EditText importEdit;
-    private String pickedPhone;
-    private String pickedName;
-    private void showPhoneImportDialog(final TextView showView, String hint) {
-        View view = getLayoutInflater().inflate(R.layout.import_dialog, null);
-        importEdit = view.findViewById(R.id.edit_text);
-        importEdit.setText(showView.getText());
-        importEdit.setHint(hint);
-        if (flag == 0) {
-            importEdit.setInputType(EditorInfo.TYPE_CLASS_TEXT);
-        } else {
-            importEdit.setInputType(EditorInfo.TYPE_CLASS_PHONE);
-        }
-        RelativeLayout rl = view.findViewById(R.id.import_book);
-        rl.setOnClickListener(new View.OnClickListener() {
+
+    private void showAdrress() {
+        personConsigneePhone.setText(address.getShippingPhone());
+        personConsigneePlace1.setText(address.getPro() + address.getCity() + address.getArea());
+        personConsigneePlace2.setText(address.getStreet());
+        personConsigneePlace2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                rxPermissions = new RxPermissions(PersonalCenterActivity.this);
-                if (!rxPermissions.isGranted(Manifest.permission.READ_CONTACTS)) {
-                    rxPermissions.request(Manifest.permission.READ_CONTACTS)
-                            .subscribe(new Action1<Boolean>() {
-                                @Override
-                                public void call(Boolean granted) {
-                                    if (granted) {
-                                        Intent intent = new Intent(Intent.ACTION_PICK,
-                                                ContactsContract.Contacts.CONTENT_URI);
-                                        startActivityForResult(intent, 0);
-                                    } else {
-                                        ToastUtil.showMessage(PersonalCenterActivity.this, "获取联系人失败");
-                                    }
-                                }
-                            });
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK,
-                            ContactsContract.Contacts.CONTENT_URI);
-                    startActivityForResult(intent, 0);
-                }
+            public void onClick(View view) {
+                Intent it = new Intent(mContext, CustomerPlaceSearchActivity.class);
+                it.putExtra("city", address.getCity());
+                startActivityForResult(it, 10065);
             }
         });
-        dialog = new AlertDialog.Builder(this)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String input = importEdit.getText().toString();
-                        showView.setText(input);
-                        if (flag == 0) {
-                            address.shippingName = input;
-                        } else {
-                            address.shippingPhone = input;
-                        }
-                        if (StringUtils.isNotBlank(pickedName) && StringUtils.isNotBlank(pickedPhone)) {
-                            if (input.equals(pickedName) || input.equals(pickedPhone)) {
-                                if (showView.getId() == R.id.person_consignee) {
-                                    personConsigneePhone.setText(pickedPhone);
-                                    address.shippingPhone = pickedPhone;
-                                } else if (showView.getId() == R.id.person_consignee_phone) {
-                                    personConsignee.setText(pickedName);
-                                    address.shippingName = pickedName;
-                                }
-                                pickedName = null;
-                                pickedPhone = null;
-                            }
-                        }
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setView(view)
-                .create();
-        dialog.show();
+        personConsignee.setText(address.getShippingName());
+        initKuadiAdapter();
     }
-    private void showBooleanDialog() {
-        RadioGroup radioGroup = new RadioGroup(this);
-        radioGroup.setPadding(DisplayUtil.dp2px(this, 20), DisplayUtil.dp2px(this, 10), 0, 0);
-        final RadioButton trueBtn = new RadioButton(this);
-        trueBtn.setText("是");
-        RadioButton falseBtn = new RadioButton(this);
-        falseBtn.setText("否");
-        radioGroup.addView(trueBtn);
-        radioGroup.addView(falseBtn);
-        if (address.defaultAddress) {
-            trueBtn.setChecked(true);
-        } else {
-            falseBtn.setChecked(true);
+
+    private void updateMemberAddress() {
+        address.shippingName = personConsignee.getText().toString();
+        address.shippingPhone = personPhone.getText().toString();
+        address.street = personConsigneePlace1.getText().toString();
+        if (StringUtils.isBlank(address.shippingName)
+                || StringUtils.isBlank(address.shippingPhone) || StringUtils.isBlank(address.street)
+                || StringUtils.isBlank(address.pro)) {
+            ToastUtil.showMessage(PersonalCenterActivity.this, "请将信息填写完整");
+            return;
         }
-        dialog = new AlertDialog.Builder(this)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(trueBtn.isChecked()){
-                            address.defaultAddress = true;
-                        } else {
-                            address.defaultAddress = false;
-                        }
-                        personConsigneeMethod.setText(address.defaultAddress ? "是" : "否");
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setTitle("是否默认")
-                .setView(radioGroup)
-                .create();
-        dialog.show();
+        Observable<Object> observable = ApiManager.getInstance().api
+                .updateMemberAddress(address.id,App.getPassengerId(), address.shippingName, address.shippingPhone,
+                        address.pro, address.city, address.area, address.street, address.latitude,address.longitude,true)
+                .map(new HttpResultFunc<>(PersonalCenterActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(PersonalCenterActivity.this, true, true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object expresses) {
+                ToastUtil.showMessage(PersonalCenterActivity.this, "信息更新成功");
+                Intent intent = new Intent();
+                intent.putExtra("address", address);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        })));
+    }
+    void initKuadiAdapter() {
+        kuaidiAdapter = new KuaidiAdapter(PersonalCenterActivity.this);
+        kuaidiRecycler.setLayoutManager(new GridLayoutManager(PersonalCenterActivity.this, 2
+                , LinearLayoutManager.VERTICAL, false));
+        kuaidiRecycler.setAdapter(kuaidiAdapter);
+        kuaidiAdapter.setExpressList(member.expressDelivery,member.getExpressDeliveryId());
     }
 
 }

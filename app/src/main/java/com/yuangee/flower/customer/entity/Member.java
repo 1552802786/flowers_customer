@@ -56,7 +56,8 @@ public class Member {
 
     @Property
     public double balance;
-
+    @Property
+    public int expressDeliveryId;
     @Property
     public String customServicePhone;
 
@@ -76,11 +77,11 @@ public class Member {
     @Transient
     public MemberToken memberToken;//token
 
-    @Generated(hash = 844222844)
+    @Generated(hash = 1435647960)
     public Member(long id, String name, String userName, String passWord, String phone,
             String email, String photo, boolean gender, String address, String type,
             boolean inBlacklist, boolean isRecycle, boolean inFirst, double balance,
-            String customServicePhone) {
+            int expressDeliveryId, String customServicePhone) {
         this.id = id;
         this.name = name;
         this.userName = userName;
@@ -95,6 +96,7 @@ public class Member {
         this.isRecycle = isRecycle;
         this.inFirst = inFirst;
         this.balance = balance;
+        this.expressDeliveryId = expressDeliveryId;
         this.customServicePhone = customServicePhone;
     }
 
@@ -220,6 +222,14 @@ public class Member {
 
     public void setCustomServicePhone(String customServicePhone) {
         this.customServicePhone = customServicePhone;
+    }
+
+    public int getExpressDeliveryId() {
+        return this.expressDeliveryId;
+    }
+
+    public void setExpressDeliveryId(int expressDeliveryId) {
+        this.expressDeliveryId = expressDeliveryId;
     }
 
 }

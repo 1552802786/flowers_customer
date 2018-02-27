@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,9 +11,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -20,13 +24,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.baidu.mapapi.search.core.PoiInfo;
+import com.google.gson.JsonElement;
+import com.squareup.otto.Subscribe;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.AppBus;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.CusOrderDetailActivity;
+import com.yuangee.flower.customer.activity.CustomerOrderPayActivity;
+import com.yuangee.flower.customer.activity.CustomerPlaceSearchActivity;
 import com.yuangee.flower.customer.activity.EditAddressActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.CustomerOrderActivity;
+import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.SecAddressActivity;
 import com.yuangee.flower.customer.adapter.CouponAdapter;
 import com.yuangee.flower.customer.adapter.KuaidiAdapter;
@@ -42,10 +57,12 @@ import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.PayResult;
 import com.yuangee.flower.customer.entity.ZfbResult;
+import com.yuangee.flower.customer.fragment.shopping.FeeCreatOrderResult;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.picker.AddressInitTask;
 import com.yuangee.flower.customer.result.QueryCartResult;
 import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.StringUtils;
@@ -54,6 +71,12 @@ import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,8 +84,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.qqtheme.framework.entity.City;
+import cn.qqtheme.framework.entity.County;
+import cn.qqtheme.framework.entity.Province;
+import cn.qqtheme.framework.picker.AddressPicker;
 import cn.qqtheme.framework.picker.DatePicker;
 import cn.qqtheme.framework.util.ConvertUtils;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -85,25 +115,25 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     TextView apply;
 
     private String yuyueTimeStr;
+    private Member member;
+    private List<CartItem> lsItems;
+
 
     @OnClick(R.id.apply)
     void apply() {
         if (!expandableLayout.isExpanded()) {
             expandableLayout.expand();
             apply.setText("确认订单");
+            getAllFee();
         } else {
-            Express express = kuaidiAdapter.getClicked();
-            if (null != express) {
-                expressId = express.id;
-            }
-
             final Coupon coupon = couponAdapter.getClicked();
-
             if (address == null) {
                 ToastUtil.showMessage(getActivity(), "请选择一个收货地址");
             } else if (expressId == -1) {
                 ToastUtil.showMessage(getActivity(), "请选择一个快递方式");
             } else {
+                updateMemberAddress();
+                updateMemberInfo();
                 if (jishiGou.isChecked()) {
                     booking(App.getPassengerId(), address.shippingName, address.shippingPhone,
                             address.pro + address.city + address.area + address.street, expressId,
@@ -125,7 +155,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     void initKuadiAdapter() {
         kuaidiAdapter = new KuaidiAdapter(getActivity());
         kuaidiRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 2
-                , LinearLayoutManager.HORIZONTAL, false));
+                , LinearLayoutManager.VERTICAL, false));
         kuaidiRecycler.setAdapter(kuaidiAdapter);
         initCouponAdapter();
     }
@@ -157,10 +187,10 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     ExpandableLayout expandableLayout;
 
     @BindView(R.id.shouhuo_name)
-    TextView shouhuoName;
+    EditText shouhuoName;
 
     @BindView(R.id.shouhuo_phone)
-    TextView shouhuoPhone;
+    EditText shouhuoPhone;
 
     @BindView(R.id.shouhuo_addr)
     TextView shouhuoAddr;
@@ -180,8 +210,29 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     @BindView(R.id.yuyue_time_con)
     RelativeLayout yuyueTimeCon;
 
+    @BindView(R.id.shouhuo_addr_detail)
+    TextView shouhuo_addr_detail;
+
     @BindView(R.id.yuyue_time)
     TextView yuyueTime;
+    @BindView(R.id.shouhuo_user_message)
+    EditText userMessage;
+
+    @BindView(R.id.peihuo_fee)
+    TextView peihuoFee;
+
+    @BindView(R.id.baozhuang_fee)
+    TextView baozhuangFee;
+
+    @BindView(R.id.shouxu_fee)
+    TextView shouxuFei;
+
+    @BindView(R.id.yun_fee)
+    TextView yunFei;
+    @BindView(R.id.fee_layout)
+    ExpandableLayout expanFeeLayout;
+    @BindView(R.id.shouhuo_shop_address)
+    EditText shouhuo_shop_address;
 
     @OnClick(R.id.yuyue_time)
     void showTimePicker() {
@@ -194,8 +245,8 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         long endDate = System.currentTimeMillis() + (90L * 24L * 60L * 60L * 1000L);//默认三个月后
         if (null != destineTime) {
             if (destineTime.getValue()) {
-                startDate = System.currentTimeMillis() + destineTime.start * 24 * 60 * 60 * 1000;
-                endDate = System.currentTimeMillis() + destineTime.end * 24 * 60 * 60 * 1000;
+                startDate = System.currentTimeMillis() + destineTime.start * 24L * 60L * 60L * 1000L;
+                endDate = System.currentTimeMillis() + destineTime.end * 24L * 60L * 60L * 1000L;
             }
         }
         Calendar calendar = Calendar.getInstance();
@@ -215,8 +266,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         picker.setTopPadding(ConvertUtils.toPx(getActivity(), 10));
         picker.setRangeEnd(endYear, endMonth, endDay);
         picker.setRangeStart(startYear, startMonth, startDay);
-        picker.setSelectedItem(startYear, startMonth, startDay);
-        picker.setResetWhileWheel(false);
+        picker.setResetWhileWheel(true);
         picker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
             @Override
             public void onDatePicked(String year, String month, String day) {
@@ -234,10 +284,18 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         apply.setText("提交订单");
     }
 
-    @OnClick(R.id.close_expand_view)
-    void closeExpandView() {
-        expandableLayout.collapse();
-        apply.setText("提交订单");
+    @OnClick(R.id.show_fee_info)
+    void showFeeInfo() {
+        if (!expanFeeLayout.isExpanded()) {
+            expanFeeLayout.expand();
+        }
+    }
+
+    @OnClick(R.id.hide_fee_info)
+    void hideFeeInfo() {
+        if (expanFeeLayout.isExpanded()) {
+            expanFeeLayout.collapse();
+        }
     }
 
     private ShoppingCartAdapter adapter;
@@ -255,6 +313,12 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AppBus.getInstance().register(this);
+    }
+
+    @Override
     public int getLayoutResId() {
         return R.layout.fragment_shopping_cart;
     }
@@ -262,6 +326,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
     @Override
     public void finishCreateView(Bundle state) {
         isPrepared = true;
+        yuyueTimeCon.setVisibility(View.GONE);
         lazyLoad();
     }
 
@@ -341,51 +406,47 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
         initKuadiAdapter();
 
-        Member member = App.me().getMemberInfo();
+        member = App.me().getMemberInfo();
         if (null != member.memberAddressList && member.memberAddressList.size() != 0) {
-            for (Address addr : member.memberAddressList) {
-                address = addr;
-                if (address.defaultAddress) {
-                    break;
-                }
-            }
+            address = member.memberAddressList.get(0);
+//            for (Address addr : member.memberAddressList) {
+//                address = addr;
+//                if (address.defaultAddress) {
+//                    break;
+//                }
+//            }
         }
         setShippingMsg();
-        shouhuoName.setOnClickListener(shippingOnClick);
+//        shouhuoName.setOnClickListener(shippingOnClick);
+//        shouhuoPhone.setOnClickListener(shippingOnClick);
         shouhuoAddr.setOnClickListener(shippingOnClick);
-        shouhuoPhone.setOnClickListener(shippingOnClick);
+        shouhuo_addr_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent it = new Intent(getActivity(), CustomerPlaceSearchActivity.class);
+                it.putExtra("city", address.getCity());
+                startActivityForResult(it, 10065);
+            }
+        });
     }
 
     View.OnClickListener shippingOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (address == null) {
-                Intent intent = new Intent(getActivity(), EditAddressActivity.class);
-                intent.putExtra("from", "shoppingCart");
-                startActivityForResult(intent, REQUEST_ADDR);
-            } else {
-                Intent intent = new Intent(getActivity(), SecAddressActivity.class);
-                intent.putExtra("address", address);
-                startActivityForResult(intent, REQUEST_ADDR);
-            }
+            showPickerPlace(shouhuoAddr);
         }
     };
 
     private void setShippingMsg() {
+        expressId = member.expressDeliveryId;
         if (address != null) {
-            shouhuoAddr.setText(address.getStreet());
+            shouhuoAddr.setText(address.getPro() + address.getCity() + address.getArea());
+            shouhuo_addr_detail.setText(address.getStreet());
             shouhuoName.setText(address.getShippingName());
             shouhuoPhone.setText(address.getShippingPhone());
-            shouhuoAddr.setTextColor(getResources().getColor(R.color.black));
-            shouhuoName.setTextColor(getResources().getColor(R.color.black));
-            shouhuoPhone.setTextColor(getResources().getColor(R.color.black));
         } else {
-            shouhuoAddr.setText("请选择收货地址");
-            shouhuoName.setText("请选择收货人姓名");
-            shouhuoPhone.setText("请选择收货人电话");
-            shouhuoAddr.setTextColor(getResources().getColor(R.color.txt_normal));
-            shouhuoName.setTextColor(getResources().getColor(R.color.txt_normal));
-            shouhuoPhone.setTextColor(getResources().getColor(R.color.txt_normal));
+            shouhuoAddr.setHint("请选择收货地址");
+            address = new Address();
         }
     }
 
@@ -400,15 +461,15 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         PersonUtil.getMemberInfo(mRxManager, getActivity(), App.getPassengerId(), new PersonUtil.OnGetMember() {
             @Override
             public void onSuccess(Member member) {
-                kuaidiAdapter.setExpressList(member.expressDelivery);
+                kuaidiAdapter.setExpressList(member.expressDelivery, member.expressDeliveryId);
 
-                List<Coupon> coupons = member.listCoupon;
-                if (null != coupons && coupons.size() != 0) {
-                    couponText.setVisibility(View.VISIBLE);
-                    couponAdapter.setCoupons(coupons);
-                } else {
-                    couponText.setVisibility(View.GONE);
-                }
+//                List<Coupon> coupons = member.listCoupon;
+//                if (null != coupons && coupons.size() != 0) {
+//                    couponText.setVisibility(View.VISIBLE);
+//                    couponAdapter.setCoupons(coupons);
+//                } else {
+//                    couponText.setVisibility(View.GONE);
+//                }
             }
 
             @Override
@@ -483,9 +544,10 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         })));
     }
 
+    private double money = 0.0;
+
     private void showList(boolean bespeak) {
-        List<CartItem> lsItems = new ArrayList<>();
-        double money = 0.0;
+        lsItems = new ArrayList<>();
         int goodsNum = 0;
         for (CartItem item : items) {
             goodsNum += item.quantity;
@@ -516,7 +578,10 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 longs.add(cartItem.id);
             }
         }
-
+//        if (poiInfo == null) {
+//            ToastUtil.showMessage(getActivity(), "具体位置不对，请从新选择");
+//            return;
+//        }
         if (longs.size() == 0) {
             ToastUtil.showMessage(getActivity(), "请选择至少一项商品");
             return;
@@ -525,7 +590,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         Long[] longArray = new Long[longs.size()];
 
         Observable<CustomerOrder> observable = ApiManager.getInstance().api
-                .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId, longs.toArray(longArray))
+                .confirmOrderMulti(memberId, receiverName, receiverPhone, receiverAddress, expressId, couponId, longs.toArray(longArray), "", address.latitude, address.longitude)
                 .map(new HttpResultFunc<CustomerOrder>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -536,27 +601,17 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 ToastUtil.showMessage(getActivity(), "下单成功");
                 expandableLayout.collapse();
                 apply.setText("提交订单");
-                startActivity(new Intent(getActivity(), CustomerOrderActivity.class));
-                onVisible();
 
-//                AlertDialog dialog = new AlertDialog.Builder(getActivity())
-//                        .setTitle("温馨提示")
-//                        .setMessage("您已下单成功，请支付")
-//                        .setPositiveButton("支付宝支付", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                dialogInterface.dismiss();
-//                                payJishiZfb(o.id, 0);
-//                            }
-//                        })
-//                        .setCancelable(false)
-//                        .create();
-//                dialog.show();
+                Intent it = new Intent(getActivity(), CustomerOrderPayActivity.class);
+                it.putExtra("order", o);
+                it.putExtra("shoppingCart", true);
+                startActivity(it);
+                onVisible();
             }
 
             @Override
             public void onError(int code) {
-                //TODO 下单失败
+
             }
         })));
     }
@@ -591,24 +646,81 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 apply.setText("提交订单");
                 onVisible();
 
-                AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                        .setTitle("温馨提示")
-                        .setMessage("您已下单成功，请支付预约金")
-                        .setPositiveButton("支付宝支付", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                payYuyueZfb(o.id);
-                            }
-                        })
-                        .setCancelable(false)
-                        .create();
-                dialog.show();
+                Intent it = new Intent(getActivity(), CustomerOrderPayActivity.class);
+                it.putExtra("order", o);
+                it.putExtra("shoppingCart", true);
+                startActivity(it);
             }
 
             @Override
             public void onError(int code) {
                 //TODO 下单失败
+            }
+        })));
+    }
+
+    private void getAllFee() {
+        List<Long> longs = new ArrayList<>();
+        for (CartItem cartItem : items) {
+            if (cartItem.selected) {
+                longs.add(cartItem.id);
+            }
+        }
+        if (longs.size() == 0) {
+            apply.setEnabled(false);
+            apply.setBackgroundColor(Color.parseColor("#c2c1c1"));
+            return;
+        }
+        String addressStr = shouhuoAddr.getText().toString() + shouhuo_addr_detail.getText().toString();
+        if (TextUtils.isEmpty(address.shippingName) || TextUtils.isEmpty(address.shippingPhone) || TextUtils.isEmpty(shouhuoAddr.getText().toString().trim())
+                || TextUtils.isEmpty(shouhuo_addr_detail.getText().toString().trim()) || (address.latitude == 0) || (address.longitude == 0)) {
+            ToastUtil.showMessage(getActivity(), "请完善收货地址");
+            return;
+        }
+
+        Long[] longArray = new Long[longs.size()];
+        Observable<FeeCreatOrderResult> observable = ApiManager.getInstance().api
+                .getAllfeeCreatOrder(longs.toArray(longArray), expressId, address.shippingName, address.shippingPhone, addressStr, address.latitude, address.longitude)
+                .map(new HttpResultFunc<FeeCreatOrderResult>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<FeeCreatOrderResult>() {
+
+            @Override
+            public void onNext(FeeCreatOrderResult result) {
+                apply.setEnabled(true);
+                apply.setBackgroundColor(Color.RED);
+                BigDecimal decimal = new BigDecimal(result.totalPrice);
+
+                baozhuangFee.setText("¥ " + new BigDecimal(result.packagePrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                yunFei.setText("¥ " + new BigDecimal(result.expressDelivery).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                shouxuFei.setText("¥ " + decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                peihuoFee.setText("¥ " + new BigDecimal(result.preparePrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                if (couponAdapter.getClicked() != null) {
+                    BigDecimal de = new BigDecimal((Double.parseDouble(result.summation) - couponAdapter.getClicked().getMoney()));
+                    totalText.setText(de.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "元");
+                } else {
+                    totalText.setText(new BigDecimal(result.summation).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "元");
+                }
+
+            }
+
+            @Override
+            public void onError(int code) {
+                int count = 0;
+                for (CartItem cartItem : adapter.getList()) {
+                    if (cartItem.selected) {
+                        count++;
+                    }
+                }
+                if (count > 0) {
+                    apply.setEnabled(true);
+                    apply.setBackgroundColor(Color.RED);
+                } else {
+                    apply.setEnabled(false);
+                    apply.setBackgroundColor(Color.parseColor("#c2c1c1"));
+                }
             }
         })));
     }
@@ -625,6 +737,8 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         couponAdapter.setOrderMoney(money);
     }
 
+    PoiInfo poiInfo;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ADDR) {
@@ -633,83 +747,140 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
                 setShippingMsg();
             }
         }
+        if (requestCode == 10065 && resultCode == RESULT_OK) {
+            poiInfo = data.getParcelableExtra("result");
+            address.longitude = poiInfo.location.longitude;
+            address.latitude = poiInfo.location.latitude;
+            address.street = poiInfo.name;
+            shouhuo_addr_detail.setText(poiInfo.name);
+            getAllFee();
+        }
     }
 
     private long expressId = -1;
 
-    private void payYuyueZfb(Long orderId) {
-        Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payYuyueSingleZfb(orderId)
-                .map(new HttpResultFunc<ZfbResult>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(getActivity(), true,
-                false, new NoErrSubscriberListener<ZfbResult>() {
+
+    public void showPickerPlace(final TextView tv) {
+        new AddressInitTask(getActivity(), new AddressInitTask.InitCallback() {
             @Override
-            public void onNext(ZfbResult s) {
-                detailZfb(s.orderInfo);
+            public void onDataInitFailure() {
+                ToastUtil.showMessage(getActivity(), "数据初始化失败");
             }
-        })));
-    }
 
-    /**
-     * @param orderId
-     * @param type    0 即时单支付 1预约单支付尾款
-     */
-    private void payJishiZfb(Long orderId, Integer type) {
-        Observable<ZfbResult> observable = ApiManager.getInstance().api
-                .payJishiSingleZfb(orderId, type)
-                .map(new HttpResultFunc<ZfbResult>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<ZfbResult>(getActivity(), true,
-                false, new NoErrSubscriberListener<ZfbResult>() {
             @Override
-            public void onNext(ZfbResult s) {
-                detailZfb(s.orderInfo);
-            }
-        })));
-    }
-
-    private void detailZfb(final String s) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PayTask alipay = new PayTask(getActivity());
-                String result = alipay
-                        .pay(s, true);
-
-                Message msg = new Message();
-                msg.what = 0;
-                msg.obj = result;
-                handler.sendMessage(msg);
-            }
-        }).start();
-
-    }
-
-    Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            switch (message.what) {
-                case 0:
-                    Context context = getActivity();
-                    PayResult result = new PayResult((String) message.obj);
-                    if (result.resultStatus.equals("9000")) {
-                        Toast.makeText(context, getString(R.string.pay_succeed),
-                                Toast.LENGTH_SHORT).show();
-
-                        startActivity(new Intent(getActivity(), CustomerOrderActivity.class));
-
-                    } else {
-                        Toast.makeText(context, getString(R.string.pay_fail),
-                                Toast.LENGTH_SHORT).show();
-
-                        startActivity(new Intent(getActivity(), CustomerOrderActivity.class));
+            public void onDataInitSuccess(ArrayList<Province> provinces) {
+                AddressPicker picker = new AddressPicker(getActivity(), provinces);
+                picker.setOnAddressPickListener(new AddressPicker.OnAddressPickListener() {
+                    @Override
+                    public void onAddressPicked(Province province, City city, County county) {
+                        String provinceName = province.getName();
+                        String cityName = "";
+                        if (city != null) {
+                            cityName = city.getName();
+                            //忽略直辖市的二级名称
+                            if (cityName.equals("市辖区") || cityName.equals("市") || cityName.equals("县")) {
+                                cityName = "";
+                            }
+                        }
+                        String countyName = "";
+                        if (county != null) {
+                            countyName = county.getName();
+                        }
+                        address.pro = provinceName;
+                        address.city = cityName;
+                        address.area = countyName;
+                        tv.setText(provinceName + cityName + countyName);
                     }
-                    break;
+                });
+                picker.show();
             }
-            return true;
+        }).execute();
+    }
+
+    private void updateMemberAddress() {
+        address.shippingName = shouhuoName.getText().toString();
+        address.shippingPhone = shouhuoPhone.getText().toString();
+        address.street = shouhuo_addr_detail.getText().toString() + shouhuo_shop_address.getText().toString();
+        if (StringUtils.isBlank(address.shippingName)
+                || StringUtils.isBlank(address.shippingPhone) || StringUtils.isBlank(address.street)
+                || StringUtils.isBlank(address.pro)) {
+            ToastUtil.showMessage(getActivity(), "请将信息填写完整");
+            return;
         }
-    });
+        Observable<Object> observable = ApiManager.getInstance().api
+                .updateMemberAddress(address.id, App.getPassengerId(), address.shippingName, address.shippingPhone,
+                        address.pro, address.city, address.area, address.street, address.latitude, address.longitude, true)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object expresses) {
+
+
+            }
+        })));
+    }
+
+    //仅仅更新收货方式
+    private void updateMemberInfo() {
+        long id = App.getPassengerId();
+
+        MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", String.valueOf(id));
+        MultipartBody.Part deliverPart = MultipartBody.Part.createFormData("expressDeliveryId", String.valueOf(kuaidiAdapter.getClicked().id));
+        MultipartBody.Part photoPart = null;
+
+        Observable<Object> observable = ApiManager.getInstance().api
+                .updateMember(idPart, null, null, null, null, photoPart, deliverPart)
+                .map(new HttpResultFunc<>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, false, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        })));
+
+    }
+
+    @Subscribe
+    public void updatePriceTotal(String change) {
+        int count = 0;
+        money = 0;
+        for (CartItem cartItem : adapter.getList()) {
+            if (cartItem.selected) {
+                count++;
+                money += cartItem.totalPrice;
+            }
+        }
+        totalText.setText(money + "元");
+        if (count > 0) {
+            apply.setEnabled(true);
+            apply.setBackgroundColor(Color.RED);
+        } else {
+            apply.setEnabled(false);
+            apply.setBackgroundColor(Color.parseColor("#c2c1c1"));
+        }
+    }
+
+    @Subscribe
+    public void couponChoosed(double couponPrice) {
+        double price = Double.parseDouble(totalText.getText().toString().trim()) + couponPrice;
+        totalText.setText(price + "元");
+    }
+
+    @Subscribe
+    public void expressChoosed(Express express) {
+        expressId = express.id;
+        getAllFee();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        AppBus.getInstance().unregister(this);
+    }
 }

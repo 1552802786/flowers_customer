@@ -156,9 +156,9 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             @Override
             public void onItemClick(View view, int position) {
                 Genre genre = genreList.get(position);
-                Intent intent = new Intent(getActivity(), SearchAcitvity.class);
-                intent.putExtra("params",genre.genreName);
-                startActivity(intent);
+                if (genre == null || genre.genreName == null)
+                    return;
+                toSpecifiedFragmentListener.toShoppingByParams(genre.genreName, null, null);
             }
         }));
 
@@ -167,7 +167,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             public void onItemClick(View view, int position) {
                 Recommend recommend = recommends.get(position);
                 Intent intent = new Intent(getActivity(), SearchAcitvity.class);
-                intent.putExtra("params",recommend.keywords);
+                intent.putExtra("params", recommend.keywords);
                 startActivity(intent);
             }
         }));

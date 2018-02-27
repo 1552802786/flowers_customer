@@ -46,6 +46,6 @@ public class Goods implements Serializable {
     public boolean bespeak; //是否参与预约
     public String depict; //详细说明
     public String memo; //备注
-    public int mumPrice;//竞拍价
+    public double mumPrice;//竞拍价
     public boolean auction;
 }

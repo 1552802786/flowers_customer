@@ -7,7 +7,7 @@ package com.yuangee.flower.customer;
 public class Config {
     //    public static final String BASE_URL = "http://daijia.viphk.ngrok.org/freshflower/";
 //    public static final String BASE_URL = "https://dev.kaamoo.cn/";
-    public static final String BASE_URL = "http://www.huahuiyun8.com/";
-    //    public static final String BASE_URL = "http://1h90504q27.51mypc.cn/";
-    public static final String wxJKAppId = "";
+    public static final String BASE_URL = "https://www.huahuiyun8.com/";
+//        public static final String BASE_URL = "http://z196219a89.51mypc.cn/";
+    public static final String wxJKAppId = "wx9b2230a69901f4bb";
 }

@@ -5,221 +5,198 @@
     android:orientation="vertical">
 
     <include layout="@layout/layout_toolbar" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ScrollView
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:showDividers="middle">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:showDividers="middle">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="8dp"
-                android:src="@drawable/list_icon" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:drawablePadding="4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@color/white"
                 android:gravity="center_vertical"
-                android:padding="4dp"
-                android:text="添加商品"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-        </LinearLayout>
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="8dp"
+                    android:src="@drawable/list_icon" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical"
+                    android:padding="4dp"
+                    android:text="添加商品"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="1dp"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="8dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp">
 
-            <TextView
-                android:id="@+id/parent_type"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/parent_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/corners_bg_white_type"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/child_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/corners_bg_white_type"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/corners_bg_white_type"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/sub_number"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/corners_bg_white_type"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:padding="2dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/add_btn_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="4dp"
+                    android:src="@drawable/add_one_order" />
+            </LinearLayout>
+
+            <com.yuangee.flower.customer.widget.ExpandableHeightListView
+                android:divider="@color/transparent"
+                android:id="@+id/confirm_list"
+                android:dividerHeight="0dp"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/corners_bg_white_type"
-                android:gravity="center"
-                android:padding="2dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:singleLine="true"
-                android:textColor="@color/black" />
+                android:layout_marginTop="4dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/child_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/corners_bg_white_type"
-                android:gravity="center"
-                android:padding="2dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:singleLine="true"
-                android:textColor="@color/black" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="8dp"
+                    android:src="@drawable/user_name_icon" />
 
-            <TextView
-                android:id="@+id/product_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/corners_bg_white_type"
-                android:gravity="center"
-                android:padding="2dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:singleLine="true"
-                android:textColor="@color/black" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical"
+                    android:padding="4dp"
+                    android:text="客户名称"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <EditText
-                android:id="@+id/sub_number"
-                android:layout_width="40dp"
+                android:id="@+id/user_name_txt"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:background="@drawable/corners_bg_white_type"
-                android:gravity="center"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                android:hint="请输入客户名称"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="8dp"
+                    android:src="@drawable/user_phone_icon" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical"
+                    android:padding="4dp"
+                    android:text="客户电话"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/user_phone_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                android:hint="请输入客户名称"
                 android:inputType="number"
-                android:padding="2dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/add_btn_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="4dp"
-                android:src="@drawable/add_one_order" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/confirm_info_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingLeft="8dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/confirm_info_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:padding="4dp"
-                android:text=""
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/sub_btn_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/sub_one_order" />
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="4dp"
-                android:background="@color/colorGray" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="8dp"
-                android:src="@drawable/user_name_icon" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:drawablePadding="4dp"
-                android:gravity="center_vertical"
-                android:padding="4dp"
-                android:text="客户名称"
+                android:maxLength="11"
+                android:padding="12dp"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
         </LinearLayout>
-
-        <EditText
-            android:id="@+id/user_name_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:background="@color/white"
-            android:hint="请输入客户名称"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="8dp"
-                android:src="@drawable/user_phone_icon" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:drawablePadding="4dp"
-                android:gravity="center_vertical"
-                android:padding="4dp"
-                android:text="客户电话"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/user_phone_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:background="@color/white"
-            android:hint="请输入客户名称"
-            android:inputType="number"
-            android:maxLength="11"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
-    </LinearLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/add_order_btn"

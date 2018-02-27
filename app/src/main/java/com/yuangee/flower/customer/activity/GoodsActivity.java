@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,6 +141,9 @@ public class GoodsActivity extends RxBaseActivity {
             for (int i = 0; i < MainActivity.getGenre().size(); i++) {
                 final Genre genre = MainActivity.getGenre().get(i);
                 if (genre.id == goods.genreId) {
+                    if (genre.genreSubs == null) {
+                        return;
+                    }
                     for (GenreSub sub : genre.genreSubs) {
                         RadioButton button = new RadioButton(this);
                         button.setText(sub.name);
@@ -256,6 +260,7 @@ public class GoodsActivity extends RxBaseActivity {
 
     @OnClick(R.id.unit)
     void editUnit() {
+        ScrollView scrollView = new ScrollView(GoodsActivity.this);
         final List<String> units = new ArrayList<>();
         units.add("束");
         units.add("扎");
@@ -266,7 +271,13 @@ public class GoodsActivity extends RxBaseActivity {
         units.add("个");
         units.add("套");
         units.add("件");
+        units.add("包");
+        units.add("盒");
+        units.add("袋");
+        units.add("朵");
+        units.add("瓶");
         final RadioGroup group = new RadioGroup(this);
+        scrollView.addView(group);
         group.setPadding(DisplayUtil.dp2px(GoodsActivity.this, 20), DisplayUtil.dp2px(GoodsActivity.this, 10), 0, 0);
         for (String s : units) {
             RadioButton btn = new RadioButton(this);
@@ -306,7 +317,7 @@ public class GoodsActivity extends RxBaseActivity {
                         dialogInterface.dismiss();
                     }
                 })
-                .setView(group)
+                .setView(scrollView)
                 .create();
         dialog.show();
     }
@@ -497,11 +508,7 @@ public class GoodsActivity extends RxBaseActivity {
 
     @OnClick(R.id.apply)
     void apply() {
-        goods.grade = grade.getText().toString();
-        goods.color = color.getText().toString();
-        goods.spec = specLength.getText().toString();
-        goods.unit = unit.getText().toString();
-        goods.name = goodsName.getText().toString();
+
         subCheck();
 
     }
@@ -801,95 +808,48 @@ public class GoodsActivity extends RxBaseActivity {
         if (a1) {
             ToastUtil.showMessage(this, "请填写预约数");
             return;
-        }
-        else if (a2) {
+        } else if (a2) {
             ToastUtil.showMessage(this, "请填写竞拍价");
             return;
-        }else if (StringUtils.isBlank(genreFirst.getText().toString().trim())) {
+        } else if (StringUtils.isBlank(genreFirst.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请选择类别");
             return;
-        }
-        else if (StringUtils.isBlank(genreSub.getText().toString().trim())) {
+        } else if (StringUtils.isBlank(genreSub.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请选择子类");
             return;
-        }
-        else if (StringUtils.isBlank(goodsName.getText().toString().trim())) {
+        } else if (StringUtils.isBlank(goodsName.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请填写名字");
             return;
-        }
-        else if (TextUtils.isEmpty(grade.getText().toString().trim())) {
+        } else if (TextUtils.isEmpty(grade.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请选择等级");
             return;
-        }
-        else if (TextUtils.isEmpty(color.getText().toString().trim())) {
+        } else if (TextUtils.isEmpty(color.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请填写颜色");
             return;
-        }
-        else if (TextUtils.isEmpty(specLength.getText().toString().trim())) {
+        } else if (TextUtils.isEmpty(specLength.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请填写规格");
             return;
-        }
-        else if (TextUtils.isEmpty(unit.getText().toString().trim())) {
+        } else if (TextUtils.isEmpty(unit.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请选择单位");
             return;
         }
         if (TextUtils.isEmpty(goodsPrice.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请填写价格");
             return;
-        }
-        else if (TextUtils.isEmpty(salesValue.getText().toString().trim())) {
+        } else if (TextUtils.isEmpty(salesValue.getText().toString().trim())) {
+            ToastUtil.showMessage(this, "请填写数量");
+            return;
+        } else if (TextUtils.isEmpty(receiveDate.getText().toString().trim())) {
             ToastUtil.showMessage(this, "请填写数量");
             return;
         }
-        else if (TextUtils.isEmpty(receiveDate.getText().toString().trim())) {
-            ToastUtil.showMessage(this, "请填写数量");
-            return;
-        }
-
+        goods.grade = grade.getText().toString();
+        goods.color = color.getText().toString();
+        goods.spec = specLength.getText().toString();
+        goods.unit = unit.getText().toString();
+        goods.name = goodsName.getText().toString();
+        goods.unitPrice = Double.valueOf(goodsPrice.getText().toString());
+        goods.salesVolume = Integer.valueOf(salesValue.getText().toString());
         createOrUpdate();
-    }
-
-    private void showEditDialog(final TextView showView, String hint) {
-        final EditText editName = new EditText(this);
-        String sName = showView.getText().toString();
-        editName.setText(sName);
-        if (hint.contains("号码") || hint.contains("电话")) {
-            editName.setInputType(InputType.TYPE_CLASS_PHONE);
-        } else if (hint.contains("邮箱")) {
-            editName.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        } else if (hint.contains("可售量")) {
-            editName.setInputType(InputType.TYPE_CLASS_NUMBER);
-        } else if (hint.contains("单价")) {
-            editName.setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL);
-        } else {
-            editName.setInputType(InputType.TYPE_CLASS_TEXT);
-        }
-        if (!StringUtils.isEmpty(sName)) {
-            editName.setSelection(sName.length());
-        }
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.setMargins(50, 20, 50, 10);
-        editName.setLayoutParams(layoutParams);
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.addView(editName);
-        dialog = new AlertDialog.Builder(this)
-                .setTitle(hint)
-                .setPositiveButton("好", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String s = editName.getText().toString();
-                        showView.setText(s);
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setView(linearLayout)
-                .create();
-        dialog.show();
     }
 }

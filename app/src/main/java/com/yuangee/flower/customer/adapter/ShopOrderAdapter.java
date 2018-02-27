@@ -127,7 +127,7 @@ public class ShopOrderAdapter extends RecyclerView.Adapter<ShopOrderAdapter.Orde
         final ShopOrder bean = data.get(position);
         String kindStr = "共<font color='#f74f50'>" + (bean.orderWaresList != null ? "" + bean.orderWaresList.size() : "0") + "</font>类商品";
         holder.tvGoodsKind.setText(Html.fromHtml(kindStr));
-        holder.tvOrderTime.setText("下单时间：" + bean.created);
+        holder.tvOrderTime.setText("订单编号：" + bean.orderNo);
         holder.tvOrderStatus.setText(bean.getStatusStr());
         holder.tvOrderMoney.setText("¥" + bean.payable);
 

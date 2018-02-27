@@ -10,9 +10,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         app:contentInsetStart="0dp"
-        android:background="@color/colorPrimary"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <RelativeLayout
@@ -23,26 +23,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
                 android:onClick="back"
                 android:padding="5dp"
-                android:layout_marginLeft="5dp"
-                app:srcCompat="@drawable/ic_arrow_back_white_24dp"
+                android:textColor="@color/colorAccent"
                 android:textSize="16sp"
-                android:textColor="@color/colorAccent"/>
+                app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
 
             <EditText
                 android:id="@+id/edit_search"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="45dp"
+                android:layout_marginLeft="40dp"
                 android:layout_marginRight="45dp"
                 android:background="@drawable/corners_bg_white_stroke"
                 android:drawableLeft="@drawable/ic_search_gray_24dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="8dp"
                 android:hint="搜索"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:paddingLeft="8dp"
                 android:textColor="@color/colorGray"
                 android:textSize="16sp" />
 
@@ -52,11 +53,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:padding="5dp"
                 android:layout_marginRight="5dp"
+                android:padding="5dp"
                 android:text="添加"
-                android:textSize="16sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="16sp" />
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>

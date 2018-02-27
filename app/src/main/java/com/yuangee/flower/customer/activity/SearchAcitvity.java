@@ -95,7 +95,9 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
     private ArrayList<Goods> goodsList;
     private int page = 0;
     private int limit = 10;
-    private String params = "";//关键字
+    private String params = null;//关键字
+    private String generSubNames = "";
+    private String waresNames = "";
     private String bespeak;
 
     @OnClick(R.id.left_back)
@@ -124,10 +126,14 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
         initRecyclerView();
         addAnimateListener = this;
         bespeak = getIntent().getStringExtra("bespeak");
-        if (getIntent().hasExtra("params")){
-            this.params=getIntent().getStringExtra("params");
+        if (getIntent().hasExtra("params")) {
+            this.params = getIntent().getStringExtra("params");
             editSuggest.setText(params);
-            findWares(params);
+            findWares(waresNames, generSubNames, params);
+            hideSoft();
+        } else if (getIntent().hasExtra("genreSubNames")) {
+            this.generSubNames = getIntent().getStringExtra("genreSubNames");
+            findWares(waresNames, generSubNames, params);
             hideSoft();
         }
     }
@@ -144,7 +150,7 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(SearchAcitvity.this, WaresDetailActivity.class);
-                intent.putExtra("goods", adapter.getData().get(position));
+                intent.putExtra("goods", adapter.getItem(position));
                 startActivity(intent);
             }
         });
@@ -179,8 +185,10 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     hideSoft();
-                    String params = editSuggest.getText().toString();
-                    findWares(params);
+                    String waresNames = editSuggest.getText().toString();
+                    params = null;
+                    generSubNames = null;
+                    findWares(waresNames, generSubNames, params);
                     String str = App.me().getSharedPreferences().getString("history", "");
                     SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
                     if (StringUtils.isBlank(str)) {
@@ -333,7 +341,7 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.searchGoodsData(params, page, limit, bespeak);
+                    presenter.searchGoodsData(waresNames, generSubNames, params, page, limit, bespeak);
                 }
             });
         } else {
@@ -343,7 +351,7 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.searchGoodsData(params, page, limit, bespeak);
+                    presenter.searchGoodsData(waresNames, generSubNames, params, page, limit, bespeak);
                 }
             });
         }
@@ -358,10 +366,10 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
     }
 
 
-    public void findWares(String params) {
+    public void findWares(String waresNames, String generSubNames, String params) {
         this.params = params;
         page = 0;
-        presenter.searchGoodsData(params, page, limit, bespeak);
+        presenter.searchGoodsData(waresNames, generSubNames, params, page, limit, bespeak);
     }
 
     @Override
@@ -370,13 +378,13 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.searchGoodsData(params, page, limit, bespeak);
+        presenter.searchGoodsData(waresNames, generSubNames, params, page, limit, bespeak);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.searchGoodsData(params, page, limit, bespeak);
+        presenter.searchGoodsData(waresNames, generSubNames, params, page, limit, bespeak);
     }
 
     @Override

@@ -43,15 +43,22 @@ public class Address implements Serializable{
     public String street;
 
     @Property
+    public int type;
+    @Property
+    public double longitude;
+    @Property
+    public double latitude;
+    @Property
     public boolean defaultAddress;//是否是默认地址
 
     @Transient
     public boolean isSelected;
 
-    @Generated(hash = 2031935287)
+    @Generated(hash = 1767467914)
     public Address(long id, long shippingId, String shippingName,
             String shippingPhone, String pro, String city, String area,
-            String street, boolean defaultAddress) {
+            String street, int type, double longitude, double latitude,
+            boolean defaultAddress) {
         this.id = id;
         this.shippingId = shippingId;
         this.shippingName = shippingName;
@@ -60,6 +67,9 @@ public class Address implements Serializable{
         this.city = city;
         this.area = area;
         this.street = street;
+        this.type = type;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.defaultAddress = defaultAddress;
     }
 
@@ -137,6 +147,30 @@ public class Address implements Serializable{
 
     public void setDefaultAddress(boolean defaultAddress) {
         this.defaultAddress = defaultAddress;
+    }
+
+    public int getType() {
+        return this.type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public double getLongitude() {
+        return this.longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return this.latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
 }

@@ -54,7 +54,7 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
     @BindView(R.id.radio_wait_receiving)
     RadioButton radioWaitReceiving;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.order_recycler_view)
     PullLoadMoreRecyclerView recyclerView;
 
     @BindView(R.id.empty)

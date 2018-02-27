@@ -27,15 +27,15 @@ public class ShoppingModel implements ShoppingContract.Model {
 
     @Override
     public Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName, String params, long page, long limit, Long shopId) {
-        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, false,limit, shopId)
+        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, null,limit, shopId)
                 .map(new HttpResultFunc<PageResult<Goods>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<PageResult<Goods>> searchGoodsData(String params, long page, long limit,String bespeak) {
-        return ApiManager.getInstance().api.searchWares(params, page * 10, limit,bespeak)
+    public Observable<PageResult<Goods>> searchGoodsData(String wareName,String generSubs,String params, long page, long limit,String bespeak) {
+        return ApiManager.getInstance().api.searchWares(wareName,generSubs,params, page * 10, limit,bespeak)
                 .map(new HttpResultFunc<PageResult<Goods>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

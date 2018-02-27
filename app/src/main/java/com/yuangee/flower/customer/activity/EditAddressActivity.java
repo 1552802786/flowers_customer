@@ -375,23 +375,23 @@ public class EditAddressActivity extends RxBaseActivity {
             ToastUtil.showMessage(EditAddressActivity.this, "请将信息填写完整");
             return;
         }
-        Observable<Object> observable = ApiManager.getInstance().api
-                .createMemberAddress(App.getPassengerId(), address.shippingName, address.shippingPhone,
-                        address.pro, address.city, address.area, address.street, false)
-                .map(new HttpResultFunc<Object>(EditAddressActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+//        Observable<Object> observable = ApiManager.getInstance().api
+//                .createMemberAddress(App.getPassengerId(), address.shippingName, address.shippingPhone,
+//                        address.pro, address.city, address.area, address.street, false)
+//                .map(new HttpResultFunc<Object>(EditAddressActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(EditAddressActivity.this, true, true, new NoErrSubscriberListener<Object>() {
-            @Override
-            public void onNext(Object expresses) {
-                ToastUtil.showMessage(EditAddressActivity.this, "信息更新成功");
-                Intent intent = new Intent();
-                intent.putExtra("address", address);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        })));
+//        mRxManager.add(observable.subscribe(new MySubscriber<>(EditAddressActivity.this, true, true, new NoErrSubscriberListener<Object>() {
+//            @Override
+//            public void onNext(Object expresses) {
+//                ToastUtil.showMessage(EditAddressActivity.this, "信息更新成功");
+//                Intent intent = new Intent();
+//                intent.putExtra("address", address);
+//                setResult(RESULT_OK, intent);
+//                finish();
+//            }
+//        })));
     }
 
     private void updateMemberAddress() {
@@ -401,23 +401,23 @@ public class EditAddressActivity extends RxBaseActivity {
             ToastUtil.showMessage(EditAddressActivity.this, "请将信息填写完整");
             return;
         }
-        Observable<Object> observable = ApiManager.getInstance().api
-                .updateMemberAddress(App.getPassengerId(), address.shippingName, address.shippingPhone,
-                        address.pro, address.city, address.area, address.street, false)
-                .map(new HttpResultFunc<Object>(EditAddressActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mRxManager.add(observable.subscribe(new MySubscriber<>(EditAddressActivity.this, true, true, new NoErrSubscriberListener<Object>() {
-            @Override
-            public void onNext(Object expresses) {
-                ToastUtil.showMessage(EditAddressActivity.this, "信息更新成功");
-                Intent intent = new Intent();
-                intent.putExtra("address", address);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        })));
+//        Observable<Object> observable = ApiManager.getInstance().api
+//                .updateMemberAddress(App.getPassengerId(), address.shippingName, address.shippingPhone,
+//                        address.pro, address.city, address.area, address.street, false)
+//                .map(new HttpResultFunc<Object>(EditAddressActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//
+//        mRxManager.add(observable.subscribe(new MySubscriber<>(EditAddressActivity.this, true, true, new NoErrSubscriberListener<Object>() {
+//            @Override
+//            public void onNext(Object expresses) {
+//                ToastUtil.showMessage(EditAddressActivity.this, "信息更新成功");
+//                Intent intent = new Intent();
+//                intent.putExtra("address", address);
+//                setResult(RESULT_OK, intent);
+//                finish();
+//            }
+//        })));
     }
 
     private void showBooleanDialog() {
