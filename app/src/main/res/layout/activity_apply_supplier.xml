@@ -49,9 +49,9 @@
                         android:layout_width="0.0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textColor="@color/txt_black"
                         android:gravity="center"
                         android:text="公司申请"
+                        android:textColor="@color/txt_black"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -93,11 +93,11 @@
                         android:layout_toLeftOf="@+id/ic_right_1"
                         android:background="@null"
                         android:gravity="end"
-                        android:inputType="text"
-                        android:textCursorDrawable="@null"
                         android:hint="商铺全称"
+                        android:inputType="text"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -135,10 +135,10 @@
                         android:layout_toLeftOf="@+id/ic_right_2"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
                         android:hint="商铺简称"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -176,10 +176,10 @@
                         android:layout_toLeftOf="@+id/ic_right_20"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
                         android:hint="商铺描述"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -217,10 +217,10 @@
                         android:layout_toLeftOf="@+id/ic_right_3"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
                         android:hint="负责人姓名"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -239,8 +239,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="13dp"
-                        android:text="联系电话"
                         android:inputType="phone"
+                        android:text="联系电话"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -259,11 +259,11 @@
                         android:layout_toLeftOf="@+id/ic_right_4"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
                         android:hint="联系电话"
                         android:inputType="phone"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -283,7 +283,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="13dp"
-                        android:text="地址"
+                        android:text="区域位置"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -299,14 +299,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/place_text"
                         android:layout_toLeftOf="@+id/ic_right_5"
+                        android:layout_toRightOf="@+id/place_text"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
-                        android:hint="详细地址"
+                        android:hint="选择区域"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -316,6 +316,51 @@
                     android:layout_height="0.1dp"
                     android:background="@color/line_color" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="13dp"
+                        android:text="详细地址"
+                        android:textSize="16sp" />
+
+
+                    <EditText
+                        android:id="@+id/input_detail_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_toLeftOf="@+id/ic_right_5"
+                        android:layout_toRightOf="@+id/place_text"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="right"
+                        android:hint="详细地址"
+                        android:minWidth="80dp"
+                        android:padding="6dp"
+                        android:text=""
+                        android:textCursorDrawable="@null"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/line_color" />
 
             </LinearLayout>
 
@@ -360,11 +405,11 @@
                         android:layout_toLeftOf="@+id/ic_right_6"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
                         android:hint="银行卡号"
                         android:inputType="number"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -402,10 +447,10 @@
                         android:layout_toLeftOf="@+id/ic_right_7"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
                         android:hint="开户行地址"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -443,10 +488,10 @@
                         android:layout_toLeftOf="@+id/ic_right_8"
                         android:background="@null"
                         android:gravity="right"
-                        android:textCursorDrawable="@null"
                         android:hint="户主名"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -496,9 +541,9 @@
                     android:background="@null"
                     android:gravity="right"
                     android:hint="身份证号码"
-                    android:textCursorDrawable="@null"
                     android:minWidth="80dp"
                     android:text=""
+                    android:textCursorDrawable="@null"
                     android:textSize="14sp" />
 
             </RelativeLayout>
@@ -518,9 +563,9 @@
                     android:id="@+id/id_card"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:layout_gravity="center"/>
+                    android:layout_marginTop="10dp" />
 
                 <LinearLayout
                     android:id="@+id/card_hint"
@@ -562,9 +607,9 @@
                     android:id="@+id/id_card_sec"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:layout_gravity="center"/>
+                    android:layout_marginTop="10dp" />
 
                 <LinearLayout
                     android:id="@+id/card_sec_hint"
@@ -606,9 +651,9 @@
                     android:id="@+id/quanshen"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:layout_gravity="center"/>
+                    android:layout_marginTop="10dp" />
 
                 <LinearLayout
                     android:id="@+id/quanshen_hint"
@@ -640,8 +685,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -670,11 +716,11 @@
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/ic_right_10"
                         android:background="@null"
-                        android:textCursorDrawable="@null"
                         android:gravity="right"
                         android:hint="营业执照号"
                         android:minWidth="80dp"
                         android:text=""
+                        android:textCursorDrawable="@null"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -694,9 +740,9 @@
                         android:id="@+id/zhizhao"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center"
                         android:layout_marginBottom="10dp"
-                        android:layout_gravity="center"/>
+                        android:layout_marginTop="10dp" />
 
                     <LinearLayout
                         android:id="@+id/zhizhao_hint"
@@ -737,9 +783,9 @@
                         android:id="@+id/company"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center"
                         android:layout_marginBottom="10dp"
-                        android:layout_gravity="center"/>
+                        android:layout_marginTop="10dp" />
 
                     <LinearLayout
                         android:id="@+id/company_hint"
@@ -769,30 +815,30 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:gravity="center_vertical">
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="13dp"/>
+                    android:layout_marginLeft="13dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="我已阅读，并同意"
                     android:layout_marginLeft="10dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"/>
+                    android:text="我已阅读，并同意"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="《供货商服务协议》"
-                    android:textSize="16sp"
-                    android:textColor="@color/green"/>
+                    android:textColor="@color/green"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -801,11 +847,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
-                android:text="立即申请"
-                android:textSize="16sp"
-                android:textColor="@color/white"
                 android:background="@drawable/corners_color_accent"
-                />
+                android:text="立即申请"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
         </LinearLayout>
 

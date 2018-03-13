@@ -57,7 +57,7 @@ public class LoginActivity extends RxBaseActivity {
     @BindView(R.id.edit_code)
     EditText editCode;
 
-    @BindView(R.id.get_code)
+    @BindView(R.id.get_sms_code)
     Button getCode;
 
     @BindView(R.id.logo_img)
@@ -71,7 +71,7 @@ public class LoginActivity extends RxBaseActivity {
 
     private int count = 60;
 
-    @OnClick(R.id.get_code)
+    @OnClick(R.id.get_sms_code)
     void getCode() {
         PhoneUtil.hideKeyboard(this);
         getVerfityCode(editPhone.getText().toString());
@@ -195,8 +195,10 @@ public class LoginActivity extends RxBaseActivity {
                             @Override
                             public void run() {
                                 if (count != 0) {
-                                    getCode.setEnabled(false);
-                                    getCode.setText(count + "s");
+                                    if (getCode != null) {
+                                        getCode.setEnabled(false);
+                                        getCode.setText(count + "s");
+                                    }
                                 } else {
                                     count = 60;
                                     timer.cancel();

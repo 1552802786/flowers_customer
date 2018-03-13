@@ -661,7 +661,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
 
     private void getAllFee() {
         List<Long> longs = new ArrayList<>();
-        for (CartItem cartItem : items) {
+        for (CartItem cartItem : adapter.getList()) {
             if (cartItem.selected) {
                 longs.add(cartItem.id);
             }

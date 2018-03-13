@@ -170,6 +170,8 @@ public class RegisterActivity extends RxBaseActivity {
 
     @BindView(R.id.zhizhao_no)
     EditText zhizhaoNoEdit;
+    @BindView(R.id.input_detail_address)
+    EditText input_detail_address;
 
     @OnClick(R.id.apply_now)
     void apply() {
@@ -177,7 +179,7 @@ public class RegisterActivity extends RxBaseActivity {
     }
 
     @OnClick(R.id.detail_address)
-    void showPlace(){
+    void showPlace() {
         new AddressInitTask(this, new AddressInitTask.InitCallback() {
             @Override
             public void onDataInitFailure() {
@@ -371,7 +373,7 @@ public class RegisterActivity extends RxBaseActivity {
         String jianjie = jianJieEdit.getText().toString();
         String fuzeren = fuzerenEdit.getText().toString();
         String phone = phoneEdit.getText().toString();
-        String address = detailAddressEdit.getText().toString();
+        String address = detailAddressEdit.getText().toString() + input_detail_address.getText().toString();
         String cardNo = cardNoEdit.getText().toString();
         String cardAddress = cardAddressEdit.getText().toString();
         String cardZhuName = cardZhuNameEdit.getText().toString();

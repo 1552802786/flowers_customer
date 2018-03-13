@@ -91,12 +91,17 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
             for (Goods g : goodsList) {
                 if (g.genreName.equalsIgnoreCase(parentType.getText().toString())
                         && g.genreSubName.equalsIgnoreCase(childType.getText().toString())
-                        && g.name.equalsIgnoreCase(productName.getText().toString())) {
+                        && (g.name + "(" + g.color + "/¥" + g.unitPrice + "/" + g.salesVolume + ")").equalsIgnoreCase(productName.getText().toString())) {
+
                     WaresNumber number = new WaresNumber();
                     number.waresId = g.id;
                     number.quantity = Integer.parseInt(subNumber.getText().toString().trim());
-                    waresNumbers.add(number);
-                    addString.add(confirmString);
+                    if (g.salesVolume >= number.quantity) {
+                        waresNumbers.add(number);
+                        addString.add(confirmString);
+                    } else {
+                        ToastUtil.showMessage(this, "商品可售量不足" + number.quantity);
+                    }
                     break;
                 }
             }
@@ -342,7 +347,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                 goodsList.addAll(pageResult.rows);
                 for (Goods good : goodsList) {
                     Map<String, String> map = new HashMap<>();
-                    map.put(good.genreSubName, good.name);
+                    map.put(good.genreSubName, good.name + "(" + good.color + "/¥" + good.unitPrice + "/" + good.salesVolume + ")");
                     recorde.add(map);
                     if (!generNameList.contains(good.genreName)) {
                         generNameList.add(good.genreName);
@@ -351,7 +356,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                 updateSubData(generNameList.get(0));
                 parentType.setText(goodsList.get(0).genreName);
                 childType.setText(goodsList.get(0).genreSubName);
-                productName.setText(goodsList.get(0).name);
+                productName.setText(nameList.get(0));
             }
 
             @Override
