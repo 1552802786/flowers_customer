@@ -92,8 +92,15 @@ public class CustomerOrderPayActivity extends RxBaseActivity {
     @Override
     public void initViews(Bundle savedInstanceState) {
         mContext = this;
+        double payNumber;
         order = (CustomerOrder) getIntent().getSerializableExtra("order");
-        payTips.setText(Html.fromHtml("您本次共需支付 <font color=\"#ff0000\">" + order.realPay + "</font>元,请选择您的付款方式:"));
+        if (order.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
+            payNumber = order.bespeakMoney;
+        } else {
+            payNumber = order.realPay;
+        }
+
+        payTips.setText(Html.fromHtml("您本次共需支付 <font color=\"#ff0000\">" + payNumber + "</font>元,请选择您的付款方式:"));
         alipayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -220,8 +227,8 @@ public class CustomerOrderPayActivity extends RxBaseActivity {
                 req.nonceStr = json.getString("nonce_str");
                 req.timeStamp = System.currentTimeMillis() / 1000 + "";
                 req.packageValue = "Sign=WXPay";
-                req.sign=genAppSign(req,json.getString("apiKey"));
-                Log.e("wxPay", genAppSign(req,json.getString("apiKey")));
+                req.sign = genAppSign(req, json.getString("apiKey"));
+                Log.e("wxPay", genAppSign(req, json.getString("apiKey")));
 
                 IWXAPI api = WXAPIFactory.createWXAPI(mContext, null);
                 api.registerApp(req.appId);
@@ -235,7 +242,7 @@ public class CustomerOrderPayActivity extends RxBaseActivity {
         }
     }
 
-    private String genAppSign(PayReq req,String apiKey) {
+    private String genAppSign(PayReq req, String apiKey) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("appid=");
@@ -263,15 +270,15 @@ public class CustomerOrderPayActivity extends RxBaseActivity {
         sb.append('&');
 
 
-
         sb.append("key=");
         sb.append(apiKey);
 
         String appSign = getMessageDigest(sb.toString().getBytes()).toUpperCase();
         return appSign;
     }
+
     public final static String getMessageDigest(byte[] buffer) {
-        char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         try {
             MessageDigest mdTemp = MessageDigest.getInstance("MD5");
             mdTemp.update(buffer);
@@ -289,6 +296,7 @@ public class CustomerOrderPayActivity extends RxBaseActivity {
             return null;
         }
     }
+
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {

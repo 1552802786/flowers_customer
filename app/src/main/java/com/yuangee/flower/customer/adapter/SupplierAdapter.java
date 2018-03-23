@@ -93,6 +93,8 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         holder.deleteGoodsp = view.findViewById(R.id.delete);
 //        holder.goodsNum = view.findViewById(R.id.goods_num);
 
+
+
         return holder;
     }
 
@@ -179,15 +181,17 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
             super(itemView);
 
         }
+
         RelativeLayout layoutView;
         ImageView goodsImg;
+
         TextView goodsName;
         TextView goodsGrade;
         TextView goodsColor;
         TextView goodsSpec;
         TextView goodsLeft;
         TextView goodsMoney;
-//        TextView goodsNum;
+
 
         TextView changeGoods;
         TextView deleteGoodsp;

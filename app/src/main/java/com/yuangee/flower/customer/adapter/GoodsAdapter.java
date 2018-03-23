@@ -99,7 +99,8 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         holder.numAdd = view.findViewById(R.id.num_add);
         holder.goodsNum = view.findViewById(R.id.goods_num);
         holder.yuYue = view.findViewById(R.id.yu_yue);
-
+        holder.updateIcon=view.findViewById(R.id.update_icon);
+        holder.deliverTime = view.findViewById(R.id.deliver_time);
         return holder;
     }
 
@@ -155,9 +156,13 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
             holder.yuYue.setVisibility(View.VISIBLE);
             holder.goodsLeft.setText("可售量：" + bean.bespeakNum);
         }
-
+        if ((System.currentTimeMillis() - bean.updated) < 24 * 60 * 60 * 1000) {
+            holder.updateIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.updateIcon.setVisibility(View.GONE);
+        }
         setBtnEnable(holder, bean);
-
+        holder.deliverTime.setText("发货时间：" + bean.startDeliver);
         holder.addToCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -232,6 +237,8 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsHolder>
         ImageView numAdd;
         TextView goodsNum;
         TextView yuYue;
+        ImageView updateIcon;
+        TextView deliverTime;
     }
 
     private void addToCar(long memberId, long waresId, final int num, final Goods goods, final GoodsHolder holder, final int position) {

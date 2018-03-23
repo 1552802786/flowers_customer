@@ -15,6 +15,7 @@ import com.yuangee.flower.customer.entity.PersonResult;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Setting;
 import com.yuangee.flower.customer.entity.Shop;
+import com.yuangee.flower.customer.entity.ShopOrderCount;
 import com.yuangee.flower.customer.entity.SystomConfig;
 import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.fragment.shopping.FeeCreatOrderResult;
@@ -330,7 +331,10 @@ public interface ApiService {
                                                             @Field("couponId") Long couponId,
                                                             @Field("cartItemIds") Long[] cartItemIds
     );
-
+    @GET("rest/shop/shopSettleInfo")
+    Observable<BaseResult<ShopOrderCount>> getShopOrderCount(@Query("shopId") Long shopId,
+                                                             @Query("startDate") String start_date,
+                                                             @Query("endDate") String end_date);
     /**
      * 查询单个用户
      *

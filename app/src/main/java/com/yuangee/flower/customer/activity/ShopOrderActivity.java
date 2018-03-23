@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -41,9 +42,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.OnCheckedChangeListener {
-
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
 
     @BindView(R.id.radio_all)
     RadioButton radioAll;
@@ -68,7 +66,15 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
     private Boolean bespeak;//是否预约
     private Long memberId = App.getPassengerId();
     private Long shopId = null;
-
+    @OnClick(R.id.back_btn)
+    void onBackBtn() {
+        finish();
+    }
+    @OnClick(R.id.order_count_btn)
+    void gotoOrderCount(){
+        Intent it=new Intent(this,OrderCountActivity.class);
+        startActivity(it);
+    }
     @Override
     public int getLayoutId() {
         return R.layout.activity_my_order;
@@ -102,21 +108,6 @@ public class ShopOrderActivity extends RxBaseActivity implements CompoundButton.
 //            radioAppoint.setVisibility(View.GONE);
 //        }
         initRecyclerView();
-    }
-
-    @Override
-    public void initToolBar() {
-        mToolbar.setTitle("店铺订单");
-        setSupportActionBar(mToolbar);
-        if (null != getSupportActionBar()) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
     }
 
     Handler handler;

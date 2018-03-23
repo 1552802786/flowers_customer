@@ -15,8 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/empty"
-        android:layout_margin="5dp"
-        android:text="下单时间：2017/09/20 19:20" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="40dp" />
 
     <TextView
         android:id="@+id/order_status"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/empty"
-        android:layout_margin="5dp"
+        android:layout_marginBottom="8dp"
         android:text="待付款"
         android:textColor="@color/colorAccent" />
 
@@ -85,21 +85,31 @@
         android:layout_margin="5dp"
         android:text="" />
 
+    <TextView
+        android:textSize="12sp"
+        android:id="@+id/order_create_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/order_goods_kind"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="5dp" />
     <!-- 共<font color='#52A436'>6</font>类商品 -->
     <LinearLayout
         android:id="@+id/order_fee_layout"
-        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/img_con"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/clock_icon"
-            android:padding="4dp"
-            android:visibility="gone"
-            android:src="@drawable/reserve_time"
             android:layout_width="28dp"
-            android:layout_height="28dp" />
+            android:layout_height="28dp"
+            android:padding="4dp"
+            android:src="@drawable/reserve_time"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/order_fee"
             android:layout_width="wrap_content"
@@ -143,4 +153,10 @@
         android:layout_height="0.1dp"
         android:layout_alignParentBottom="true"
         android:background="@color/line_color" />
+
+    <ImageView
+        android:id="@+id/order_type_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/online_icon" />
 </RelativeLayout>

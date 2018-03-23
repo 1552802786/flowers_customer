@@ -151,21 +151,13 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             changeMoney();
         }
 
-        holder.removeFromCar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                data.remove(position);
-                notifyDataSetChanged();
-            }
-        });
-
         if (bean.quantity >= bean.wares.salesVolume) {
             holder.numAdd.setEnabled(false);
         } else {
             holder.numAdd.setEnabled(true);
         }
 
-        if (bean.quantity <= 1) {
+        if (bean.quantity < 1) {
             holder.numSub.setEnabled(false);
         } else {
             holder.numSub.setEnabled(true);
@@ -174,8 +166,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.numSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.goodsNum.setText("" + (bean.quantity - 1));
-                cartItemSub(bean.id, bean.cartId, 1, position);
+                if (bean.quantity == 1) {
+                    deleteCartItem(bean.id, bean.cartId, position);
+                } else if (bean.quantity > 1) {
+                    holder.goodsNum.setText("" + (bean.quantity - 1));
+                    cartItemSub(bean.id, bean.cartId, 1, position);
+                }
             }
         });
 

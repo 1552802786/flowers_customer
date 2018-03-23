@@ -11,7 +11,7 @@ public class Goods implements Serializable {
     public long id;//商品id
 
     public String image;//图片地址
-
+    public long updated;
     public long genreId;//一级大类id
 
     public String genreName;//一级大类名称

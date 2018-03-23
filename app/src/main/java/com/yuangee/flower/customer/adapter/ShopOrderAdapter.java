@@ -32,6 +32,7 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.RxManager;
+import com.yuangee.flower.customer.util.TimeUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 
 import org.json.JSONException;
@@ -111,7 +112,8 @@ public class ShopOrderAdapter extends RecyclerView.Adapter<ShopOrderAdapter.Orde
         holder.tvOrderMoney = view.findViewById(R.id.order_fee);
         holder.tvOrderStatus = view.findViewById(R.id.order_status);
         holder.tvOrderTime = view.findViewById(R.id.order_time);
-
+        holder.tvCreateTime=view.findViewById(R.id.order_create_time);
+        holder.order_type = view.findViewById(R.id.order_type_icon);
         return holder;
     }
 
@@ -130,7 +132,7 @@ public class ShopOrderAdapter extends RecyclerView.Adapter<ShopOrderAdapter.Orde
         holder.tvOrderTime.setText("订单编号：" + bean.orderNo);
         holder.tvOrderStatus.setText(bean.getStatusStr());
         holder.tvOrderMoney.setText("¥" + bean.payable);
-
+        holder.tvCreateTime.setText("创建时间: "+bean.created);
         if (null != bean.orderWaresList) {
             for (int i = 0; i < bean.orderWaresList.size(); i++) {
                 OrderWare wares = bean.orderWaresList.get(i);
@@ -149,7 +151,11 @@ public class ShopOrderAdapter extends RecyclerView.Adapter<ShopOrderAdapter.Orde
                 }
             }
         }
-
+        if ("供货商手动添加订单".equalsIgnoreCase(bean.memo)) {
+            holder.order_type.setImageResource(R.drawable.deadline_icon);
+        } else {
+            holder.order_type.setImageResource(R.drawable.online_icon);
+        }
         if (bean.status == ShopOrder.ORDER_STATUS_WAIT) {
             holder.leftBtn.setText("确认发货");
             holder.rightBtn.setVisibility(View.GONE);
@@ -401,6 +407,7 @@ public class ShopOrderAdapter extends RecyclerView.Adapter<ShopOrderAdapter.Orde
         TextView tvOrderStatus;
         TextView tvGoodsKind;
         TextView tvOrderMoney;
+        TextView tvCreateTime;
         Button rightBtn;
         Button leftBtn;
         ImageView img1;
@@ -408,6 +415,7 @@ public class ShopOrderAdapter extends RecyclerView.Adapter<ShopOrderAdapter.Orde
         ImageView img3;
         ImageView img4;
         ImageView img5;
+        ImageView order_type;
     }
 
 }
