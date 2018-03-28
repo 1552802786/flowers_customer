@@ -11,20 +11,16 @@ import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
-import com.yuangee.flower.customer.entity.ShopOrder;
 import com.yuangee.flower.customer.entity.ShopOrderCount;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
-import com.yuangee.flower.customer.result.BaseResult;
-import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.TimeUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Observable;
 
 import butterknife.BindView;
 import butterknife.OnClick;

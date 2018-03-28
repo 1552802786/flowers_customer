@@ -30,13 +30,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp">
                 <ImageView
+                    android:layout_marginRight="2dp"
                     android:visibility="gone"
                     android:id="@+id/update_icon"
-                    android:padding="4dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/add_goods_star"
-                    android:layout_width="22dp"
-                    android:layout_height="24dp" />
+                    android:src="@drawable/update_icon"
+                    android:layout_width="21dp"
+                    android:layout_height="14dp" />
                 <TextView
                     android:id="@+id/goods_name"
                     android:layout_width="wrap_content"
@@ -82,7 +82,14 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="可售量:800" />
-
+            <TextView
+                android:textSize="12sp"
+                android:id="@+id/deliver_time"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:text="" />
         </LinearLayout>
 
         <FrameLayout

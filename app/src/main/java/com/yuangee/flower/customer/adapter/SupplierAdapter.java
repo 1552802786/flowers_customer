@@ -92,8 +92,8 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
         holder.changeGoods = view.findViewById(R.id.change);
         holder.deleteGoodsp = view.findViewById(R.id.delete);
 //        holder.goodsNum = view.findViewById(R.id.goods_num);
-
-
+        holder.deliverTime = view.findViewById(R.id.deliver_time);
+        holder.updateIcon=view.findViewById(R.id.update_icon);
 
         return holder;
     }
@@ -118,14 +118,18 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
                 .load(Config.BASE_URL + bean.image)
                 .apply(options)
                 .into(holder.goodsImg);
-
+        if ((System.currentTimeMillis() - bean.updated) < 24 * 60 * 60 * 1000) {
+            holder.updateIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.updateIcon.setVisibility(View.GONE);
+        }
         holder.goodsName.setText(bean.name);
         holder.goodsGrade.setText("等级：" + bean.grade);
         holder.goodsColor.setText("颜色：" + bean.color);
         holder.goodsSpec.setText("规格：" + bean.spec);
         holder.goodsLeft.setText("可售量：" + bean.salesVolume);
 //        holder.goodsNum.setText(bean.selectedNum + "");
-
+        holder.deliverTime.setText("发货时间：" + bean.startDeliver);
         holder.goodsMoney.setText(bean.unitPrice + "/" + bean.unit);
 
         holder.changeGoods.setOnClickListener(new View.OnClickListener() {
@@ -184,14 +188,14 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.GoodsH
 
         RelativeLayout layoutView;
         ImageView goodsImg;
-
+        ImageView updateIcon;
         TextView goodsName;
         TextView goodsGrade;
         TextView goodsColor;
         TextView goodsSpec;
         TextView goodsLeft;
         TextView goodsMoney;
-
+        TextView deliverTime;
 
         TextView changeGoods;
         TextView deleteGoodsp;
