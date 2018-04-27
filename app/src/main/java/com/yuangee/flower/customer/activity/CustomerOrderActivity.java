@@ -54,9 +54,6 @@ import rx.schedulers.Schedulers;
 
 public class CustomerOrderActivity extends RxBaseActivity implements CompoundButton.OnCheckedChangeListener {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-
     @BindView(R.id.radio_all)
     RadioButton radioAll;
 
@@ -120,21 +117,6 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
 //            radioAppoint.setVisibility(View.GONE);
 //        }
         initRecyclerView();
-    }
-
-    @Override
-    public void initToolBar() {
-        mToolbar.setTitle("我的订单");
-        setSupportActionBar(mToolbar);
-        if (null != getSupportActionBar()) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
     }
 
     Handler handler;

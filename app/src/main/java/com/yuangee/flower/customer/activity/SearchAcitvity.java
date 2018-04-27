@@ -185,9 +185,10 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     hideSoft();
-                    String waresNames = editSuggest.getText().toString();
+                    waresNames = editSuggest.getText().toString();
                     params = null;
                     generSubNames = null;
+
                     findWares(waresNames, generSubNames, params);
                     String str = App.me().getSharedPreferences().getString("history", "");
                     SharedPreferences.Editor editor = App.me().getSharedPreferences().edit();
