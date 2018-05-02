@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 19
-        versionName "1.2.0"
+        versionName "1.2.2"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
@@ -17,7 +17,7 @@ android {
         release {
             keyAlias '捷豹司机'
             keyPassword 'yuangee'
-            storeFile file('/Users/admin/StudioProjects/flowers_customer/app/kamo.jks')
+            storeFile file('C:/Users/win7/Downloads/flowers_customer/flowers_customer/app/kamo.jks')
             storePassword 'yuangee'
         }
     }
