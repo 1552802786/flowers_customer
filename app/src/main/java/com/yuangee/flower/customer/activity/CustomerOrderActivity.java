@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
@@ -43,6 +44,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -73,7 +75,10 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
 
     @BindView(R.id.empty)
     CustomEmptyView emptyView;
-
+    @BindView(R.id.title_text)
+    TextView title;
+    @BindView(R.id.order_count_btn)
+    TextView orderCount;
     private CustomerOrderAdapter adapter;
 
     private List<CustomerOrder> customersOrders;
@@ -81,6 +86,11 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
     private Integer status;
     private Boolean bespeak;//是否预约
     private Long memberId = App.getPassengerId();
+
+    @OnClick(R.id.back_btn)
+    void backBtn() {
+        finish();
+    }
 
     @Override
     public int getLayoutId() {
@@ -90,6 +100,8 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
     @Override
     public void initViews(Bundle savedInstanceState) {
         //我的订单显示  店铺订单隐藏
+        title.setText("我的订单");
+        orderCount.setVisibility(View.GONE);
         radioNotPay.setVisibility(View.VISIBLE);
         radio_not_pay_lines.setVisibility(View.VISIBLE);
         customersOrders = new ArrayList<>();
@@ -159,7 +171,7 @@ public class CustomerOrderActivity extends RxBaseActivity implements CompoundBut
         recyclerView.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
             public void onRefresh() {
-                page=0;
+                page = 0;
                 queryOrders(status, bespeak, memberId);
             }
 

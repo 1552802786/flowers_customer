@@ -137,7 +137,6 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
     public void onBindViewHolder(CustomerOrderAdapter.OrderHolder holder, final int position) {
 
         final CustomerOrder bean = data.get(position);
-
         holder.tvOrderTime.setText("订单编号：" + bean.orderNo);
         holder.tvOrderStatus.setText(bean.getStatusStr());
         if (bean.status == CustomerOrder.ORDER_STATUS_BE_BACK) {
