@@ -173,7 +173,6 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         }));
 
         mSectionedAdapter.notifyDataSetChanged();
-
     }
 
 
