@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.fragment.home;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,14 +9,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.entity.Recommend;
+import com.yuangee.flower.customer.widget.GlideRoundTransform;
 import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
 
+import java.security.MessageDigest;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,6 +73,7 @@ public class HomeRecommedSelection extends StatelessSection {
 
         RequestOptions options = new RequestOptions()
                 .centerCrop()
+//                .transform(new GlideRoundTransform(mContext, 8,120))
                 .placeholder(R.color.color_f6)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         Glide.with(mContext)
@@ -85,14 +92,14 @@ public class HomeRecommedSelection extends StatelessSection {
         }
     }
 
-    static class HearderHolder extends RecyclerView.ViewHolder{
+    static class HearderHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.title)
         TextView title;
 
         public HearderHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -101,7 +108,7 @@ public class HomeRecommedSelection extends StatelessSection {
 
 
         @BindView(R.id.image_view)
-        ImageView imageView;
+        RoundedImageView imageView;
 
         @BindView(R.id.rel_layout)
         RelativeLayout relativeLayout;

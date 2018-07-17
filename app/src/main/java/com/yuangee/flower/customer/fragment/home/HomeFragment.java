@@ -221,9 +221,9 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         }
         banner.setBannerAnimation(DepthPageTransformer.class);
         banner.setImages(urls)
-                .setBannerTitles(titles)
                 .setImageLoader(new GlideImageLoader())
-                .setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE)
+                .setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
+                .setIndicatorGravity(BannerConfig.CENTER)
                 .setOnBannerListener(this)
                 .start();
     }
