@@ -24,7 +24,7 @@ public class FlowerApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        //CrashHandler.getInstance(this);
+        CrashHandler.getInstance(this);
         mInstance = this;
         App.initApp(this);
         init();

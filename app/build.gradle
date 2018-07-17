@@ -11,7 +11,11 @@ android {
         versionCode 19
         versionName "1.2.2"
         vectorDrawables.useSupportLibrary = true
+        generatedDensities = ['xhdpi', 'xxhdpi']
         multiDexEnabled true
+    }
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
     }
     signingConfigs {
         release {
