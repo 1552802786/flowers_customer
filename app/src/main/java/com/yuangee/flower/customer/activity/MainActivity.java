@@ -28,6 +28,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
@@ -88,6 +92,48 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
     @BindView(R.id.activity_main)
     RelativeLayout rootView;
+    public LocationClient mLocationClient = null;
+    private MyLocationListener myListener = new MyLocationListener();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mLocationClient = new LocationClient(getApplicationContext());
+        //声明LocationClient类
+        mLocationClient.registerLocationListener(myListener);
+        LocationClientOption option = new LocationClientOption();
+
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+
+        option.setCoorType("bd09ll");
+        option.setScanSpan(0);
+        option.setOpenGps(true);
+//可选，设置是否使用gps，默认false
+//使用高精度和仅用设备两种定位模式的，参数必须设置为true
+
+        option.setLocationNotify(false);
+//可选，设置是否当GPS有效时按照1S/1次频率输出GPS结果，默认false
+
+        option.setIgnoreKillProcess(false);
+//可选，定位SDK内部是一个service，并放到了独立进程。
+//设置是否在stop的时候杀死这个进程，默认（建议）不杀死，即setIgnoreKillProcess(true)
+
+        option.SetIgnoreCacheException(false);
+//可选，设置是否收集Crash信息，默认收集，即参数为false
+
+        option.setWifiCacheTimeOut(10 * 60 * 1000);
+//可选，7.2版本新增能力
+//如果设置了该接口，首次启动定位时，会先判断当前WiFi是否超出有效期，若超出有效期，会先重新扫描WiFi，然后定位
+
+        option.setEnableSimulateGps(false);
+//可选，设置是否需要过滤GPS仿真结果，默认需要，即参数为false
+        option.setIsNeedAddress(true);
+        mLocationClient.setLocOption(option);
+//mLocationClient为第二步初始化过的LocationClient对象
+//需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
+//更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
+        mLocationClient.start();
+    }
 
     @Override
     public int getLayoutId() {
@@ -306,13 +352,14 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public static List<Genre> getGenre() {
         return DbHelper.getInstance().getGenreLongDBManager().loadAll();
     }
-    private SystomConfig  config;
 
-    public  SystomConfig getConfig() {
+    private SystomConfig config;
+
+    public SystomConfig getConfig() {
         return config;
     }
 
-    private void getSystemConfig(){
+    private void getSystemConfig() {
         Observable<SystomConfig> observable = ApiManager.getInstance()
                 .api.systemConfig()
                 .map(new HttpResultFunc<SystomConfig>(MainActivity.this))
@@ -321,9 +368,16 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new NoErrSubscriberListener<SystomConfig>() {
             @Override
             public void onNext(SystomConfig o) {
-                config=o;
+                config = o;
             }
         })));
     }
 
+    public class MyLocationListener extends BDAbstractLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+
+            Log.e("LOCATION", location.getAddress().city + "-------");
+        }
+    }
 }

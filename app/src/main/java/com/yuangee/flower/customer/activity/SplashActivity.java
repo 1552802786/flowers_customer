@@ -102,7 +102,7 @@ public class SplashActivity extends RxBaseActivity {
 
     private void requestPer() {
         rxPermissions.request(Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE)
+                Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean granted) {
