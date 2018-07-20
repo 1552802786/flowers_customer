@@ -32,14 +32,17 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.bigkoo.alertview.AlertView;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
+import com.yuangee.flower.customer.entity.AreaResult;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.SystomConfig;
 import com.yuangee.flower.customer.entity.UserAgreeMent;
 import com.yuangee.flower.customer.fragment.AddAnimateListener;
@@ -54,8 +57,10 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.BaseResult;
+import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.result.SuppStatus;
 import com.yuangee.flower.customer.util.PhoneUtil;
+import com.yuangee.flower.customer.util.RxManager;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.AddCartAnimation;
@@ -108,30 +113,30 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         option.setCoorType("bd09ll");
         option.setScanSpan(0);
         option.setOpenGps(true);
-//可选，设置是否使用gps，默认false
-//使用高精度和仅用设备两种定位模式的，参数必须设置为true
+        //可选，设置是否使用gps，默认false
+        //使用高精度和仅用设备两种定位模式的，参数必须设置为true
 
         option.setLocationNotify(false);
-//可选，设置是否当GPS有效时按照1S/1次频率输出GPS结果，默认false
+        //可选，设置是否当GPS有效时按照1S/1次频率输出GPS结果，默认false
 
         option.setIgnoreKillProcess(false);
-//可选，定位SDK内部是一个service，并放到了独立进程。
-//设置是否在stop的时候杀死这个进程，默认（建议）不杀死，即setIgnoreKillProcess(true)
+        //可选，定位SDK内部是一个service，并放到了独立进程。
+        //设置是否在stop的时候杀死这个进程，默认（建议）不杀死，即setIgnoreKillProcess(true)
 
         option.SetIgnoreCacheException(false);
-//可选，设置是否收集Crash信息，默认收集，即参数为false
+        //可选，设置是否收集Crash信息，默认收集，即参数为false
 
         option.setWifiCacheTimeOut(10 * 60 * 1000);
-//可选，7.2版本新增能力
-//如果设置了该接口，首次启动定位时，会先判断当前WiFi是否超出有效期，若超出有效期，会先重新扫描WiFi，然后定位
+        //可选，7.2版本新增能力
+        //如果设置了该接口，首次启动定位时，会先判断当前WiFi是否超出有效期，若超出有效期，会先重新扫描WiFi，然后定位
 
         option.setEnableSimulateGps(false);
-//可选，设置是否需要过滤GPS仿真结果，默认需要，即参数为false
+        //可选，设置是否需要过滤GPS仿真结果，默认需要，即参数为false
         option.setIsNeedAddress(true);
         mLocationClient.setLocOption(option);
-//mLocationClient为第二步初始化过的LocationClient对象
-//需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
-//更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
+        //mLocationClient为第二步初始化过的LocationClient对象
+        //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
+        //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
     }
 
@@ -376,8 +381,25 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
+            Observable<AreaResult> observable = ApiManager.getInstance().api
+                    .searchOpenCity(location.getCity())
+                    .map(new HttpResultFunc<AreaResult>(MainActivity.this))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+            mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<AreaResult>() {
+                @Override
+                public void onNext(AreaResult areaResult) {
 
-            Log.e("LOCATION", location.getAddress().city + "-------");
+                }
+
+                @Override
+                public void onError(int code) {
+                    new AlertView("提示", "当前城市未开通云购服务\n您可选择其他地区进行查看",
+                            null, new String[]{"确定"}, null, MainActivity.this,
+                            AlertView.Style.Alert, null).show();
+                }
+            })));
+
         }
     }
 }

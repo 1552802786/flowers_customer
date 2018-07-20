@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.network.api;
 
 import com.google.gson.JsonElement;
+import com.yuangee.flower.customer.entity.AreaResult;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Coupon;
@@ -117,6 +118,15 @@ public interface ApiService {
      */
     @GET("rest/wares/findShopByMemberId")
     Observable<BaseResult<Shop>> findShopByMemberId(@Query("memberId") Long memberId);
+
+    /**
+     * 根据用户id查询店铺信息
+     *
+     * @param city_name 城市名
+     * @return
+     */
+    @GET("rest/openArea/isCityOpen")
+    Observable<BaseResult<AreaResult>> searchOpenCity(@Query("city") String city_name);
 
     /**
      * 添加商品
@@ -331,10 +341,12 @@ public interface ApiService {
                                                             @Field("couponId") Long couponId,
                                                             @Field("cartItemIds") Long[] cartItemIds
     );
+
     @GET("rest/shop/shopSettleInfo")
     Observable<BaseResult<ShopOrderCount>> getShopOrderCount(@Query("shopId") Long shopId,
                                                              @Query("startDate") String start_date,
                                                              @Query("endDate") String end_date);
+
     /**
      * 查询单个用户
      *
@@ -431,6 +443,7 @@ public interface ApiService {
 
     /**
      * 获取确认订单的费用
+     *
      * @param itmeIds
      * @param expressId
      * @param expressName
@@ -448,6 +461,7 @@ public interface ApiService {
                                                                     @Query("address") String address,
                                                                     @Query("lat") Double lat,
                                                                     @Query("lng") Double lng);
+
     /**
      * 申请成为供货商
      *
