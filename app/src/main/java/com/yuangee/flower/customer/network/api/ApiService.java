@@ -9,6 +9,7 @@ import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.HadOpenArea;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.Message;
 import com.yuangee.flower.customer.entity.ShopOrder;
@@ -119,14 +120,6 @@ public interface ApiService {
     @GET("rest/wares/findShopByMemberId")
     Observable<BaseResult<Shop>> findShopByMemberId(@Query("memberId") Long memberId);
 
-    /**
-     * 根据用户id查询店铺信息
-     *
-     * @param city_name 城市名
-     * @return
-     */
-    @GET("rest/openArea/isCityOpen")
-    Observable<BaseResult<AreaResult>> searchOpenCity(@Query("city") String city_name);
 
     /**
      * 添加商品
@@ -652,4 +645,16 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("rest/order/comfrimBespokePrice")
     Observable<BaseResult<CustomerOrder>> confirmMoney(@Field("orderRecordId") Long orderId);
+
+    @GET("rest/openArea/listAll")
+    Observable<BaseResult<PageResult<HadOpenArea>>> searchOpenArea();
+
+    /**
+     * 根据用户id查询店铺信息
+     *
+     * @param city_name 城市名
+     * @return
+     */
+    @GET("rest/openArea/isCityOpen")
+    Observable<BaseResult<AreaResult>> queryOpenCity(@Query("city") String city_name);
 }

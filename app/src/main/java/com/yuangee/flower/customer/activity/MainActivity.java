@@ -1,8 +1,6 @@
 package com.yuangee.flower.customer.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,23 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseIntArray;
-import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
@@ -35,16 +21,13 @@ import com.baidu.location.LocationClientOption;
 import com.bigkoo.alertview.AlertView;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
-import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.AreaResult;
-import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
-import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.HadOpenArea;
 import com.yuangee.flower.customer.entity.SystomConfig;
-import com.yuangee.flower.customer.entity.UserAgreeMent;
 import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
@@ -56,13 +39,7 @@ import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
-import com.yuangee.flower.customer.result.BaseResult;
 import com.yuangee.flower.customer.result.PageResult;
-import com.yuangee.flower.customer.result.SuppStatus;
-import com.yuangee.flower.customer.util.PhoneUtil;
-import com.yuangee.flower.customer.util.RxManager;
-import com.yuangee.flower.customer.util.StringUtils;
-import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.AddCartAnimation;
 import com.yuangee.flower.customer.widget.NoScrollViewPager;
 
@@ -70,14 +47,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import co.lujun.androidtagview.TagContainerLayout;
-import co.lujun.androidtagview.TagView;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -138,8 +110,30 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
         //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
+        queryOpenCity();
     }
+    private void queryOpenCity(){
+        Observable<PageResult<HadOpenArea>> observable = ApiManager.getInstance().api
+                .searchOpenArea()
+                .map(new HttpResultFunc<PageResult<HadOpenArea>>(MainActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<PageResult<HadOpenArea>>() {
+            @Override
+            public void onNext(PageResult areaResult) {
+                    Log.e("TAG",areaResult.rows.size()+"----");
+            }
 
+            @Override
+            public void onError(int code) {
+                new AlertView("提示", "当前城市未开通云购服务\n您可选择其他地区进行查看",
+                        null, new String[]{"确定"}, null, MainActivity.this,
+                        AlertView.Style.Alert, null).show();
+            }
+        })));
+
+
+    }
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -382,7 +376,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         @Override
         public void onReceiveLocation(BDLocation location) {
             Observable<AreaResult> observable = ApiManager.getInstance().api
-                    .searchOpenCity(location.getCity())
+                    .queryOpenCity(location.getCity())
                     .map(new HttpResultFunc<AreaResult>(MainActivity.this))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
