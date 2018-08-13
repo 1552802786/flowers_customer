@@ -5,10 +5,12 @@
     android:orientation="vertical">
 
     <include layout="@layout/layout_toolbar" />
+
     <ScrollView
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -43,17 +45,22 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:background="@color/white"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="8dp">
+                android:orientation="vertical"
+                android:paddingLeft="8dp"
+                android:paddingRight="12dp"
+                android:weightSum="4">
 
                 <TextView
                     android:id="@+id/parent_type"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
                     android:background="@drawable/corners_bg_white_type"
                     android:gravity="center"
                     android:padding="4dp"
@@ -62,9 +69,10 @@
 
                 <TextView
                     android:id="@+id/child_type"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/corners_bg_white_type"
                     android:gravity="center"
                     android:padding="4dp"
@@ -73,9 +81,10 @@
 
                 <TextView
                     android:id="@+id/product_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
+                    android:layout_marginTop="6dp"
                     android:layout_weight="1"
                     android:background="@drawable/corners_bg_white_type"
                     android:gravity="center"
@@ -83,36 +92,47 @@
                     android:singleLine="true"
                     android:textColor="@color/black" />
 
-                <EditText
-                    android:id="@+id/sub_number"
-                    android:layout_width="40dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:background="@drawable/corners_bg_white_type"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:padding="2dp"
-                    android:paddingBottom="4dp"
-                    android:paddingTop="4dp"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/add_btn_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="4dp"
-                    android:src="@drawable/add_one_order" />
+                    <EditText
+                        android:id="@+id/sub_number"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/corners_bg_white_type"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:padding="2dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/add_btn_icon"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/add_one_order" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <com.yuangee.flower.customer.widget.ExpandableHeightListView
-                android:divider="@color/transparent"
                 android:id="@+id/confirm_list"
-                android:dividerHeight="0dp"
-                android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:divider="@color/transparent"
+                android:dividerHeight="0dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
