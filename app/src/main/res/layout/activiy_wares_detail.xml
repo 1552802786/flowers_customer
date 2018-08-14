@@ -5,39 +5,47 @@
     android:orientation="vertical">
 
     <include layout="@layout/layout_toolbar" />
+
     <ScrollView
-        android:scrollbars="none"
+        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="4dp">
+
             <ImageView
                 android:id="@+id/wares_img"
                 android:layout_width="match_parent"
                 android:layout_height="0.0dp"
                 android:layout_weight="0.7" />
+
             <android.support.v4.widget.Space
                 android:layout_width="wrap_content"
                 android:layout_height="5dp" />
+
             <com.yuangee.flower.customer.widget.ExpandableHeightGridView
                 android:id="@+id/short_name_view"
-                android:numColumns="4"
-                android:verticalSpacing="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:horizontalSpacing="4dp"
+                android:numColumns="4"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:verticalSpacing="4dp" />
+
             <com.yuangee.flower.customer.widget.ExpandableHeightListView
                 android:id="@+id/long_name_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
                 android:dividerHeight="4dp"
                 android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:paddingRight="4dp" />
 
         </LinearLayout>
     </ScrollView>
