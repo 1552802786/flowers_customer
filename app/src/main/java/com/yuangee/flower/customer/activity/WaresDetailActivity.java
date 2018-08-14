@@ -64,10 +64,14 @@ public class WaresDetailActivity extends RxBaseActivity {
                 .centerCrop()
                 .placeholder(R.drawable.ic_no_img)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
-        Glide.with(this)
-                .load(Config.BASE_URL + goods.image)
-                .apply(options)
-                .into(waresImg);
+        if (!TextUtils.isEmpty(goods.image)) {
+            Glide.with(this)
+                    .load(Config.BASE_URL + goods.image)
+                    .apply(options)
+                    .into(waresImg);
+        } else {
+            waresImg.setImageResource(R.drawable.ic_no_img);
+        }
         if (length(goods.name) > 10) {
             longInfos.add("商品名称+" + goods.name);
         } else {
