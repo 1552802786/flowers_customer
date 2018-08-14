@@ -23,5 +23,6 @@ public class OrderWare implements Serializable {
     public BigDecimal total;
 
     public Goods wares;
+    public String waresUnitPrice;
 
 }

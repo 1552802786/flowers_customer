@@ -64,7 +64,7 @@ public class OrderWareAdapter extends RecyclerView.Adapter<OrderWareAdapter.Hold
                     .apply(options)
                     .into(holder.img);
             holder.goodsName.setText(orderWare.wares.name);
-            holder.goodsPrice.setText("¥" + orderWare.wares.unitPrice + "元/扎");
+            holder.goodsPrice.setText("¥" + orderWare.waresUnitPrice + "元/扎");
         }
         holder.goodsTotalFee.setText("总价：" +
                 (orderWare.total == null ? 0.0 : orderWare.total.doubleValue()) + "元");
