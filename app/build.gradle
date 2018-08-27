@@ -8,8 +8,8 @@ android {
         applicationId "com.yuangee.flower.customer"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 19
-        versionName "1.2.2"
+        versionCode 20
+        versionName "1.2.3"
         vectorDrawables.useSupportLibrary = true
         generatedDensities = ['xhdpi', 'xxhdpi']
         multiDexEnabled true

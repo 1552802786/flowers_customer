@@ -110,7 +110,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
         //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
-//        queryOpenCity();
+        queryOpenCity();
     }
     private void queryOpenCity(){
         Observable<PageResult<HadOpenArea>> observable = ApiManager.getInstance().api
@@ -126,9 +126,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
             @Override
             public void onError(int code) {
-                new AlertView("提示", "当前城市未开通云购服务\n您可选择其他地区进行查看",
-                        null, new String[]{"确定"}, null, MainActivity.this,
-                        AlertView.Style.Alert, null).show();
+
             }
         })));
 
@@ -375,24 +373,24 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
-//            Observable<AreaResult> observable = ApiManager.getInstance().api
-//                    .queryOpenCity(location.getCity())
-//                    .map(new HttpResultFunc<AreaResult>(MainActivity.this))
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread());
-//            mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<AreaResult>() {
-//                @Override
-//                public void onNext(AreaResult areaResult) {
-//
-//                }
-//
-//                @Override
-//                public void onError(int code) {
-//                    new AlertView("提示", "当前城市未开通云购服务\n您可选择其他地区进行查看",
-//                            null, new String[]{"确定"}, null, MainActivity.this,
-//                            AlertView.Style.Alert, null).show();
-//                }
-//            })));
+            Observable<AreaResult> observable = ApiManager.getInstance().api
+                    .queryOpenCity(location.getCity())
+                    .map(new HttpResultFunc<AreaResult>(MainActivity.this))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+            mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<AreaResult>() {
+                @Override
+                public void onNext(AreaResult areaResult) {
+
+                }
+
+                @Override
+                public void onError(int code) {
+                    new AlertView("提示", "当前城市未开通云购服务\n您可选择其他地区进行查看",
+                            null, new String[]{"确定"}, null, MainActivity.this,
+                            AlertView.Style.Alert, null).show();
+                }
+            })));
 
         }
     }

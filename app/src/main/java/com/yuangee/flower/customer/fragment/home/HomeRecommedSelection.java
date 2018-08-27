@@ -58,7 +58,8 @@ public class HomeRecommedSelection extends StatelessSection {
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-
+        HearderHolder holder1 = (HearderHolder) holder;
+        holder1.title.setText(recommends.get(0).module);
     }
 
     @Override

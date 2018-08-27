@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.fragment.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -140,6 +141,11 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         swipeRecyclerView.setLoadMoreEnable(false);
     }
 
+    List<Recommend> moreGoodWares = new ArrayList<>();
+    List<Recommend> buyAllpeople = new ArrayList<>();
+    List<Recommend> newWares = new ArrayList<>();
+    List<Recommend> sellWares = new ArrayList<>();
+    List<Recommend> shop = new ArrayList<>();
 
     /**
      * 网络加载任务完成
@@ -161,17 +167,63 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
                 toSpecifiedFragmentListener.toShoppingByParams(genre.genreName, null, null);
             }
         }));
-
-        mSectionedAdapter.addSection(new HomeRecommedSelection(recommends, getActivity(), new StatelessSection.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Recommend recommend = recommends.get(position);
-                Intent intent = new Intent(getActivity(), SearchAcitvity.class);
-                intent.putExtra("params", recommend.keywords);
-                startActivity(intent);
+        for (Recommend re : recommends) {
+            if ("今日推荐".equalsIgnoreCase(re.module)) {
+                moreGoodWares.add(re);
+            } else if ("聚划算".equalsIgnoreCase(re.module)) {
+                buyAllpeople.add(re);
+            } else if ("新货尝鲜".equalsIgnoreCase(re.module)) {
+                newWares.add(re);
+            } else if ("超低价".equalsIgnoreCase(re.module)) {
+                sellWares.add(re);
+            } else if ("优秀供货商".equalsIgnoreCase(re.module)) {
+                shop.add(re);
             }
-        }));
-
+        }
+        if (moreGoodWares.size() > 0) {
+            mSectionedAdapter.addSection(new HomeRecommedSelection(moreGoodWares, getActivity(), new StatelessSection.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Recommend recommend = moreGoodWares.get(position);
+                    Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+                    intent.putExtra("params", recommend.keywords);
+                    startActivity(intent);
+                }
+            }));
+        }
+        if (buyAllpeople.size() > 0) {
+            mSectionedAdapter.addSection(new HomeRecommedSelection(buyAllpeople, getActivity(), new StatelessSection.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Recommend recommend = buyAllpeople.get(position);
+                    Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+                    intent.putExtra("params", recommend.keywords);
+                    startActivity(intent);
+                }
+            }));
+        }
+        if (newWares.size() > 0) {
+            mSectionedAdapter.addSection(new HomeRecommedSelection(newWares, getActivity(), new StatelessSection.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Recommend recommend = newWares.get(position);
+                    Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+                    intent.putExtra("params", recommend.keywords);
+                    startActivity(intent);
+                }
+            }));
+        }
+        if (sellWares.size() > 0) {
+            mSectionedAdapter.addSection(new HomeRecommedSelection(sellWares, getActivity(), new StatelessSection.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Recommend recommend = sellWares.get(position);
+                    Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+                    intent.putExtra("params", recommend.keywords);
+                    startActivity(intent);
+                }
+            }));
+        }
         mSectionedAdapter.notifyDataSetChanged();
     }
 
