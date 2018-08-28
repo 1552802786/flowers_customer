@@ -5,6 +5,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
+import com.shawnlin.preferencesmanager.PreferencesManager;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.util.CrashHandler;
@@ -29,8 +30,17 @@ public class FlowerApp extends MultiDexApplication {
         App.initApp(this);
         init();
         CrashReport.initCrashReport(getApplicationContext(), "268b4c9966", false);
+        initPreferencesManager();
 
+    }
 
+    /**
+     * 初始化管理库
+     */
+    private void initPreferencesManager() {
+        new PreferencesManager(this)
+                .setName(getString(R.string.app_name))
+                .init();
     }
 
     public static Context getContext() {
