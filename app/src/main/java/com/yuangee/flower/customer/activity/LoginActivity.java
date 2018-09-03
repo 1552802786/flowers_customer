@@ -1,42 +1,31 @@
 package com.yuangee.flower.customer.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.provider.SyncStateContract;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
+
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.alipay.sdk.app.AuthTask;
-import com.google.gson.Gson;
 import com.shawnlin.preferencesmanager.PreferencesManager;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
-import com.yuangee.flower.customer.Config;
+
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
-import com.yuangee.flower.customer.db.DbHelper;
-import com.yuangee.flower.customer.entity.Address;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -44,17 +33,11 @@ import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.PersonUtil;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.SignUtils;
-import com.yuangee.flower.customer.util.StatusBarUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
