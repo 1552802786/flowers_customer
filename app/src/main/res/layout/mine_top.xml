@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/person_bg"
+    android:background="@drawable/user_center_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:gravity="center_vertical">
+    android:paddingRight="5dp">
 
     <LinearLayout
         android:layout_width="0.0dp"
@@ -14,50 +15,54 @@
         android:layout_weight="0.7"
         android:gravity="center"
         android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/person_photo"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            app:srcCompat="@drawable/ic_default_photo"/>
+            app:srcCompat="@drawable/ic_default_photo" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/person_name"
         android:layout_width="0.0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="0.7"
         android:gravity="center"
-        android:layout_height="wrap_content"
         android:text=""
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <View
         android:layout_width="1dp"
         android:layout_height="10dp"
-        android:background="@color/line_color"/>
+        android:background="@color/line_color" />
+
     <TextView
         android:id="@+id/person_vip"
         android:layout_width="0.0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="0.7"
         android:gravity="center"
-        android:layout_height="wrap_content"
         android:text=""
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
+
     <View
         android:layout_width="1dp"
         android:layout_height="10dp"
-        android:background="@color/line_color"/>
+        android:background="@color/line_color" />
+
     <TextView
         android:id="@+id/person_phone"
         android:layout_width="0.0dp"
-        android:layout_weight="1"
-        android:gravity="center"
         android:layout_height="wrap_content"
-        android:text=""
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text=""
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
 </LinearLayout>

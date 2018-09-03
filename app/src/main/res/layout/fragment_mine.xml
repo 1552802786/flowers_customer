@@ -19,7 +19,7 @@
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="140dp"
                 android:fitsSystemWindows="true"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:contentScrim="?attr/colorPrimary"
@@ -28,7 +28,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="140dp"
                     android:background="@color/window_background"
                     android:fitsSystemWindows="true"
                     android:gravity="center">
@@ -36,13 +36,23 @@
                     <include
                         android:id="@+id/mine_top"
                         layout="@layout/mine_top"/>
-
+                    <ImageView
+                        android:id="@+id/notification_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_gravity="right"
+                        app:srcCompat="@drawable/ic_notifications_white"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="8dp"/>
 
                 </FrameLayout>
 
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:minHeight="?attr/actionBarSize"
@@ -61,15 +71,7 @@
                             android:text="个人中心"
                             android:textColor="@color/white"
                             android:textSize="16sp" />
-                        <ImageView
-                            android:id="@+id/notification_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:layout_alignParentRight="true"
-                            app:srcCompat="@drawable/ic_notifications_white"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="8dp"/>
+
                     </RelativeLayout>
 
                 </android.support.v7.widget.Toolbar>

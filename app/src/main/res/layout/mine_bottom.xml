@@ -9,7 +9,66 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="账户余额" />
+
+            <TextView
+                android:id="@+id/userAccountNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2000.00元"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="我的积分" />
+
+            <TextView
+                android:id="@+id/userCoinNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2000"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -131,7 +190,6 @@
                     android:textSize="14sp" />
 
             </LinearLayout>
-
 
 
         </LinearLayout>
@@ -268,6 +326,7 @@
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
+
         <LinearLayout
             android:id="@+id/to_agreement"
             android:layout_width="0.0dp"
@@ -291,6 +350,7 @@
                 android:textSize="14sp" />
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/feedback"
             android:layout_width="0.0dp"
@@ -314,7 +374,6 @@
                 android:textSize="14sp" />
 
         </LinearLayout>
-
 
 
         <LinearLayout
