@@ -1,6 +1,7 @@
 package com.yuangee.flower.customer.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -191,6 +192,7 @@ public class MineFragment extends RxLazyFragment {
             new AlertDialog.Builder(getActivity())
                     .setMessage(phone)
                     .setPositiveButton("呼叫", new DialogInterface.OnClickListener() {
+                        @SuppressLint("NewApi")
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             if (getActivity().checkSelfPermission("android.permission.CALL_PHONE") != PackageManager.PERMISSION_GRANTED) {

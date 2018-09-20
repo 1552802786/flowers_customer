@@ -58,7 +58,9 @@ public class SplashActivity extends RxBaseActivity {
         rxPermissions = new RxPermissions(this);
 
         if (!rxPermissions.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION)
-                || !rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                || !rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)
+                || !rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                || !rxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             showDialog();
         } else {
             delayToLogin();
@@ -102,7 +104,7 @@ public class SplashActivity extends RxBaseActivity {
 
     private void requestPer() {
         rxPermissions.request(Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE)
+                Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean granted) {
@@ -132,7 +134,7 @@ public class SplashActivity extends RxBaseActivity {
 
             @Override
             public void onError(int code) {
-                ToastUtil.showMessage(SplashActivity.this,"配置信息获取失败");
+                ToastUtil.showMessage(SplashActivity.this, "配置信息获取失败");
                 delayToLogin();
             }
         })));

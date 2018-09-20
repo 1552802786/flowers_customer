@@ -59,6 +59,11 @@ public interface ApiService {
                                          @Field("smsCode") String smsCode,
                                          @Field("registrationId") String registrationId);
 
+    @FormUrlEncoded
+    @POST("rest/aliLogin")
+    Observable<BaseResult<Member>> alipayLogin(@Field("userId") String userId,
+                                               @Field("code") String code);
+
     /**
      * 查询商品类型
      *

@@ -21,6 +21,7 @@ import com.alipay.sdk.app.AuthTask;
 import com.shawnlin.preferencesmanager.PreferencesManager;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 
@@ -36,6 +37,10 @@ import com.yuangee.flower.customer.util.SignUtils;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Timer;
@@ -44,6 +49,11 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.jpush.android.api.JPushInterface;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -53,8 +63,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class LoginActivity extends RxBaseActivity {
-    private String alipay_app_id = "2017090808616256";
-    private String private_key = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAMPJkfTSl6ypBowGP2RsgOm+nz988ljTU5z35JBnwPSwobJ/rN3RC/s9JKjQpUk41p71t+qlOpMlmpHwU1O6etXRe8cHicX4PZGWIJzqnF1o3n7tBAOccPmSiK/kZdgp/Yg5utPvNuYm4o1mz/ARVnOLtcakSLSpcNG/aeEflmJ7AgMBAAECgYBAWKgaoXft7CNVs9vzwmFf8SFfeU4g+VtalHJPL3pQMRkDlEiZIlJgwQiiXuhjt0V6OuG2QZWNtOcnHagVNY2W0xVkBKevzGWoLTbAPHh6CGU5vauxiFygcCC1zKnOsYga+RMXS469LJ8oNu/hqNoBxU2/njzafBMMYYiFpOobEQJBAOnGCHDEmByrOutHXouN5vSxIL72SJrhQRhnQc/DGG4Ni3fdwMZnMK20CLbtYFLje5wje3OVrxsPxaT8CvCpVjMCQQDWZvd74IWnfwehge2SVWaZphw3kZW7lw5pW8bA1hoDALRBDHUloCufPCEJ4VeTnjZOiqoJOOP0+sSR4/nATKqZAkEAi7T7yljTBx8VwRIP4JrXUZihlz4cOeMwQeNDo2RWrz6NAP+Xe3qjzstvAdNu41prvu49kt/7m9KbLXQrHZQ1nQJBAIm2Y3pHEbIvTsh3exBGGHvSjUdIFMQEV7Zmw7fzDYwmNKGfjdNYGQzTg2kkO6tOsRUrzeHUj983/3Cx3SaeV+kCQQCTdlTMrtA4CWy7Y7padGOfORFJC7BlskupXCCEfuB5894thlQgo509zJ9jJ6dw+F9diN6CRN4w+KGh1fpLjINC";
+    private String alipay_app_id = "2017110709782860";
+    private String private_key = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCuPhz/ZvvwdMCHoZPxd/SMd085zP9J+rMiMKnCikebm7y3Q0dDNsYHXNRkyaB2y2f+8uFh51ZikxFoh3svwhBxdL4rPPAwDDunq0m2GPBS0wT7t88z/gK+5IU4iWyADeXoa/3w8RzKCNA/fLU/u56BwsxnTY0j/Wdz7I/qU1K8ZB9GdAyrGu0QQ8wOuT3mD/gysJmJd0yBiOErRA9oUXC+mK+6VOXNv+fFnb8VEON0+MPw2nEqb4UdklDV7o6Pg8/idwm0XJ8GFTzx74qkH5dsHa0+CTNoBvyDynilzxolv3OUQv3j/owxima364v6XnDyB+bLhEIdIPLElK54K+lXAgMBAAECggEABekHdMZaf2KGcVNSwFsQSX92iYBhnHHLh7pc18N3AFk9An5euXHvL6q/bZfFQKJPqb81U+vT604PxhrqW8laY27RUIgloYuYrmxJ+MpJxJVx0tP+TEYuc6kut6c5rfJKvSKEn5qeHmBEKBMj1sCXdNFVu59OzUy4KJ96ljkzUj6I2JoUoqPXoPysrWBnX1Z4QyP3Q5tUmkHmYyfkwDraNed8FRo9YfsPudbgciBhE00qGd+xfE+grl2LjdptnHmxRbu4NGHEk8dcL4/fyNon68cdrbldN+RKPQ6M5EHQhGKB6vG0i4N321UJSMDEuY6vJjYr8iyXqDlpRMEjIzcxaQKBgQDWmWCHg1oD7aoyODRVNFK4ePgeFe3n51Q0B8kVTk5mKUa0f7F3KmiIowZOILsuSfqUnL+yiiHbsyFmFVzX/J2GlLbntZXIrtvXYTTbfFRzeyvUKxsToZarlvF6KrgvP39euMHTPjx7AMNuWBimrbl+Zvnv0zJbcI9Y4YI8peOeLQKBgQDP25v1Ae0Z3guIU+szHgHuH0Pk3yR9LchaGh6+qjzNADk5O4XHvwsrcJm2Kj/rVGw7L4Hi5qckSr8BKZjMshKm4SfmGbospcU0ZrBlI6eVCR++fZApEtiiw4eVBEdPhqo5T6ECbnrbFqX2q9K5u0QESi7EYARNiGaW/Sqj/YtcEwKBgGF6T/+eKaBJL5saLqNZXg3PXR0FZwiE6pmrw6o65J/BNg29RxZTHCKcsruAYKX5Eqq4vNbTqeeK6aveHks5wzAjkyWTNRNwYgnmbMUaJ55BH7qDTgxPxQnySYPtrbZAiJG1KM3UolJZGWyg9amYlf6Vtgg7Dc+9RE/iN29nBwqNAoGADiOYJkBtSncqPanHtAB0jSgfTDBJoSI+ILLqKHoYDLHZMqVz4jSCo//S1Otm0bE6c4Q1x6N89yEGgSO9Ox9Z2XQzbJmPan4UPg5GLXsRaTfnquOLrN+VUO0QCfjyiNxWM/PQtgOh48lUnMTvXqb4Z3pMWBtX75Y5tEegYOtcUXUCgYEAzJ/ccQQbQs9Z9OH9zyimoqszr9F1We0D/HkyBLi2yyMCW4Cvn6hr2yy4JbN5y+Ln1LLDeVYEImTD+VGM2V4PmUDg0hjIVwihXVoRU0I0jaaYyLZZ6EVxDB6ZLRjYsA89T7KmjI+TtHL2q1TsQaIWDHcXK2X5UNM7H+US6LR9JIQ";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -78,6 +88,11 @@ public class LoginActivity extends RxBaseActivity {
 
     private int count = 60;
     private IWXAPI wx_api;
+
+    @OnClick(R.id.alipay_login)
+    void alipayLoginMethod() {
+        alipayLogin();
+    }
 
     @OnClick(R.id.get_sms_code)
     void getCode() {
@@ -115,6 +130,7 @@ public class LoginActivity extends RxBaseActivity {
                     for (int i = 0; i < resuls.length; i++) {
                         if (resuls[i].contains("auth_code")) {
                             String auth_code = resuls[i].substring(11, resuls[i].length() - 1);
+
                             break;
                         }
                     }
@@ -132,8 +148,8 @@ public class LoginActivity extends RxBaseActivity {
     @Override
     public void initViews(Bundle savedInstanceState) {
 //        StatusBarUtil.setTransStatusBar(this);
-//        wx_api = WXAPIFactory.createWXAPI(this, Constants.WX_CUSTOMER_APP_ID);
-//        wx_api.registerApp(Constants.WX_CUSTOMER_APP_ID);
+        wx_api = WXAPIFactory.createWXAPI(this, Constants.WX_CUSTOMER_APP_ID);
+        wx_api.registerApp(Constants.WX_CUSTOMER_APP_ID);
     }
 
     @Override
@@ -252,62 +268,53 @@ public class LoginActivity extends RxBaseActivity {
             req.scope = "snsapi_userinfo";
             req.state = "wechat_sdk_demo_test";
             wx_api.sendReq(req);
-            IntentFilter filer = new IntentFilter("weChat_login");
-//            LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
-//                @Override
-//                public void onReceive(Context context, Intent intent) {
-//                    wehcatLogin(intent.getStringExtra("token"));
-//                }
-//            }, filer);
+
         } else {
-//            wehcatLogin(refresh_token);
+            wehcatLogin(refresh_token);
         }
     }
 
-//    private void wehcatLogin(String refresh_token) {
-//        RequestParams params = new RequestParams("https://api.weixin.qq.com/sns/oauth2/refresh_token");
-//        params.addBodyParameter("appid", Constants.WX_CUSTOMER_APP_ID);
-//        params.addBodyParameter("refresh_token", refresh_token);
-//        params.addBodyParameter("grant_type", "refresh_token");
-//        x.http().post(params, new Callback.CommonCallback<String>() {
-//            @Override
-//            public void onSuccess(String result) {
-//                com.wn.wnbase.application.Log.e("weixin", result);
-//                JSONObject object = null;
-//                try {
-//                    object = new JSONObject(result);
-//                    //是否超时
-//                    if (object.has("errcode") && object.getString("errcode").equalsIgnoreCase("42002")) {
-//                        //发起登录请求
-//                        final SendAuth.Req req = new SendAuth.Req();
-//                        req.scope = "snsapi_userinfo";
-//                        req.state = "wechat_sdk_demo_test";
-//                        wx_api.sendReq(req);
-//                    } else {
-//                        mUserAccountManager.doWeChatLogin(object.getString("access_token"), object.getString("openid")
-//                                , new WeakReference<HttpFeedManager.HttpManagerListener>(LoginActivity.this));
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable ex, boolean isOnCallback) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(CancelledException cex) {
-//
-//            }
-//
-//            @Override
-//            public void onFinished() {
-//
-//            }
-//        });
-//    }
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    OkHttpClient client = new OkHttpClient();
+
+    public String post(String url, String json) throws IOException {
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            throw new IOException("Unexpected code " + response);
+        }
+    }
+
+    private void wehcatLogin(String refresh_token) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("appid", Constants.WX_CUSTOMER_APP_ID);
+            object.put("refresh_token", refresh_token);
+            object.put("grant_type", "refresh_token");
+            String str = post("https://api.weixin.qq.com/sns/oauth2/refresh_token", object.toString());
+            JSONObject obj = new JSONObject(str);
+            //是否超时
+            if (object.has("errcode") && object.getString("errcode").equalsIgnoreCase("42002")) {
+                //发起登录请求
+                final SendAuth.Req req = new SendAuth.Req();
+                req.scope = "snsapi_userinfo";
+                req.state = "wechat_sdk_demo_test";
+                wx_api.sendReq(req);
+            } else {
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String sign(String content) {
         return SignUtils.sign(content, private_key);
@@ -323,7 +330,7 @@ public class LoginActivity extends RxBaseActivity {
         requetsInfo += "&app_id=" + "\"" + alipay_app_id + "\"";
         requetsInfo += "&app_name=" + "\"mc\"";
         requetsInfo += "&biz_type=" + "\"openservice\"";
-//        requetsInfo += "&pid=" + "\"" + Constants.PARTNER + "\"";
+        requetsInfo += "&pid=" + "\"" + Constants.PARTNER + "\"";
         requetsInfo += "&product_id=" + "\"APP_FAST_LOGIN\"";
         requetsInfo += "&scope=" + "\"kuaijie\"";
         requetsInfo += "&target_id=" + "\"kkkkk091129\"";

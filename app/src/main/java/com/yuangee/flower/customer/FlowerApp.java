@@ -57,6 +57,7 @@ public class FlowerApp extends MultiDexApplication {
 
         initDataBase();
         initJPush();
+
         SDKInitializer.initialize(this);
     }
 
