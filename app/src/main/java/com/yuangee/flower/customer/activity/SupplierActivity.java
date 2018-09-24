@@ -2,16 +2,15 @@ package com.yuangee.flower.customer.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -19,36 +18,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import com.yuangee.flower.customer.ApiManager;
-import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.SupplierAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
-import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.Goods;
-import com.yuangee.flower.customer.entity.Member;
-import com.yuangee.flower.customer.entity.WaresNumber;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
-import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+
 import com.yuangee.flower.customer.result.PageResult;
-import com.yuangee.flower.customer.util.StringUtils;
-import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import retrofit2.http.Field;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -65,7 +55,8 @@ public class SupplierActivity extends RxBaseActivity {
 
     @BindView(R.id.edit_search)
     EditText editSearch;
-
+    @BindView(R.id.fenlei)
+    TabLayout tableLayout;
     @OnClick(R.id.add_text)
     void toAdd() {
         Intent intent = new Intent(SupplierActivity.this, GoodsActivity.class);
@@ -161,6 +152,11 @@ public class SupplierActivity extends RxBaseActivity {
             }
         });
         initFloatPath();
+        tableLayout.addTab(tableLayout.newTab().setText("全部"));
+        tableLayout.addTab(tableLayout.newTab().setText("预约"));
+        tableLayout.addTab(tableLayout.newTab().setText("订购"));
+        tableLayout.addTab(tableLayout.newTab().setText("竞拍"));
+        tableLayout.addTab(tableLayout.newTab().setText("大宗"));
     }
 
     private void hideSoft() {

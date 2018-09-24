@@ -7,6 +7,7 @@
 
     <!-- 主内容-->
     <include
+        android:visibility="gone"
         android:id="@+id/main_content"
         layout="@layout/shopping_content"
         android:layout_width="match_parent"
@@ -15,6 +16,7 @@
     </include>
 
     <include
+        android:visibility="gone"
         android:id="@+id/main_drawer"
         layout="@layout/shopping_drawer"
         android:layout_width="260dp"

@@ -32,6 +32,7 @@ import com.yuangee.flower.customer.activity.ShopOrderActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.activity.SupplierActivity;
+import com.yuangee.flower.customer.activity.UserAccountDetailActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.CustomerOrder;
@@ -145,7 +146,17 @@ public class MineFragment extends RxLazyFragment {
         intent.putExtra("bespeak", false);
         startActivity(intent);
     }
-
+    @OnClick(R.id.my_money)
+    void gotoMymoney(){
+        Intent it=new Intent(getActivity(), UserAccountDetailActivity.class);
+        startActivity(it);
+    }
+    @OnClick(R.id.my_score)
+    void gotoMyscore(){
+        Intent it=new Intent(getActivity(), UserAccountDetailActivity.class);
+        it.putExtra("isSocre",true);
+        startActivity(it);
+    }
     @OnClick(R.id.jingpai)
     void jingpai() {
 

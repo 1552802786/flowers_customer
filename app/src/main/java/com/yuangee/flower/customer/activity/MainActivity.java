@@ -203,8 +203,9 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         fragments.add(homeFragment);
         fragments.add(shoppingFragment);
         fragments.add(shoppingCartFragment);
-        fragments.add(reserveFragment);
         fragments.add(mineFragment);
+        fragments.add(reserveFragment);
+
 
         // add to items for change ViewPager item
         items.put(R.id.i_home, 0);

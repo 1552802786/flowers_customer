@@ -164,7 +164,10 @@
             android:name=".activity.CustomerOrderPayActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".activity.UserAccountDetailActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="portrait" />
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

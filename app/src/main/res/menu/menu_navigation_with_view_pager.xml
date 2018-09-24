@@ -12,13 +12,13 @@
     <item
         android:id="@+id/i_shopping"
         android:icon="@drawable/ic_menu_cart"
-        android:title="@string/title_shopping_cart" />
+        android:title="竞拍" />
     <item
         android:id="@+id/i_reserve"
         android:icon="@drawable/ic_menu_clock"
-        android:title="@string/title_reserve" />
+        android:title="我" />
     <item
         android:id="@+id/i_mine"
         android:icon="@drawable/ic_menu_mine"
-        android:title="@string/title_mine" />
+        android:title="客服" />
 </menu>
