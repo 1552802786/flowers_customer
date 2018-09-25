@@ -83,7 +83,7 @@
                         android:layout_width="40dp"
                         android:layout_height="35dp"
                         android:layout_marginLeft="4dp"
-                        android:padding="5dp"
+                        android:padding="8dp"
                         app:srcCompat="@drawable/ic_action_location" />
 
                     <ImageView

@@ -2,7 +2,6 @@ package com.yuangee.flower.customer.activity;
 
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +24,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.Member;
@@ -148,8 +148,8 @@ public class LoginActivity extends RxBaseActivity {
     @Override
     public void initViews(Bundle savedInstanceState) {
 //        StatusBarUtil.setTransStatusBar(this);
-        wx_api = WXAPIFactory.createWXAPI(this, Constants.WX_CUSTOMER_APP_ID);
-        wx_api.registerApp(Constants.WX_CUSTOMER_APP_ID);
+        wx_api = WXAPIFactory.createWXAPI(this, Config.wxJKAppId);
+        wx_api.registerApp(Config.wxJKAppId);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class LoginActivity extends RxBaseActivity {
     private void wehcatLogin(String refresh_token) {
         JSONObject object = new JSONObject();
         try {
-            object.put("appid", Constants.WX_CUSTOMER_APP_ID);
+            object.put("appid", Config.wxJKAppId);
             object.put("refresh_token", refresh_token);
             object.put("grant_type", "refresh_token");
             String str = post("https://api.weixin.qq.com/sns/oauth2/refresh_token", object.toString());
@@ -330,7 +330,7 @@ public class LoginActivity extends RxBaseActivity {
         requetsInfo += "&app_id=" + "\"" + alipay_app_id + "\"";
         requetsInfo += "&app_name=" + "\"mc\"";
         requetsInfo += "&biz_type=" + "\"openservice\"";
-        requetsInfo += "&pid=" + "\"" + Constants.PARTNER + "\"";
+        requetsInfo += "&pid=" + "\"" + Config.PARTNER + "\"";
         requetsInfo += "&product_id=" + "\"APP_FAST_LOGIN\"";
         requetsInfo += "&scope=" + "\"kuaijie\"";
         requetsInfo += "&target_id=" + "\"kkkkk091129\"";

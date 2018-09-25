@@ -10,4 +10,5 @@ public class Config {
 //    public static final String BASE_URL = "https://www.huahuiyun8.com/";
 //        public static final String BASE_URL = "http://z196219a89.51mypc.cn/";
     public static final String wxJKAppId = "wx9b2230a69901f4bb";
+    public static String PARTNER="2088621960287234";
 }

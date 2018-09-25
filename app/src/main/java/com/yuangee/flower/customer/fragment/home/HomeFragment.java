@@ -11,18 +11,26 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.DepthPageTransformer;
+import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.activity.SearchAcitvity;
 import com.yuangee.flower.customer.activity.SupplierActivity;
 import com.yuangee.flower.customer.activity.WebActivity;
+import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
+import com.yuangee.flower.customer.fragment.shopping.ShoppingPresenter;
+import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
+import com.yuangee.flower.customer.network.HttpResultFunc;
+import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.GlideImageLoader;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 import com.yuangee.flower.customer.widget.SwipeRecyclerView;
@@ -31,9 +39,11 @@ import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hcc on 16/8/4 21:18
@@ -54,6 +64,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
 
     @BindView(R.id.shop_icon)
     ImageView shopIcon;
+    public PageResult<Goods> result;
 
     @OnClick(R.id.notification_icon)
     void toMessage() {
@@ -153,6 +164,11 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     @Override
     protected void finishTask() {
         hideLoading();
+        moreGoodWares.clear();
+        buyAllpeople.clear();
+        newWares.clear();
+        sellWares.clear();
+        shop.clear();
         swipeRecyclerView.complete();
         if (recommends.size() == 0 && genreList.size() == 0) {
             showEmptyView(0);
@@ -223,6 +239,11 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
                     startActivity(intent);
                 }
             }));
+        }
+        if (result.rows.size() > 0) {
+            GoodsAdapter adapter = new GoodsAdapter(getActivity(), 0, mRxManager);
+            adapter.setData(result.rows);
+            mSectionedAdapter.addSection(new HomeBottomSelection(getActivity(), adapter));
         }
         mSectionedAdapter.notifyDataSetChanged();
     }
@@ -321,6 +342,22 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         presenter.getShaop();
         swipeRecyclerView.setVisibility(View.VISIBLE);
         mCustomEmptyView.setVisibility(View.GONE);
+        Observable<PageResult<Goods>> observable = ApiManager.getInstance().api.
+                findWares("", "", "", 0L, null, 10L, null)
+                .map(new HttpResultFunc<PageResult<Goods>>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<PageResult<Goods>>() {
+                    @Override
+                    public void onNext(PageResult<Goods> pageResult) {
+                       result=pageResult;
+                    }
+
+                    @Override
+                    public void onError(int code) {
+
+                    }
+                })));
     }
 
     private void clearData() {

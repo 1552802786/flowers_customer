@@ -19,6 +19,8 @@ import com.yuangee.flower.customer.entity.Setting;
 import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.entity.ShopOrderCount;
 import com.yuangee.flower.customer.entity.SystomConfig;
+import com.yuangee.flower.customer.entity.UserMoneyEntity;
+import com.yuangee.flower.customer.entity.UserScoreEntity;
 import com.yuangee.flower.customer.entity.ZfbResult;
 import com.yuangee.flower.customer.fragment.shopping.FeeCreatOrderResult;
 import com.yuangee.flower.customer.result.BaseResult;
@@ -662,4 +664,17 @@ public interface ApiService {
      */
     @GET("rest/openArea/isCityOpen")
     Observable<BaseResult<AreaResult>> queryOpenCity(@Query("city") String city_name);
+
+    /**
+     * 查询用户积分明细
+     */
+    @FormUrlEncoded
+    @POST("rest/member/listMemberIntegral")
+    Observable<BaseResult<PageResult<UserScoreEntity>>> queryMyScore(@Query("memberId")Long id);
+    /**
+     * 查询用户余额明细
+     */
+    @FormUrlEncoded
+    @POST("rest/member/listMemberRecharge")
+    Observable<BaseResult<PageResult<UserMoneyEntity>>> queryMyMoney(@Query("memberId")Long id);
 }
