@@ -2,26 +2,20 @@
     android:id="@+id/id_drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <!-- 主内容-->
     <include
-        android:visibility="gone"
         android:id="@+id/main_content"
         layout="@layout/shopping_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </include>
+        android:layout_height="match_parent"></include>
 
     <include
-        android:visibility="gone"
         android:id="@+id/main_drawer"
         layout="@layout/shopping_drawer"
         android:layout_width="260dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        />
+        android:layout_gravity="start" />
 
 </android.support.v4.widget.DrawerLayout>

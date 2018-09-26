@@ -32,6 +32,7 @@ import com.yuangee.flower.customer.fragment.AddAnimateListener;
 import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
+import com.yuangee.flower.customer.fragment.UserServiceFragment;
 import com.yuangee.flower.customer.fragment.home.HomeFragment;
 import com.yuangee.flower.customer.fragment.reserve.ReserveFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
@@ -173,7 +174,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     ShoppingCartFragment shoppingCartFragment;
     ReserveFragment reserveFragment;
     MineFragment mineFragment;
-
+    UserServiceFragment serviceFragment;
     public void setBudge(int number) {
         this.selectedNum = number;
         addBadgeAt(2, this.selectedNum);
@@ -198,13 +199,13 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         reserveFragment.setAddAnimateListener(this);
 
         mineFragment = new MineFragment();
-
+         serviceFragment=new UserServiceFragment();
         // add to fragments for adapter
         fragments.add(homeFragment);
         fragments.add(shoppingFragment);
         fragments.add(shoppingCartFragment);
         fragments.add(mineFragment);
-        fragments.add(reserveFragment);
+        fragments.add(serviceFragment);
 
 
         // add to items for change ViewPager item
