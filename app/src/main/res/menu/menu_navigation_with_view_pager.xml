@@ -11,14 +11,14 @@
         android:title="@string/title_buy" />
     <item
         android:id="@+id/i_shopping"
-        android:icon="@drawable/ic_menu_clock"
-        android:title="竞拍" />
+        android:icon="@drawable/ic_menu_cart"
+        android:title="@string/title_shopping_cart" />
     <item
         android:id="@+id/i_reserve"
-        android:icon="@drawable/ic_menu_mine"
-        android:title="我" />
+        android:icon="@drawable/ic_menu_clock"
+        android:title="@string/title_reserve" />
     <item
         android:id="@+id/i_mine"
-        android:icon="@drawable/ic_menu_cart"
-        android:title="客服" />
+        android:icon="@drawable/ic_menu_mine"
+        android:title="@string/title_mine" />
 </menu>
