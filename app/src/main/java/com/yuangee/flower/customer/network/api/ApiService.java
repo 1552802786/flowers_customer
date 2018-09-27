@@ -10,6 +10,7 @@ import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.HadOpenArea;
+import com.yuangee.flower.customer.entity.InformationEntity;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.entity.Message;
 import com.yuangee.flower.customer.entity.ShopOrder;
@@ -677,4 +678,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("rest/member/listMemberRecharge")
     Observable<BaseResult<PageResult<UserMoneyEntity>>> queryMyMoney(@Query("memberId")Long id);
+    /**
+     * 查询仔细
+     */
+    @GET("rest/article/list")
+    Observable<BaseResult<PageResult<InformationEntity>>> queryMessageInfo();
+
 }

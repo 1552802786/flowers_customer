@@ -23,6 +23,7 @@ import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.InformationEntity;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Shop;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
@@ -39,6 +40,7 @@ import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
@@ -65,6 +67,8 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     @BindView(R.id.shop_icon)
     ImageView shopIcon;
     public PageResult<Goods> result;
+    public PageResult<InformationEntity> infoResult;
+    private List<String> infoStr;
 
     @OnClick(R.id.notification_icon)
     void toMessage() {
@@ -174,15 +178,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             showEmptyView(0);
         }
 
-        mSectionedAdapter.addSection(new HomeBigGenreSelection(genreList, getActivity(), new StatelessSection.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Genre genre = genreList.get(position);
-                if (genre == null || genre.genreName == null)
-                    return;
-                toSpecifiedFragmentListener.toShoppingByParams(genre.genreName, null, null);
-            }
-        }));
+        mSectionedAdapter.addSection(new HomeBigGenreSelection(infoStr, getActivity()));
         for (Recommend re : recommends) {
             if ("今日推荐".equalsIgnoreCase(re.module)) {
                 moreGoodWares.add(re);
@@ -337,6 +333,24 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     private void refresh() {
         showLoading(true, "", "请稍候..", null);
         clearData();
+        Observable<PageResult<InformationEntity>> obs = ApiManager.getInstance().api.queryMessageInfo()
+                .map(new HttpResultFunc<PageResult<InformationEntity>>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(obs.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<PageResult<InformationEntity>>() {
+            @Override
+            public void onNext(PageResult<InformationEntity> result) {
+                infoStr = new ArrayList<>();
+                for (InformationEntity entity : result.rows) {
+                    infoStr.add(entity.name);
+                }
+            }
+
+            @Override
+            public void onError(int code) {
+
+            }
+        })));
         presenter.getBannerData();
         presenter.getRecommendData();
         presenter.getShaop();
@@ -348,16 +362,17 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         mRxManager.add(observable.subscribe(new MySubscriber<>(getActivity(), true, true, new HaveErrSubscriberListener<PageResult<Goods>>() {
-                    @Override
-                    public void onNext(PageResult<Goods> pageResult) {
-                       result=pageResult;
-                    }
+            @Override
+            public void onNext(PageResult<Goods> pageResult) {
+                result = pageResult;
+            }
 
-                    @Override
-                    public void onError(int code) {
+            @Override
+            public void onError(int code) {
 
-                    }
-                })));
+            }
+        })));
+
     }
 
     private void clearData() {

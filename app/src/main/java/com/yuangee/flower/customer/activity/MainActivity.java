@@ -113,7 +113,8 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         mLocationClient.start();
         queryOpenCity();
     }
-    private void queryOpenCity(){
+
+    private void queryOpenCity() {
         Observable<PageResult<HadOpenArea>> observable = ApiManager.getInstance().api
                 .searchOpenArea()
                 .map(new HttpResultFunc<PageResult<HadOpenArea>>(MainActivity.this))
@@ -122,7 +123,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<PageResult<HadOpenArea>>() {
             @Override
             public void onNext(PageResult areaResult) {
-                    Log.e("TAG",areaResult.rows.size()+"----");
+                Log.e("TAG", areaResult.rows.size() + "----");
             }
 
             @Override
@@ -133,6 +134,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
 
     }
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -175,6 +177,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     ReserveFragment reserveFragment;
     MineFragment mineFragment;
     UserServiceFragment serviceFragment;
+
     public void setBudge(int number) {
         this.selectedNum = number;
         addBadgeAt(2, this.selectedNum);
@@ -199,21 +202,22 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         reserveFragment.setAddAnimateListener(this);
 
         mineFragment = new MineFragment();
-         serviceFragment=new UserServiceFragment();
+        serviceFragment = new UserServiceFragment();
         // add to fragments for adapter
         fragments.add(homeFragment);
-        fragments.add(shoppingFragment);
         fragments.add(shoppingCartFragment);
-        fragments.add(reserveFragment);
+        fragments.add(shoppingFragment);
         fragments.add(mineFragment);
+        fragments.add(serviceFragment);
 
 
         // add to items for change ViewPager item
         items.put(R.id.i_home, 0);
-        items.put(R.id.i_buy, 1);
-        items.put(R.id.i_shopping, 2);
-        items.put(R.id.i_reserve, 3);
-        items.put(R.id.i_mine, 4);
+        items.put(R.id.i_shopping, 1);
+        items.put(R.id.i_buy, 2);
+        items.put(R.id.i_mine, 3);
+        items.put(R.id.i_reserve, 4);
+
 
         // set adapter
         vp.setOffscreenPageLimit(5);
@@ -235,7 +239,6 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                 if (previousPosition != position) {
                     // only set item when item changed
                     previousPosition = position;
-                    Log.i(TAG, "-----bnve-------- previous item:" + bnve.getCurrentItem() + " current item:" + position + " ------------------");
                     vp.setCurrentItem(position);
                 }
                 return true;

@@ -6,19 +6,21 @@
         android:icon="@drawable/ic_menu_flower"
         android:title="@string/title_home" />
     <item
-        android:id="@+id/i_buy"
-        android:icon="@drawable/ic_menu_shop"
-        android:title="@string/title_buy" />
-    <item
         android:id="@+id/i_shopping"
         android:icon="@drawable/ic_menu_cart"
         android:title="@string/title_shopping_cart" />
     <item
-        android:id="@+id/i_reserve"
-        android:icon="@drawable/ic_menu_clock"
-        android:title="@string/title_reserve" />
+        android:id="@+id/i_buy"
+        android:icon="@drawable/ic_menu_fenlei"
+        android:title="分类" />
+
     <item
         android:id="@+id/i_mine"
         android:icon="@drawable/ic_menu_mine"
         android:title="@string/title_mine" />
+    <item
+        android:id="@+id/i_reserve"
+        android:icon="@drawable/ic_kefu_menu"
+        android:title="客服" />
+
 </menu>

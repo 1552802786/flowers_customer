@@ -8,12 +8,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sunfusheng.marqueeview.MarqueeView;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.TypeAdapter;
 import com.yuangee.flower.customer.entity.Genre;
+import com.yuangee.flower.customer.widget.AutoMarqueeTextView;
 import com.yuangee.flower.customer.widget.SpaceItemDecoration;
 import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,17 +27,17 @@ import butterknife.ButterKnife;
  */
 
 public class HomeBigGenreSelection extends StatelessSection {
-    private List<Genre> genreList;
-
-    private OnItemClickListener mOnItemClickListener;   //声明监听器接口
 
     private Context mContext;
+    private List<String> infoStr=new ArrayList<>();
 
-    public HomeBigGenreSelection(List<Genre> genreList, Context mContext, OnItemClickListener mOnItemClickListener) {
+    public HomeBigGenreSelection(List<String> info, Context mContext) {
         super(R.layout.type_con, R.layout.layout_home_recommend_empty);
-        this.genreList = genreList;
         this.mContext = mContext;
-        this.mOnItemClickListener = mOnItemClickListener;
+        info.add("1111111");
+        info.add("22222222");
+        info.add("33333333");
+        info.add("444444444");
     }
 
     @Override
@@ -59,36 +62,25 @@ public class HomeBigGenreSelection extends StatelessSection {
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         final BigGenerHolder holder1 = (BigGenerHolder) holder;
-        TypeAdapter typeAdapter = new TypeAdapter(mContext);
-        RecyclerView.LayoutManager horManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        holder1.recyclerView.setLayoutManager(horManager);
-        holder1.recyclerView.setAdapter(typeAdapter);
-        holder1.recyclerView.addItemDecoration(new SpaceItemDecoration(0, 0, 30, 30, LinearLayout.HORIZONTAL));
+        holder1.infoTv.setNotices(infoStr);
 
-        holder1.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                showOrHideRow(recyclerView, holder1);
-            }
-        });
-        typeAdapter.setData(genreList);
-        typeAdapter.setOnItemClickListener(mOnItemClickListener);
     }
 
     //自定义holder
     static class BigGenerHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.type_recycler)
-        RecyclerView recyclerView;
-
-        @BindView(R.id.right_row)
-        ImageView rightRow;
+        @BindView(R.id.buy_now)
+        View buy;
+        @BindView(R.id.jingpai)
+        View jinpai;
+        @BindView(R.id.dazong)
+        View dazong;
+        @BindView(R.id.yuding)
+        View yuding;
+        @BindView(R.id.lingjuan)
+        View lingjuan;
+        @BindView(R.id.tv_notice)
+        MarqueeView infoTv;
 
         public BigGenerHolder(View itemView) {
             super(itemView);
@@ -99,15 +91,6 @@ public class HomeBigGenreSelection extends StatelessSection {
     static class EmptyViewHolder extends RecyclerView.ViewHolder {
         EmptyViewHolder(View itemView) {
             super(itemView);
-        }
-    }
-
-    public void showOrHideRow(RecyclerView recyclerView, BigGenerHolder holder) {
-        boolean isBottom = !recyclerView.canScrollHorizontally(1);//返回false不能往右滑动，即代表到最右边了
-        if (isBottom) {
-            holder.rightRow.setVisibility(View.INVISIBLE);
-        } else {
-            holder.rightRow.setVisibility(View.VISIBLE);
         }
     }
 }
