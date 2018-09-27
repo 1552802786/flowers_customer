@@ -115,22 +115,22 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     }
 
     private void queryOpenCity() {
-        Observable<PageResult<HadOpenArea>> observable = ApiManager.getInstance().api
-                .searchOpenArea()
-                .map(new HttpResultFunc<PageResult<HadOpenArea>>(MainActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<PageResult<HadOpenArea>>() {
-            @Override
-            public void onNext(PageResult areaResult) {
-                Log.e("TAG", areaResult.rows.size() + "----");
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        })));
+//        Observable<PageResult<HadOpenArea>> observable = ApiManager.getInstance().api
+//                .searchOpenArea()
+//                .map(new HttpResultFunc<PageResult<HadOpenArea>>(MainActivity.this))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<PageResult<HadOpenArea>>() {
+//            @Override
+//            public void onNext(PageResult areaResult) {
+//                Log.e("TAG", areaResult.rows.size() + "----");
+//            }
+//
+//            @Override
+//            public void onError(int code) {
+//
+//            }
+//        })));
 
 
     }

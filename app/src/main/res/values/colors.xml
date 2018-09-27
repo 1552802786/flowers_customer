@@ -20,4 +20,5 @@
 
     <color name="txt_black">#323344</color>
     <color name="txt_normal">#999999</color>
+    <color name="red">#ff0000</color>
 </resources>

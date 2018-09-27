@@ -17,6 +17,7 @@ import com.yuangee.flower.customer.widget.SpaceItemDecoration;
 import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,10 +35,11 @@ public class HomeBigGenreSelection extends StatelessSection {
     public HomeBigGenreSelection(List<String> info, Context mContext) {
         super(R.layout.type_con, R.layout.layout_home_recommend_empty);
         this.mContext = mContext;
-        info.add("1111111");
-        info.add("22222222");
-        info.add("33333333");
-        info.add("444444444");
+        infoStr.add("1111111");
+        infoStr.add("22222222");
+        infoStr.add("33333333");
+        infoStr.add("444444444");
+
     }
 
     @Override
@@ -62,7 +64,9 @@ public class HomeBigGenreSelection extends StatelessSection {
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         final BigGenerHolder holder1 = (BigGenerHolder) holder;
-        holder1.infoTv.setNotices(infoStr);
+        holder1.infoTv.startWithList(infoStr);
+        Collections.reverse(infoStr);
+        holder1.infoTv1.startWithList(infoStr);
 
     }
 
@@ -81,6 +85,8 @@ public class HomeBigGenreSelection extends StatelessSection {
         View lingjuan;
         @BindView(R.id.tv_notice)
         MarqueeView infoTv;
+        @BindView(R.id.tv_notice1)
+        MarqueeView infoTv1;
 
         public BigGenerHolder(View itemView) {
             super(itemView);

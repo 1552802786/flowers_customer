@@ -67,7 +67,6 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     @BindView(R.id.shop_icon)
     ImageView shopIcon;
     public PageResult<Goods> result;
-    public PageResult<InformationEntity> infoResult;
     private List<String> infoStr;
 
     @OnClick(R.id.notification_icon)
@@ -333,24 +332,24 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     private void refresh() {
         showLoading(true, "", "请稍候..", null);
         clearData();
-        Observable<PageResult<InformationEntity>> obs = ApiManager.getInstance().api.queryMessageInfo()
-                .map(new HttpResultFunc<PageResult<InformationEntity>>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(obs.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<PageResult<InformationEntity>>() {
-            @Override
-            public void onNext(PageResult<InformationEntity> result) {
-                infoStr = new ArrayList<>();
-                for (InformationEntity entity : result.rows) {
-                    infoStr.add(entity.name);
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        })));
+//        Observable<PageResult<InformationEntity>> obs = ApiManager.getInstance().api.queryMessageInfo()
+//                .map(new HttpResultFunc<PageResult<InformationEntity>>(getActivity()))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//        mRxManager.add(obs.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<PageResult<InformationEntity>>() {
+//            @Override
+//            public void onNext(PageResult<InformationEntity> result) {
+//                infoStr = new ArrayList<>();
+//                for (InformationEntity entity : result.rows) {
+//                    infoStr.add(entity.name);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(int code) {
+//
+//            }
+//        })));
         presenter.getBannerData();
         presenter.getRecommendData();
         presenter.getShaop();

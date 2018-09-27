@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:gravity="center"
     android:orientation="vertical">
 
     <LinearLayout
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
 
         <RelativeLayout
             android:id="@+id/buy_now"
@@ -76,27 +77,41 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:visibility="visible">
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginLeft="5dp"
             android:background="@drawable/info_icon" />
 
         <com.sunfusheng.marqueeview.MarqueeView
             android:id="@+id/tv_notice"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             app:mvAnimDuration="1000"
+            android:layout_marginLeft="70dp"
             app:mvDirection="bottom_to_top"
             app:mvInterval="3000"
             app:mvSingleLine="true"
-            app:mvTextColor="@color/white"
+            app:mvTextColor="@color/red"
             app:mvTextSize="14sp" />
-    </LinearLayout>
+        <com.sunfusheng.marqueeview.MarqueeView
+            android:id="@+id/tv_notice1"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            app:mvAnimDuration="1000"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/tv_notice"
+            android:layout_marginLeft="70dp"
+            app:mvDirection="bottom_to_top"
+            app:mvInterval="3000"
+            app:mvSingleLine="true"
+            app:mvTextColor="@color/red"
+            app:mvTextSize="14sp" />
+    </RelativeLayout>
 </LinearLayout>
