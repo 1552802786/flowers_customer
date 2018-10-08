@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/buy_home"
+        android:checked="true"
+        android:icon="@drawable/ic_buy_index"
+        android:title="@string/title_home" />
+    <item
+        android:id="@+id/buy_shopping"
+        android:icon="@drawable/ic_buy_gouwu"
+        android:title="购物" />
+    <item
+        android:id="@+id/buy_big"
+        android:icon="@drawable/ic_buy_big"
+        android:title="大宗" />
+    <item
+        android:id="@+id/buy_fenlei"
+        android:icon="@drawable/ic_buy_fenlei"
+        android:title="分类" />
+
+    <item
+        android:id="@+id/buy_yuding"
+        android:icon="@drawable/ic_buy_yuding"
+        android:title="预订" />
+    <item
+        android:id="@+id/buy_jingpai"
+        android:icon="@drawable/ic_buy_jingpai"
+        android:title="竞拍" />
+    <item
+        android:id="@+id/buy_shoppingcart"
+        android:icon="@drawable/ic_menu_cart"
+        android:title="@string/title_shopping_cart" />
+</menu>

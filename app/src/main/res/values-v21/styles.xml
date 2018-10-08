@@ -32,5 +32,14 @@
         <item name="android:statusBarColor">@color/gray_light</item>
         <item name="android:windowTranslucentNavigation">false</item>
     </style>
-
+    <!-- 窗口化activity的形式 -->
+    <style name="dialogActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        //设置为true，背景就是灰色的了，反正你一看就知道是设置什么的
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 </resources>

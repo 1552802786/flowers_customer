@@ -19,12 +19,15 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.bigkoo.alertview.AlertView;
+import com.google.gson.Gson;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.adapter.VpAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.AreaResult;
+import com.yuangee.flower.customer.entity.CouponEntity;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.HadOpenArea;
 import com.yuangee.flower.customer.entity.SystomConfig;
@@ -41,13 +44,21 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.PageResult;
+import com.yuangee.flower.customer.util.JsonUtil;
 import com.yuangee.flower.customer.widget.AddCartAnimation;
+import com.yuangee.flower.customer.widget.CouponDialog;
 import com.yuangee.flower.customer.widget.NoScrollViewPager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 import rx.Observable;
@@ -112,6 +123,29 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
         queryOpenCity();
+    }
+
+    private void queryCoupon() {
+//          List<CouponEntity> coupons= JsonUtil.jsonToArray()
+        CouponDialog dialog = new CouponDialog(this, R.style.dialogActivity);
+        dialog.show();
+    }
+
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    OkHttpClient client = new OkHttpClient();
+
+    public String post(String url, String json) throws IOException {
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            throw new IOException("Unexpected code " + response);
+        }
     }
 
     private void queryOpenCity() {
@@ -236,7 +270,10 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int position = items.get(item.getItemId());
-                if (previousPosition != position) {
+                if (position == 2) {
+                    Intent it=new Intent(MainActivity.this,BuyMianActivity.class);
+                    startActivity(it);
+                } else if (previousPosition != position) {
                     // only set item when item changed
                     previousPosition = position;
                     vp.setCurrentItem(position);
@@ -253,7 +290,6 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
             @Override
             public void onPageSelected(int position) {
-                Log.i(TAG, "-----ViewPager-------- previous item:" + bnve.getCurrentItem() + " current item:" + position + " ------------------");
                 bnve.setCurrentItem(position);
             }
 
@@ -306,27 +342,6 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         addBadgeAt(2, this.selectedNum);
     }
 
-    /**
-     * view pager adapter
-     */
-    private static class VpAdapter extends FragmentPagerAdapter {
-        private List<Fragment> data;
-
-        public VpAdapter(FragmentManager fm, List<Fragment> data) {
-            super(fm);
-            this.data = data;
-        }
-
-        @Override
-        public int getCount() {
-            return data.size();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return data.get(position);
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -378,6 +393,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
+            queryCoupon();
             Observable<AreaResult> observable = ApiManager.getInstance().api
                     .queryOpenCity(location.getCity())
                     .map(new HttpResultFunc<AreaResult>(MainActivity.this))
@@ -391,6 +407,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
                 @Override
                 public void onError(int code) {
+
                     new AlertView("提示", "当前城市未开通云购服务\n您可选择其他地区进行查看",
                             null, new String[]{"确定"}, null, MainActivity.this,
                             AlertView.Style.Alert, null).show();

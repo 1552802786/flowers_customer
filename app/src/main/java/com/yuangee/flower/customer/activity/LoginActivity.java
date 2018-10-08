@@ -300,7 +300,7 @@ public class LoginActivity extends RxBaseActivity {
             String str = post("https://api.weixin.qq.com/sns/oauth2/refresh_token", object.toString());
             JSONObject obj = new JSONObject(str);
             //是否超时
-            if (object.has("errcode") && object.getString("errcode").equalsIgnoreCase("42002")) {
+            if (object.has("errcode") && obj.getString("errcode").equalsIgnoreCase("42002")) {
                 //发起登录请求
                 final SendAuth.Req req = new SendAuth.Req();
                 req.scope = "snsapi_userinfo";

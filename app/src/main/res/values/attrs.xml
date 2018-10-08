@@ -18,4 +18,5 @@
         <attr name="pickerview_dividerColor" format="color"/>
         <attr name="pickerview_lineSpacingMultiplier" format="float"/>
     </declare-styleable>
+
 </resources>

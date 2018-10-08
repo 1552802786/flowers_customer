@@ -2,84 +2,128 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical">
 
     <LinearLayout
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="60dp"
+        android:gravity="center_vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/buy_now"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/buy_icon" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/buy_icon" />
-        </RelativeLayout>
+                android:layout_marginTop="2dp"
+                android:text="购买"
+                android:textSize="12dp" />
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/jingpai"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/icon_jinpai" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/icon_jinpai" />
-        </RelativeLayout>
+                android:layout_marginTop="2dp"
+                android:text="竞拍"
+                android:textSize="12dp" />
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/dazong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/icon_dazonggou" />
-        </RelativeLayout>
 
-        <RelativeLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="大宗"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/yuding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/icon_yuding" />
-        </RelativeLayout>
 
-        <RelativeLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="大宗"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/lingjuan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/icon_lingjuan" />
-        </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="大宗"
+                android:textSize="12dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:gravity="center_vertical"
         android:visibility="visible">
 
@@ -93,21 +137,22 @@
             android:id="@+id/tv_notice"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            app:mvAnimDuration="1000"
             android:layout_marginLeft="70dp"
+            app:mvAnimDuration="1000"
             app:mvDirection="bottom_to_top"
             app:mvInterval="3000"
             app:mvSingleLine="true"
             app:mvTextColor="@color/red"
             app:mvTextSize="14sp" />
+
         <com.sunfusheng.marqueeview.MarqueeView
             android:id="@+id/tv_notice1"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            app:mvAnimDuration="1000"
-            android:layout_marginTop="4dp"
             android:layout_below="@+id/tv_notice"
             android:layout_marginLeft="70dp"
+            android:layout_marginTop="4dp"
+            app:mvAnimDuration="1000"
             app:mvDirection="bottom_to_top"
             app:mvInterval="3000"
             app:mvSingleLine="true"

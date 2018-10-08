@@ -35,10 +35,10 @@ public class HomeBigGenreSelection extends StatelessSection {
     public HomeBigGenreSelection(List<String> info, Context mContext) {
         super(R.layout.type_con, R.layout.layout_home_recommend_empty);
         this.mContext = mContext;
-        infoStr.add("1111111");
-        infoStr.add("22222222");
-        infoStr.add("33333333");
-        infoStr.add("444444444");
+        infoStr.add("红玫瑰今日竞拍9.9元起");
+        infoStr.add("新货上架，芍药上架，市场新低");
+        infoStr.add("端午节当季花卉活动");
+        infoStr.add("六一儿童节，鲜花促销活动");
 
     }
 
