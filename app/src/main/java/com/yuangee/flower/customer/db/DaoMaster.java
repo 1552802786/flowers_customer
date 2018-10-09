@@ -17,39 +17,38 @@ import org.greenrobot.greendao.identityscope.IdentityScopeType;
  * Master of DAO (schema version 7): knows all DAOs.
  */
 public class DaoMaster extends AbstractDaoMaster {
-
     public static final int SCHEMA_VERSION = 7;
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        AddressDao.createTable(db, ifNotExists);
-        AuctionTimeDao.createTable(db, ifNotExists);
-        BusinessTimeDao.createTable(db, ifNotExists);
-        CouponDao.createTable(db, ifNotExists);
-        DestineTimeDao.createTable(db, ifNotExists);
-        ExpressDao.createTable(db, ifNotExists);
-        GenreDao.createTable(db, ifNotExists);
-        GenreSubDao.createTable(db, ifNotExists);
-        MemberDao.createTable(db, ifNotExists);
         MemberTokenDao.createTable(db, ifNotExists);
+        AddressDao.createTable(db, ifNotExists);
         ShopDao.createTable(db, ifNotExists);
+        ExpressDao.createTable(db, ifNotExists);
+        AuctionTimeDao.createTable(db, ifNotExists);
+        CouponDao.createTable(db, ifNotExists);
         UpdateWaresDao.createTable(db, ifNotExists);
+        GenreDao.createTable(db, ifNotExists);
+        MemberDao.createTable(db, ifNotExists);
+        DestineTimeDao.createTable(db, ifNotExists);
+        BusinessTimeDao.createTable(db, ifNotExists);
+        GenreSubDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        AddressDao.dropTable(db, ifExists);
-        AuctionTimeDao.dropTable(db, ifExists);
-        BusinessTimeDao.dropTable(db, ifExists);
-        CouponDao.dropTable(db, ifExists);
-        DestineTimeDao.dropTable(db, ifExists);
-        ExpressDao.dropTable(db, ifExists);
-        GenreDao.dropTable(db, ifExists);
-        GenreSubDao.dropTable(db, ifExists);
-        MemberDao.dropTable(db, ifExists);
         MemberTokenDao.dropTable(db, ifExists);
+        AddressDao.dropTable(db, ifExists);
         ShopDao.dropTable(db, ifExists);
+        ExpressDao.dropTable(db, ifExists);
+        AuctionTimeDao.dropTable(db, ifExists);
+        CouponDao.dropTable(db, ifExists);
         UpdateWaresDao.dropTable(db, ifExists);
+        GenreDao.dropTable(db, ifExists);
+        MemberDao.dropTable(db, ifExists);
+        DestineTimeDao.dropTable(db, ifExists);
+        BusinessTimeDao.dropTable(db, ifExists);
+        GenreSubDao.dropTable(db, ifExists);
     }
 
     /**
@@ -68,18 +67,18 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(AddressDao.class);
-        registerDaoClass(AuctionTimeDao.class);
-        registerDaoClass(BusinessTimeDao.class);
-        registerDaoClass(CouponDao.class);
-        registerDaoClass(DestineTimeDao.class);
-        registerDaoClass(ExpressDao.class);
-        registerDaoClass(GenreDao.class);
-        registerDaoClass(GenreSubDao.class);
-        registerDaoClass(MemberDao.class);
         registerDaoClass(MemberTokenDao.class);
+        registerDaoClass(AddressDao.class);
         registerDaoClass(ShopDao.class);
+        registerDaoClass(ExpressDao.class);
+        registerDaoClass(AuctionTimeDao.class);
+        registerDaoClass(CouponDao.class);
         registerDaoClass(UpdateWaresDao.class);
+        registerDaoClass(GenreDao.class);
+        registerDaoClass(MemberDao.class);
+        registerDaoClass(DestineTimeDao.class);
+        registerDaoClass(BusinessTimeDao.class);
+        registerDaoClass(GenreSubDao.class);
     }
 
     public DaoSession newSession() {

@@ -149,7 +149,6 @@ public class DaoSession extends AbstractDaoSession {
         destineTimeDaoConfig.clearIdentityScope();
         businessTimeDaoConfig.clearIdentityScope();
         genreSubDaoConfig.clearIdentityScope();
-
     }
 
     public MemberTokenDao getMemberTokenDao() {
