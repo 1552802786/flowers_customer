@@ -5,6 +5,7 @@ import com.yuangee.flower.customer.entity.AreaResult;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.CartItem;
 import com.yuangee.flower.customer.entity.Coupon;
+import com.yuangee.flower.customer.entity.CouponEntity;
 import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.Express;
 import com.yuangee.flower.customer.entity.Genre;
@@ -671,17 +672,24 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("rest/member/listMemberIntegral")
-    Observable<BaseResult<PageResult<UserScoreEntity>>> queryMyScore(@Query("memberId")Long id);
+    Observable<BaseResult<PageResult<UserScoreEntity>>> queryMyScore(@Query("memberId") Long id);
+
     /**
      * 查询用户余额明细
      */
     @FormUrlEncoded
     @POST("rest/member/listMemberRecharge")
-    Observable<BaseResult<PageResult<UserMoneyEntity>>> queryMyMoney(@Query("memberId")Long id);
+    Observable<BaseResult<PageResult<UserMoneyEntity>>> queryMyMoney(@Query("memberId") Long id);
+
     /**
      * 查询仔细
      */
     @GET("rest/article/list")
     Observable<BaseResult<PageResult<InformationEntity>>> queryMessageInfo();
 
+    /**
+     * 查询优惠券
+     */
+    @GET("rest/activity/findNewRegCoupon")
+    Observable<BaseResult<PageResult<CouponEntity>>> queryNewCoupon(@Query("memberId") Long id);
 }

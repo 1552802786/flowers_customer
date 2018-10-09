@@ -22,6 +22,9 @@ import com.bigkoo.alertview.AlertView;
 import com.google.gson.Gson;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.Config;
+import com.yuangee.flower.customer.FlowerApp;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.VpAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
@@ -49,11 +52,16 @@ import com.yuangee.flower.customer.widget.AddCartAnimation;
 import com.yuangee.flower.customer.widget.CouponDialog;
 import com.yuangee.flower.customer.widget.NoScrollViewPager;
 
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import cn.qqtheme.framework.entity.Area;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -126,9 +134,24 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     }
 
     private void queryCoupon() {
-//          List<CouponEntity> coupons= JsonUtil.jsonToArray()
-        CouponDialog dialog = new CouponDialog(this, R.style.dialogActivity);
-        dialog.show();
+        Observable<PageResult<CouponEntity>> observable = ApiManager.getInstance().api.queryNewCoupon(App.getPassengerId())
+                .map(new HttpResultFunc<PageResult<CouponEntity>>(MainActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(observable.subscribe(new MySubscriber<>(this, false, true, new HaveErrSubscriberListener<PageResult<CouponEntity>>() {
+            @Override
+            public void onNext(PageResult<CouponEntity> couponEntityPageResult) {
+                List<CouponEntity> entities = couponEntityPageResult.rows;
+                CouponDialog dialog = new CouponDialog(MainActivity.this, R.style.dialogActivity, entities);
+                dialog.show();
+            }
+
+            @Override
+            public void onError(int code) {
+
+            }
+        })));
+
     }
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -149,23 +172,30 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     }
 
     private void queryOpenCity() {
-//        Observable<PageResult<HadOpenArea>> observable = ApiManager.getInstance().api
-//                .searchOpenArea()
-//                .map(new HttpResultFunc<PageResult<HadOpenArea>>(MainActivity.this))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//        mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, false, true, new HaveErrSubscriberListener<PageResult<HadOpenArea>>() {
-//            @Override
-//            public void onNext(PageResult areaResult) {
-//                Log.e("TAG", areaResult.rows.size() + "----");
-//            }
-//
-//            @Override
-//            public void onError(int code) {
-//
-//            }
-//        })));
+        String url = Config.BASE_URL + "rest/openArea/listAll";
+        RequestParams params = new RequestParams(url);
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                List<HadOpenArea> areas = JsonUtil.jsonToArray(result, HadOpenArea[].class);
+                Log.e("TAG", areas.size() + "");
+            }
 
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
 
     }
 
@@ -271,7 +301,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int position = items.get(item.getItemId());
                 if (position == 2) {
-                    Intent it=new Intent(MainActivity.this,BuyMianActivity.class);
+                    Intent it = new Intent(MainActivity.this, BuyMianActivity.class);
                     startActivity(it);
                 } else if (previousPosition != position) {
                     // only set item when item changed
