@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
@@ -30,6 +31,7 @@ import com.yuangee.flower.customer.adapter.VpAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.AreaResult;
+import com.yuangee.flower.customer.entity.Coupon;
 import com.yuangee.flower.customer.entity.CouponEntity;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.HadOpenArea;
@@ -131,44 +133,38 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
         //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
         queryOpenCity();
+        queryCoupon();
     }
 
     private void queryCoupon() {
-        Observable<PageResult<CouponEntity>> observable = ApiManager.getInstance().api.queryNewCoupon(App.getPassengerId())
-                .map(new HttpResultFunc<PageResult<CouponEntity>>(MainActivity.this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(observable.subscribe(new MySubscriber<>(this, false, true, new HaveErrSubscriberListener<PageResult<CouponEntity>>() {
+        String url = Config.BASE_URL + "rest/activity/findNewRegCoupon";
+        RequestParams params = new RequestParams(url);
+        params.addBodyParameter("memberId", App.getPassengerId() + "");
+        x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
-            public void onNext(PageResult<CouponEntity> couponEntityPageResult) {
-                List<CouponEntity> entities = couponEntityPageResult.rows;
+            public void onSuccess(String result) {
+                JSONObject object = JSONObject.parseObject(result);
+                List<CouponEntity> entities = JsonUtil.jsonToArray(object.getString("data"), CouponEntity[].class);
                 CouponDialog dialog = new CouponDialog(MainActivity.this, R.style.dialogActivity, entities);
                 dialog.show();
             }
 
             @Override
-            public void onError(int code) {
+            public void onError(Throwable ex, boolean isOnCallback) {
 
             }
-        })));
 
-    }
+            @Override
+            public void onCancelled(CancelledException cex) {
 
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    OkHttpClient client = new OkHttpClient();
+            }
 
-    public String post(String url, String json) throws IOException {
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-        Response response = client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            throw new IOException("Unexpected code " + response);
-        }
+            @Override
+            public void onFinished() {
+
+            }
+        });
+
     }
 
     private void queryOpenCity() {
@@ -423,7 +419,6 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
-            queryCoupon();
             Observable<AreaResult> observable = ApiManager.getInstance().api
                     .queryOpenCity(location.getCity())
                     .map(new HttpResultFunc<AreaResult>(MainActivity.this))

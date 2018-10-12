@@ -15,7 +15,7 @@ public class CouponEntity implements Serializable{
     public String activityId;
     public String cutType;
     public String couponTime;
-    public String updated;
+    public Long updated;
     public String couponRuleShops;
     public String couponRuleWares;
     public boolean hasGet;

@@ -250,7 +250,6 @@ public class MyHttpLoggingInterceptor implements Interceptor{
                 logger.log("<-- END HTTP (" + buffer.size() + "-byte body)");
             }
         }
-
         return response;
     }
 

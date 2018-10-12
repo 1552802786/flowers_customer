@@ -103,4 +103,5 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.sunfusheng:marqueeview:1.3.3'
     compile 'me.majiajie:pager-bottom-tab-strip:2.3.0'
+    compile 'org.xutils:xutils:3.5.0'
 }

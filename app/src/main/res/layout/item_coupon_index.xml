@@ -19,6 +19,7 @@
         android:textSize="11sp" />
 
     <TextView
+        android:id="@+id/price_coupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -38,6 +39,7 @@
         android:background="@drawable/vertical_line" />
 
     <TextView
+        android:id="@+id/coupon_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -48,7 +50,6 @@
         android:textSize="14sp" />
 
     <TextView
-
         android:id="@+id/get_now"
         android:layout_width="64dp"
         android:layout_height="20dp"

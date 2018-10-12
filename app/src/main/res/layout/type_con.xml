@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="大宗"
+                android:text="预订"
                 android:textSize="12dp" />
         </LinearLayout>
 
@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="大宗"
+                android:text="领券"
                 android:textSize="12dp" />
         </LinearLayout>
     </LinearLayout>

@@ -690,6 +690,6 @@ public interface ApiService {
     /**
      * 查询优惠券
      */
-    @GET("rest/activity/findNewRegCoupon")
+    @GET("")
     Observable<BaseResult<PageResult<CouponEntity>>> queryNewCoupon(@Query("memberId") Long id);
 }

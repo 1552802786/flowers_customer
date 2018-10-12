@@ -10,6 +10,8 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.util.CrashHandler;
 
+import org.xutils.x;
+
 import cn.jpush.android.api.JPushInterface;
 
 /**
@@ -57,7 +59,7 @@ public class FlowerApp extends MultiDexApplication {
 
         initDataBase();
         initJPush();
-
+        x.Ext.init(this);
         SDKInitializer.initialize(this);
     }
 
