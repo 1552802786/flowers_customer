@@ -5,16 +5,13 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
@@ -125,7 +122,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         if (parentAdapter == null) {
             parentAdapter = new TextChooseAdapter(generNameList);
         }
-        showDailog(parentAdapter);
+        showDialog(parentAdapter);
     }
 
     @OnClick(R.id.child_type)
@@ -134,7 +131,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         if (childAdapter == null) {
             childAdapter = new TextChooseAdapter(generSubNameList);
         }
-        showDailog(childAdapter);
+        showDialog(childAdapter);
     }
 
     @OnClick(R.id.product_name)
@@ -143,7 +140,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         if (productAdapter == null) {
             productAdapter = new TextChooseAdapter(nameList);
         }
-        showDailog(productAdapter);
+        showDialog(productAdapter);
     }
 
     @OnClick(R.id.search_btn)
@@ -268,7 +265,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
 
     private String choosedString;
 
-    public void showDailog(final TextChooseAdapter adapter) {
+    public void showDialog(final TextChooseAdapter adapter) {
         bottomView = new BottomView(this,
                 R.style.BottomViewTheme_Defalut, R.layout.bottom_view);
         View view = bottomView.getView();
