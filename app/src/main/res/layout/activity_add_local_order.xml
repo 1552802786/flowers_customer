@@ -32,7 +32,7 @@
                     android:src="@drawable/list_icon" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:drawablePadding="4dp"
                     android:gravity="center_vertical"
@@ -40,6 +40,26 @@
                     android:text="添加商品"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/search_local"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/corners_bg_white_stroke"
+                    android:textCursorDrawable="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/search_btn"
+                    android:layout_width="44dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/corners_color_accent_small"
+                    android:gravity="center"
+                    android:text="搜索"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
 
@@ -95,8 +115,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -110,8 +130,8 @@
                         android:gravity="center"
                         android:inputType="number"
                         android:padding="2dp"
-                        android:paddingBottom="4dp"
                         android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:textSize="16sp" />

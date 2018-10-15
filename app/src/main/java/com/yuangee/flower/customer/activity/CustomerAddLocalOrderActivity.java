@@ -1,9 +1,13 @@
 package com.yuangee.flower.customer.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,9 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -53,25 +60,25 @@ import rx.schedulers.Schedulers;
 public class CustomerAddLocalOrderActivity extends RxBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    
+
     @BindView(R.id.parent_type)
     TextView parentType;
-    
+
     @BindView(R.id.child_type)
     TextView childType;
-    
+
     @BindView(R.id.sub_number)
     EditText subNumber;
-    
+
     @BindView(R.id.product_name)
     TextView productName;
-    
+
     @BindView(R.id.user_name_txt)
     EditText userName;
-    
+
     @BindView(R.id.user_phone_txt)
     EditText userPhone;
-    
+
     @BindView(R.id.confirm_list)
     ExpandableHeightListView confirmList;
     private BottomView bottomView;
@@ -83,7 +90,10 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
     private ConfirmAdapter confirmAdapter;
     private String confirmString;
     private long shopId;
-    
+    @BindView(R.id.search_local)
+    EditText search;
+    private AlertDialog dialog;
+
     @OnClick(R.id.add_btn_icon)
     void addOneInfo() {
         if (!TextUtils.isEmpty(subNumber.getText().toString())) {
@@ -92,7 +102,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                 if (g.genreName.equalsIgnoreCase(parentType.getText().toString())
                         && g.genreSubName.equalsIgnoreCase(childType.getText().toString())
                         && (g.name + "(" + g.color + "/¥" + g.unitPrice + "/" + g.salesVolume + ")").equalsIgnoreCase(productName.getText().toString())) {
-                    
+
                     WaresNumber number = new WaresNumber();
                     number.waresId = g.id;
                     number.quantity = Integer.parseInt(subNumber.getText().toString().trim());
@@ -108,7 +118,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         }
         confirmAdapter.notifyDataSetChanged();
     }
-    
+
     @OnClick(R.id.parent_type)
     void chooseParentType() {
         showFlag = 0;
@@ -117,7 +127,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         }
         showDailog(parentAdapter);
     }
-    
+
     @OnClick(R.id.child_type)
     void chooseChildType() {
         showFlag = 1;
@@ -126,7 +136,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         }
         showDailog(childAdapter);
     }
-    
+
     @OnClick(R.id.product_name)
     void chooseProductName() {
         showFlag = 2;
@@ -135,10 +145,41 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         }
         showDailog(productAdapter);
     }
-    
+
+    @OnClick(R.id.search_btn)
+    void searchLocalGood() {
+        RadioButton button = new RadioButton(this);
+        ScrollView scrollView = new ScrollView(this);
+        final RadioGroup group = new RadioGroup(this);
+        scrollView.addView(group);
+        for (Goods g : goodsList) {
+            if (g.name.contains(search.getText().toString().trim())) {
+                button.setText(g.genreName + "-" + g.genreSubName + "-" + g.name + "(" + g.color + "/¥" + g.unitPrice + "/" + g.salesVolume + ")");
+                group.addView(button);
+            }
+        }
+        dialog = new AlertDialog.Builder(this)
+                .setTitle("选择商品")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int a) {
+                        for (int i = 0; i < group.getChildCount(); i++) {
+                            RadioButton button = (RadioButton) group.getChildAt(i);
+                            if (button.isChecked()) {
+                                String[] str = button.getText().toString().split("-");
+                                parentType.setText(str[0]);
+                                childType.setText(str[1]);
+                                productName.setText(str[2]);
+                            }
+                        }
+                    }
+                }).setView(scrollView).create();
+        dialog.show();
+    }
+
     List<WaresNumber> waresNumbers = new ArrayList<>();
     List<String> addString = new ArrayList<>();
-    
+
     @OnClick(R.id.add_order_btn)
     void addLocalOrder() {
         if (waresNumbers.size() < 1) {
@@ -146,9 +187,9 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         }
         orderIng(waresNumbers);
     }
-    
+
     private void orderIng(List<WaresNumber> waresNumbers) {
-        
+
         Gson gson = new Gson();
         Member member = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId());
         Observable<Object> observable = ApiManager.getInstance().api
@@ -156,7 +197,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                 .map(new HttpResultFunc<>(this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        
+
         mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new NoErrSubscriberListener<Object>() {
             @Override
             public void onNext(Object o) {
@@ -165,19 +206,19 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
             }
         })));
     }
-    
+
     private List<Goods> goodsList = new ArrayList<>();
     private Context mContext;
     private List<String> generNameList = new ArrayList<>();
     private List<String> generSubNameList = new ArrayList<>();
     private List<String> nameList = new ArrayList<>();
     private List<Map<String, String>> recorde = new ArrayList<>();
-    
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_add_local_order;
     }
-    
+
     @Override
     public void initViews(Bundle savedInstanceState) {
         shopId = getIntent().getLongExtra("shopId", -1);
@@ -186,7 +227,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         confirmAdapter = new ConfirmAdapter();
         confirmList.setAdapter(confirmAdapter);
     }
-    
+
     private void updateSubData(String parentType) {
         generSubNameList.clear();
         for (Goods good : goodsList) {
@@ -198,7 +239,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         }
         updateNameData(generSubNameList.get(0));
     }
-    
+
     private void updateNameData(String childtype) {
         nameList.clear();
         for (Map<String, String> map : recorde) {
@@ -209,7 +250,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
             }
         }
     }
-    
+
     @Override
     public void initToolBar() {
         mToolbar.setTitle("添加订单记录");
@@ -224,9 +265,9 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
             }
         });
     }
-    
+
     private String choosedString;
-    
+
     public void showDailog(final TextChooseAdapter adapter) {
         bottomView = new BottomView(this,
                 R.style.BottomViewTheme_Defalut, R.layout.bottom_view);
@@ -253,7 +294,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                                 productName.setText(nameList.get(0));
                             }
                         });
-                        
+
                         break;
                     case 1:
                         runOnUiThread(new Runnable() {
@@ -264,7 +305,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                                 productName.setText(nameList.get(0));
                             }
                         });
-                        
+
                         break;
                     case 2:
                         runOnUiThread(new Runnable() {
@@ -283,24 +324,24 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         wheelView.setAdapter(adapter);
         bottomView.showBottomView(true);
     }
-    
+
     private class ConfirmAdapter extends BaseAdapter {
-        
+
         @Override
         public int getCount() {
             return addString.size();
         }
-        
+
         @Override
         public Object getItem(int i) {
             return addString.get(i);
         }
-        
+
         @Override
         public long getItemId(int i) {
             return i;
         }
-        
+
         @Override
         public View getView(final int i, View view, ViewGroup viewGroup) {
             Holder holder;
@@ -323,24 +364,24 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
             return view;
         }
     }
-    
+
     class Holder {
         TextView info;
         ImageView subBtn;
-        
+
         public Holder(View view) {
             info = view.findViewById(R.id.confirm_info_txt);
             subBtn = view.findViewById(R.id.sub_btn_icon);
         }
     }
-    
+
     private void getGoodsData() {
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api
                 .findWares(shopId, 0, null, 999)
                 .map(new HttpResultFunc<PageResult<Goods>>(CustomerAddLocalOrderActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        
+
         mRxManager.add(observable.subscribe(new MySubscriber<>(this, false, false, new HaveErrSubscriberListener<PageResult<Goods>>() {
             @Override
             public void onNext(PageResult<Goods> pageResult) {
@@ -358,7 +399,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                 childType.setText(goodsList.get(0).genreSubName);
                 productName.setText(nameList.get(0));
             }
-            
+
             @Override
             public void onError(int code) {
                 goodsList.clear();
