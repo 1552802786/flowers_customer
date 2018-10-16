@@ -832,7 +832,7 @@ public class ShoppingCartFragment extends RxLazyFragment implements ShoppingCart
         MultipartBody.Part photoPart = null;
 
         Observable<Object> observable = ApiManager.getInstance().api
-                .updateMember(idPart, null, null, null, null, photoPart, deliverPart)
+                .updateMember(idPart, null, null, null, null, photoPart,null,null, deliverPart)
                 .map(new HttpResultFunc<>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

@@ -1,33 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:myradio="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.BuyMianActivity">
 
-    <me.majiajie.pagerbottomtabstrip.PageNavigationView
-        android:id="@+id/bnve_buy"
+    <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:paddingTop="4dp"
+        android:id="@+id/navigation_bar"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <com.yuangee.flower.customer.widget.MyRadioButton
+            android:id="@+id/tab_a"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:clickable="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="首页"
+            android:textSize="13sp"
+            myradio:drawableSize="30dp"
+            myradio:drawableTop="@drawable/ic_buy_index" />
+
+        <com.yuangee.flower.customer.widget.MyRadioButton
+            android:id="@+id/tab_b"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="购买"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            myradio:drawableSize="30dp"
+            myradio:drawableTop="@drawable/ic_buy_gouwu" />
+
+        <com.yuangee.flower.customer.widget.MyRadioButton
+            android:id="@+id/tab_c"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="大宗"
+            android:textSize="13sp"
+            myradio:drawableSize="30dp"
+            android:textColor="@color/white"
+            myradio:drawableTop="@drawable/ic_buy_big" />
+
+        <com.yuangee.flower.customer.widget.MyRadioButton
+            android:id="@+id/tab_d"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="分类"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            myradio:drawableSize="30dp"
+            myradio:drawableTop="@drawable/ic_buy_fenlei" />
+
+        <com.yuangee.flower.customer.widget.MyRadioButton
+            android:id="@+id/tab_e"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="预订"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            myradio:drawableSize="30dp"
+            myradio:drawableTop="@drawable/ic_buy_yuding" />
+
+        <com.yuangee.flower.customer.widget.MyRadioButton
+            android:id="@+id/tab_f"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="竞拍"
+            android:textSize="13sp"
+            myradio:drawableSize="30dp"
+            android:textColor="@color/white"
+            myradio:drawableTop="@drawable/ic_buy_jingpai" />
+
+        <com.yuangee.flower.customer.widget.MyRadioButton
+            android:id="@+id/tab_g"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="购物车"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            myradio:drawableSize="30dp"
+            myradio:drawableTop="@drawable/ic_buy_cart" />
+
+    </RadioGroup>
 
     <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bnve_buy">
-
-        <com.yuangee.flower.customer.widget.NoScrollViewPager
-            android:id="@+id/vp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <include
-            android:id="@+id/search_frame"
-            layout="@layout/fragment_search"
-            android:visibility="gone" />
+        android:layout_marginBottom="56dp">
     </FrameLayout>
 
 </RelativeLayout>

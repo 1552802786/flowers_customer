@@ -28,7 +28,7 @@ public interface ShoppingContract {
     abstract class Presenter extends BasePresenter {
         abstract void getGoodsData(String genreName, String genreSubName,
                                    String params, int page, int limit
-                ,Long shopId);
+                ,String bigopen,Long shopId);
         abstract void searchGoodsData(String wareName,String generSubs,String params, int page, int limit,String bespeak);
     }
 
@@ -37,7 +37,7 @@ public interface ShoppingContract {
          * 获取banner数据
          */
         Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName,
-                                                   String params, long page, long limit,Long shopId);
+                                                   String params, long page, long limit,String bigOpen,Long shopId);
         /**
          * 获取banner数据
          */

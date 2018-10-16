@@ -222,7 +222,7 @@ public class PersonalCenterActivity extends RxBaseActivity {
         }
 
         Observable<Object> observable = ApiManager.getInstance().api
-                .updateMember(idPart, namePart, genderPart, phonePart, emailPart, photoPart,deliverPart)
+                .updateMember(idPart, namePart, genderPart, phonePart, emailPart, photoPart,null,null,deliverPart)
                 .map(new HttpResultFunc<>(PersonalCenterActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

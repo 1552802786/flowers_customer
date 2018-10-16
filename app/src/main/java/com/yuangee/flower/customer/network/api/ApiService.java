@@ -110,6 +110,8 @@ public interface ApiService {
                                                         @Query("offset") Long offset,
                                                         @Query("bespeak") String bespeak,
                                                         @Query("limit") Long Limit,
+                                                        @Query("bigDealOpen") String bigDealOpen,
+                                                        @Query("areaId") Long areaId,
                                                         @Query("shopId") Long shopId);
 
     @GET("rest/wares/findWares")
@@ -385,7 +387,10 @@ public interface ApiService {
                                                 @Part MultipartBody.Part phone,
                                                 @Part MultipartBody.Part email,
                                                 @Part MultipartBody.Part photo,
+                                                @Part MultipartBody.Part areaId,
+                                                @Part MultipartBody.Part areaName,
                                                 @Part MultipartBody.Part deliverId
+
     );
 
     /**

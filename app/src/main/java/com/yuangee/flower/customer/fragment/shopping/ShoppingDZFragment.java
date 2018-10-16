@@ -44,7 +44,7 @@ import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
  * Created by developerLzh on 2017/8/21 0021.
  */
 
-public class ShoppingFragment extends RxLazyFragment implements ShoppingContract.View, PullLoadMoreRecyclerView.PullLoadMoreListener, BackPressedHandler {
+public class ShoppingDZFragment extends RxLazyFragment implements ShoppingContract.View, PullLoadMoreRecyclerView.PullLoadMoreListener, BackPressedHandler {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -313,7 +313,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, "1", shopId);
 
     }
 
@@ -361,7 +361,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, "1", shopId);
                 }
             });
         } else {
@@ -371,7 +371,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, "1", shopId);
                 }
             });
         }
@@ -392,13 +392,13 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, "1", shopId);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, "1", shopId);
     }
 
     @Override
@@ -410,19 +410,6 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
             }
         }
         return false;
-    }
-
-    public void findWares(String params) {
-        this.params = params;
-        tvSearch.setText("  " + params);
-        page = 0;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
-    }
-
-    public void findWares(String genreName, String genreSubName, String params) {
-        this.params = params;
-        page = 0;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
     }
 
 }

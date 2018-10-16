@@ -44,6 +44,10 @@ public class Member {
 
     @Property
     public String type;
+    @Property
+    public String areaName;
+    @Property
+    public long areaId;
 
     @Property
     public boolean inBlacklist;
@@ -77,11 +81,12 @@ public class Member {
     @Transient
     public MemberToken memberToken;//token
 
-    @Generated(hash = 1435647960)
+    @Generated(hash = 330853293)
     public Member(long id, String name, String userName, String passWord, String phone,
             String email, String photo, boolean gender, String address, String type,
-            boolean inBlacklist, boolean isRecycle, boolean inFirst, double balance,
-            int expressDeliveryId, String customServicePhone) {
+            String areaName, long areaId, boolean inBlacklist, boolean isRecycle,
+            boolean inFirst, double balance, int expressDeliveryId,
+            String customServicePhone) {
         this.id = id;
         this.name = name;
         this.userName = userName;
@@ -92,6 +97,8 @@ public class Member {
         this.gender = gender;
         this.address = address;
         this.type = type;
+        this.areaName = areaName;
+        this.areaId = areaId;
         this.inBlacklist = inBlacklist;
         this.isRecycle = isRecycle;
         this.inFirst = inFirst;
@@ -230,6 +237,22 @@ public class Member {
 
     public void setExpressDeliveryId(int expressDeliveryId) {
         this.expressDeliveryId = expressDeliveryId;
+    }
+
+    public long getAreaId() {
+        return this.areaId;
+    }
+
+    public void setAreaId(long areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getAreaName() {
+        return this.areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
     }
 
 }

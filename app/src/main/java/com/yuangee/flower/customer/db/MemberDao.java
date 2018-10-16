@@ -34,12 +34,14 @@ public class MemberDao extends AbstractDao<Member, Long> {
         public final static Property Gender = new Property(7, boolean.class, "gender", false, "GENDER");
         public final static Property Address = new Property(8, String.class, "address", false, "ADDRESS");
         public final static Property Type = new Property(9, String.class, "type", false, "TYPE");
-        public final static Property InBlacklist = new Property(10, boolean.class, "inBlacklist", false, "IN_BLACKLIST");
-        public final static Property IsRecycle = new Property(11, boolean.class, "isRecycle", false, "IS_RECYCLE");
-        public final static Property InFirst = new Property(12, boolean.class, "inFirst", false, "IN_FIRST");
-        public final static Property Balance = new Property(13, double.class, "balance", false, "BALANCE");
-        public final static Property ExpressDeliveryId = new Property(14, int.class, "expressDeliveryId", false, "EXPRESS_DELIVERY_ID");
-        public final static Property CustomServicePhone = new Property(15, String.class, "customServicePhone", false, "CUSTOM_SERVICE_PHONE");
+        public final static Property AreaName = new Property(10, String.class, "areaName", false, "AREA_NAME");
+        public final static Property AreaId = new Property(11, long.class, "areaId", false, "AREA_ID");
+        public final static Property InBlacklist = new Property(12, boolean.class, "inBlacklist", false, "IN_BLACKLIST");
+        public final static Property IsRecycle = new Property(13, boolean.class, "isRecycle", false, "IS_RECYCLE");
+        public final static Property InFirst = new Property(14, boolean.class, "inFirst", false, "IN_FIRST");
+        public final static Property Balance = new Property(15, double.class, "balance", false, "BALANCE");
+        public final static Property ExpressDeliveryId = new Property(16, int.class, "expressDeliveryId", false, "EXPRESS_DELIVERY_ID");
+        public final static Property CustomServicePhone = new Property(17, String.class, "customServicePhone", false, "CUSTOM_SERVICE_PHONE");
     }
 
 
@@ -65,12 +67,14 @@ public class MemberDao extends AbstractDao<Member, Long> {
                 "\"GENDER\" INTEGER NOT NULL ," + // 7: gender
                 "\"ADDRESS\" TEXT," + // 8: address
                 "\"TYPE\" TEXT," + // 9: type
-                "\"IN_BLACKLIST\" INTEGER NOT NULL ," + // 10: inBlacklist
-                "\"IS_RECYCLE\" INTEGER NOT NULL ," + // 11: isRecycle
-                "\"IN_FIRST\" INTEGER NOT NULL ," + // 12: inFirst
-                "\"BALANCE\" REAL NOT NULL ," + // 13: balance
-                "\"EXPRESS_DELIVERY_ID\" INTEGER NOT NULL ," + // 14: expressDeliveryId
-                "\"CUSTOM_SERVICE_PHONE\" TEXT);"); // 15: customServicePhone
+                "\"AREA_NAME\" TEXT," + // 10: areaName
+                "\"AREA_ID\" INTEGER NOT NULL ," + // 11: areaId
+                "\"IN_BLACKLIST\" INTEGER NOT NULL ," + // 12: inBlacklist
+                "\"IS_RECYCLE\" INTEGER NOT NULL ," + // 13: isRecycle
+                "\"IN_FIRST\" INTEGER NOT NULL ," + // 14: inFirst
+                "\"BALANCE\" REAL NOT NULL ," + // 15: balance
+                "\"EXPRESS_DELIVERY_ID\" INTEGER NOT NULL ," + // 16: expressDeliveryId
+                "\"CUSTOM_SERVICE_PHONE\" TEXT);"); // 17: customServicePhone
     }
 
     /** Drops the underlying database table. */
@@ -124,15 +128,21 @@ public class MemberDao extends AbstractDao<Member, Long> {
         if (type != null) {
             stmt.bindString(10, type);
         }
-        stmt.bindLong(11, entity.getInBlacklist() ? 1L: 0L);
-        stmt.bindLong(12, entity.getIsRecycle() ? 1L: 0L);
-        stmt.bindLong(13, entity.getInFirst() ? 1L: 0L);
-        stmt.bindDouble(14, entity.getBalance());
-        stmt.bindLong(15, entity.getExpressDeliveryId());
+ 
+        String areaName = entity.getAreaName();
+        if (areaName != null) {
+            stmt.bindString(11, areaName);
+        }
+        stmt.bindLong(12, entity.getAreaId());
+        stmt.bindLong(13, entity.getInBlacklist() ? 1L: 0L);
+        stmt.bindLong(14, entity.getIsRecycle() ? 1L: 0L);
+        stmt.bindLong(15, entity.getInFirst() ? 1L: 0L);
+        stmt.bindDouble(16, entity.getBalance());
+        stmt.bindLong(17, entity.getExpressDeliveryId());
  
         String customServicePhone = entity.getCustomServicePhone();
         if (customServicePhone != null) {
-            stmt.bindString(16, customServicePhone);
+            stmt.bindString(18, customServicePhone);
         }
     }
 
@@ -181,15 +191,21 @@ public class MemberDao extends AbstractDao<Member, Long> {
         if (type != null) {
             stmt.bindString(10, type);
         }
-        stmt.bindLong(11, entity.getInBlacklist() ? 1L: 0L);
-        stmt.bindLong(12, entity.getIsRecycle() ? 1L: 0L);
-        stmt.bindLong(13, entity.getInFirst() ? 1L: 0L);
-        stmt.bindDouble(14, entity.getBalance());
-        stmt.bindLong(15, entity.getExpressDeliveryId());
+ 
+        String areaName = entity.getAreaName();
+        if (areaName != null) {
+            stmt.bindString(11, areaName);
+        }
+        stmt.bindLong(12, entity.getAreaId());
+        stmt.bindLong(13, entity.getInBlacklist() ? 1L: 0L);
+        stmt.bindLong(14, entity.getIsRecycle() ? 1L: 0L);
+        stmt.bindLong(15, entity.getInFirst() ? 1L: 0L);
+        stmt.bindDouble(16, entity.getBalance());
+        stmt.bindLong(17, entity.getExpressDeliveryId());
  
         String customServicePhone = entity.getCustomServicePhone();
         if (customServicePhone != null) {
-            stmt.bindString(16, customServicePhone);
+            stmt.bindString(18, customServicePhone);
         }
     }
 
@@ -211,12 +227,14 @@ public class MemberDao extends AbstractDao<Member, Long> {
             cursor.getShort(offset + 7) != 0, // gender
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // address
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // type
-            cursor.getShort(offset + 10) != 0, // inBlacklist
-            cursor.getShort(offset + 11) != 0, // isRecycle
-            cursor.getShort(offset + 12) != 0, // inFirst
-            cursor.getDouble(offset + 13), // balance
-            cursor.getInt(offset + 14), // expressDeliveryId
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // customServicePhone
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // areaName
+            cursor.getLong(offset + 11), // areaId
+            cursor.getShort(offset + 12) != 0, // inBlacklist
+            cursor.getShort(offset + 13) != 0, // isRecycle
+            cursor.getShort(offset + 14) != 0, // inFirst
+            cursor.getDouble(offset + 15), // balance
+            cursor.getInt(offset + 16), // expressDeliveryId
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // customServicePhone
         );
         return entity;
     }
@@ -233,12 +251,14 @@ public class MemberDao extends AbstractDao<Member, Long> {
         entity.setGender(cursor.getShort(offset + 7) != 0);
         entity.setAddress(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setType(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setInBlacklist(cursor.getShort(offset + 10) != 0);
-        entity.setIsRecycle(cursor.getShort(offset + 11) != 0);
-        entity.setInFirst(cursor.getShort(offset + 12) != 0);
-        entity.setBalance(cursor.getDouble(offset + 13));
-        entity.setExpressDeliveryId(cursor.getInt(offset + 14));
-        entity.setCustomServicePhone(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setAreaName(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setAreaId(cursor.getLong(offset + 11));
+        entity.setInBlacklist(cursor.getShort(offset + 12) != 0);
+        entity.setIsRecycle(cursor.getShort(offset + 13) != 0);
+        entity.setInFirst(cursor.getShort(offset + 14) != 0);
+        entity.setBalance(cursor.getDouble(offset + 15));
+        entity.setExpressDeliveryId(cursor.getInt(offset + 16));
+        entity.setCustomServicePhone(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
      }
     
     @Override

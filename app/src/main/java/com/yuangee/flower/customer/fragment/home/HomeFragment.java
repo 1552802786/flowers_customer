@@ -12,6 +12,7 @@ import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.DepthPageTransformer;
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.MessageActivity;
@@ -356,7 +357,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         swipeRecyclerView.setVisibility(View.VISIBLE);
         mCustomEmptyView.setVisibility(View.GONE);
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api.
-                findWares("", "", "", 0L, null, 10L, null)
+                findWares("", "", "", 0L, null, 10L, null, App.me().getMemberInfo().areaId, null)
                 .map(new HttpResultFunc<PageResult<Goods>>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

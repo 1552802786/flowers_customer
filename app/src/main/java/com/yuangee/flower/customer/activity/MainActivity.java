@@ -20,6 +20,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.google.gson.Gson;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
@@ -65,6 +66,7 @@ import java.util.List;
 import butterknife.BindView;
 import cn.qqtheme.framework.entity.Area;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -93,6 +95,8 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     RelativeLayout rootView;
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
+    private List<HadOpenArea> areas;
+    String[] areaNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,14 +171,20 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
     }
 
+
     private void queryOpenCity() {
         String url = Config.BASE_URL + "rest/openArea/listAll";
         RequestParams params = new RequestParams(url);
         x.http().post(params, new Callback.CommonCallback<String>() {
+
             @Override
             public void onSuccess(String result) {
-                List<HadOpenArea> areas = JsonUtil.jsonToArray(result, HadOpenArea[].class);
-                Log.e("TAG", areas.size() + "");
+                areas = JsonUtil.jsonToArray(result, HadOpenArea[].class);
+                areaNames = new String[areas.size()];
+                for (int i = 0; i < areas.size(); i++) {
+                    areaNames[i] = areas.get(i).areaName;
+                }
+                showAreaList();
             }
 
             @Override
@@ -193,6 +203,41 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
             }
         });
 
+    }
+
+    //仅仅更新区域id，name
+    private void updateMemberInfo(HadOpenArea area) {
+        long id = App.getPassengerId();
+
+        MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", String.valueOf(id));
+        MultipartBody.Part areaId = MultipartBody.Part.createFormData("areaId", String.valueOf(area.id));
+        MultipartBody.Part areaName = MultipartBody.Part.createFormData("areaName", String.valueOf(area.areaName));
+
+        Observable<Object> observable = ApiManager.getInstance().api
+                .updateMember(idPart, null, null, null, null, null, areaId, areaName, null)
+                .map(new HttpResultFunc<>(MainActivity.this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mRxManager.add(observable.subscribe(new MySubscriber<>(MainActivity.this, true, false, new NoErrSubscriberListener<Object>() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        })));
+
+    }
+
+    public void showAreaList() {
+        if (App.me().getMemberInfo().areaId == 0) {
+            new AlertView(null, null, null, null, areaNames,
+                    MainActivity.this, AlertView.Style.Alert, new OnItemClickListener() {
+                @Override
+                public void onItemClick(Object o, int position) {
+                    updateMemberInfo(areas.get(position));
+                }
+            }).show();
+        }
     }
 
     @Override

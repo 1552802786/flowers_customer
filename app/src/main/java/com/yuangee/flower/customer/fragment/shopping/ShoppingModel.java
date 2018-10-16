@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.fragment.shopping;
 import android.content.Context;
 
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.result.PageResult;
@@ -26,8 +27,8 @@ public class ShoppingModel implements ShoppingContract.Model {
     }
 
     @Override
-    public Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName, String params, long page, long limit, Long shopId) {
-        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, null,limit, shopId)
+    public Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName, String params, long page, long limit,String bigOpen,Long shopId) {
+        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, null,limit,bigOpen,App.me().getMemberInfo().areaId, shopId)
                 .map(new HttpResultFunc<PageResult<Goods>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
