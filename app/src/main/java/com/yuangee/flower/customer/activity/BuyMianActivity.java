@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.adapter.VpAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.fragment.FenleiFragment;
 import com.yuangee.flower.customer.fragment.JinPaiFragment;
@@ -28,6 +29,7 @@ import com.yuangee.flower.customer.fragment.reserve.ReserveFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingDZFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
 import com.yuangee.flower.customer.widget.HomeItemView;
+import com.yuangee.flower.customer.widget.NoScrollViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +47,7 @@ public class BuyMianActivity extends RxBaseActivity {
     RelativeLayout rootView;
     @BindView(R.id.navigation_bar)
     RadioGroup group;
-    @BindView(R.id.tab_b)
-    RadioButton b;
-    private HomeFragment homeFragment;
+
     private ShoppingFragment shoppingFragment;
     private ShoppingCartFragment shoppingCartFragment;
     private ReserveFragment reserveFragment;
@@ -88,16 +88,13 @@ public class BuyMianActivity extends RxBaseActivity {
             transaction.hide(jpFragment);
         }
     }
-    public Drawable  tintDrawable(Drawable drawable, ColorStateList color){
-        Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTintList(wrappedDrawable, color);
-        return wrappedDrawable;
-    }
+
     private void initData() {
-        final FragmentManager manager = getSupportFragmentManager();
+
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 hideFragments(transaction);
                 switch (i) {
@@ -108,7 +105,7 @@ public class BuyMianActivity extends RxBaseActivity {
                         if (shoppingFragment == null) {
                             shoppingFragment = new ShoppingFragment();
                             transaction.add(R.id.container, shoppingFragment);
-                        }else {
+                        } else {
                             // 如果SettingFragment不为空，则直接将它显示出来
                             transaction.show(shoppingFragment);
                         }
@@ -117,7 +114,7 @@ public class BuyMianActivity extends RxBaseActivity {
                         if (dazongFragment == null) {
                             dazongFragment = new ShoppingDZFragment();
                             transaction.add(R.id.container, dazongFragment);
-                        }else {
+                        } else {
                             // 如果SettingFragment不为空，则直接将它显示出来
                             transaction.show(dazongFragment);
                         }
@@ -126,7 +123,7 @@ public class BuyMianActivity extends RxBaseActivity {
                         if (fenleiFragment == null) {
                             fenleiFragment = new FenleiFragment();
                             transaction.add(R.id.container, fenleiFragment);
-                        }else {
+                        } else {
                             // 如果SettingFragment不为空，则直接将它显示出来
                             transaction.show(fenleiFragment);
                         }
@@ -135,7 +132,7 @@ public class BuyMianActivity extends RxBaseActivity {
                         if (reserveFragment == null) {
                             reserveFragment = new ReserveFragment();
                             transaction.add(R.id.container, reserveFragment);
-                        }else {
+                        } else {
                             // 如果SettingFragment不为空，则直接将它显示出来
                             transaction.show(reserveFragment);
                         }
@@ -144,7 +141,7 @@ public class BuyMianActivity extends RxBaseActivity {
                         if (jpFragment == null) {
                             jpFragment = new JinPaiFragment();
                             transaction.add(R.id.container, jpFragment);
-                        }else {
+                        } else {
                             // 如果SettingFragment不为空，则直接将它显示出来
                             transaction.show(jpFragment);
                         }
@@ -156,6 +153,7 @@ public class BuyMianActivity extends RxBaseActivity {
                 transaction.commit();
             }
         });
+        // set listener to change the current item of view pager when click bottom nav item
     }
 
     //创建一个Item
