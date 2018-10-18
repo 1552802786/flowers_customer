@@ -1,59 +1,68 @@
 package com.yuangee.flower.customer.activity;
 
-import android.annotation.TargetApi;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenuView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseIntArray;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.VpAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.fragment.FenleiFragment;
 import com.yuangee.flower.customer.fragment.JinPaiFragment;
+import com.yuangee.flower.customer.fragment.MineFragment;
 import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
 import com.yuangee.flower.customer.fragment.UserServiceFragment;
 import com.yuangee.flower.customer.fragment.home.HomeFragment;
 import com.yuangee.flower.customer.fragment.reserve.ReserveFragment;
-import com.yuangee.flower.customer.fragment.shopping.ShoppingDZFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
 import com.yuangee.flower.customer.widget.HomeItemView;
 import com.yuangee.flower.customer.widget.NoScrollViewPager;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import me.majiajie.pagerbottomtabstrip.NavigationController;
+import me.majiajie.pagerbottomtabstrip.PageNavigationView;
 import me.majiajie.pagerbottomtabstrip.item.BaseTabItem;
+import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectedListener;
 
 /**
  * 作者：Rookie on 2018/10/8 11:12
  */
 public class BuyMianActivity extends RxBaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private VpAdapter adapter;
+
+    // collections
+    private SparseIntArray items;
+    private List<Fragment> fragments;
+
+    @BindView(R.id.vp)
+    NoScrollViewPager vp;
+
+    @BindView(R.id.bnve_buy)
+    PageNavigationView bnve;
 
     @BindView(R.id.activity_main)
     RelativeLayout rootView;
-    @BindView(R.id.navigation_bar)
-    RadioGroup group;
-
+    private HomeFragment homeFragment;
     private ShoppingFragment shoppingFragment;
     private ShoppingCartFragment shoppingCartFragment;
     private ReserveFragment reserveFragment;
     private FenleiFragment fenleiFragment;
-    private ShoppingDZFragment dazongFragment;
-    private JinPaiFragment jpFragment;
+    private NavigationController navigationController;
 
     @Override
     public int getLayoutId() {
@@ -63,97 +72,57 @@ public class BuyMianActivity extends RxBaseActivity {
     @Override
     public void initViews(Bundle savedInstanceState) {
         initData();
-        group.check(R.id.tab_b);
-    }
-
-    /**
-     * 将所有的Fragment都置为隐藏状态。
-     *
-     * @param transaction 用于对Fragment执行操作的事务
-     */
-    private void hideFragments(FragmentTransaction transaction) {
-        if (shoppingFragment != null) {
-            transaction.hide(shoppingFragment);
-        }
-        if (reserveFragment != null) {
-            transaction.hide(reserveFragment);
-        }
-        if (dazongFragment != null) {
-            transaction.hide(dazongFragment);
-        }
-        if (fenleiFragment != null) {
-            transaction.hide(fenleiFragment);
-        }
-        if (jpFragment != null) {
-            transaction.hide(jpFragment);
-        }
     }
 
     private void initData() {
+        fragments = new ArrayList<>(7);
+        items = new SparseIntArray(7);
 
-        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                hideFragments(transaction);
-                switch (i) {
-                    case R.id.tab_a:
-                        break;
-                    case R.id.tab_b:
+        homeFragment = new HomeFragment();
 
-                        if (shoppingFragment == null) {
-                            shoppingFragment = new ShoppingFragment();
-                            transaction.add(R.id.container, shoppingFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(shoppingFragment);
-                        }
-                        break;
-                    case R.id.tab_c:
-                        if (dazongFragment == null) {
-                            dazongFragment = new ShoppingDZFragment();
-                            transaction.add(R.id.container, dazongFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(dazongFragment);
-                        }
-                        break;
-                    case R.id.tab_d:
-                        if (fenleiFragment == null) {
-                            fenleiFragment = new FenleiFragment();
-                            transaction.add(R.id.container, fenleiFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(fenleiFragment);
-                        }
-                        break;
-                    case R.id.tab_e:
-                        if (reserveFragment == null) {
-                            reserveFragment = new ReserveFragment();
-                            transaction.add(R.id.container, reserveFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(reserveFragment);
-                        }
-                        break;
-                    case R.id.tab_f:
-                        if (jpFragment == null) {
-                            jpFragment = new JinPaiFragment();
-                            transaction.add(R.id.container, jpFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(jpFragment);
-                        }
-                        break;
-                    case R.id.tab_g:
+        shoppingFragment = new ShoppingFragment();
 
-                        break;
-                }
-                transaction.commit();
-            }
-        });
+        shoppingCartFragment = new ShoppingCartFragment();
+
+        reserveFragment = new ReserveFragment();
+        fenleiFragment = new FenleiFragment();
+        // add to fragments for adapter
+        fragments.add(homeFragment);
+        fragments.add(shoppingFragment);
+        fragments.add(new UserServiceFragment());
+        fragments.add(fenleiFragment);
+        fragments.add(reserveFragment);
+        fragments.add(new JinPaiFragment());
+        fragments.add(shoppingCartFragment);
+
+
+        // add to items for change ViewPager item
+        items.put(R.id.i_home, 0);
+        items.put(R.id.buy_shopping, 1);
+        items.put(R.id.buy_big, 2);
+        items.put(R.id.buy_fenlei, 3);
+        items.put(R.id.buy_yuding, 4);
+        items.put(R.id.buy_jingpai, 5);
+        items.put(R.id.buy_shoppingcart, 6);
+
+
+        // set adapter
+        vp.setOffscreenPageLimit(7);
+        adapter = new VpAdapter(getSupportFragmentManager(), fragments);
+        vp.setAdapter(adapter);
         // set listener to change the current item of view pager when click bottom nav item
+        navigationController = bnve.custom()
+                .addItem(newItem(R.drawable.ic_buy_index, R.drawable.ic_buy_index, "首页"))
+                .addItem(newItem(R.drawable.ic_buy_gouwu, R.drawable.ic_buy_gouwu, "购买"))
+                .addItem(newItem(R.drawable.ic_buy_big, R.drawable.ic_buy_big, "大宗"))
+                .addItem(newItem(R.drawable.ic_buy_fenlei, R.drawable.ic_buy_fenlei, "分类"))
+                .addItem(newItem(R.drawable.ic_buy_yuding, R.drawable.ic_buy_yuding, "预订"))
+                .addItem(newItem(R.drawable.ic_buy_jingpai, R.drawable.ic_buy_jingpai, "竞拍"))
+                .addItem(newItem(R.drawable.ic_buy_cart, R.drawable.ic_buy_cart, "购物车"))
+                .build();
+        navigationController.setupWithViewPager(vp);
+        navigationController.setSelect(1,true);
+        initEvent();
     }
 
     //创建一个Item
@@ -161,6 +130,30 @@ public class BuyMianActivity extends RxBaseActivity {
         HomeItemView normalItemView = new HomeItemView(this);
         normalItemView.initialize(drawable, checkedDrawable, text);
         return normalItemView;
+    }
+
+    public int oldIndex;
+
+    /**
+     * set listeners
+     */
+    private void initEvent() {
+
+        navigationController.addTabItemSelectedListener(new OnTabItemSelectedListener() {
+
+            @Override
+            public void onSelected(int index, int old) {
+                if (index == 6 || index == 0) {
+                    finish();
+                }
+                oldIndex = old;
+            }
+
+            @Override
+            public void onRepeat(int index) {
+
+            }
+        });
     }
 
     @Override
