@@ -397,10 +397,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         }
     }
 
-    public void findWares(String params) {
-        this.params = params;
-        tvSearch.setText("  "+params);
-        page = 0;
+    public void findWares() {
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
     }
 

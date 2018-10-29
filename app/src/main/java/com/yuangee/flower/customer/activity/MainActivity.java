@@ -231,7 +231,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public void showAreaList() {
         if (App.me().getMemberInfo().areaId == 0) {
             new AlertView(null, null, null, null, areaNames,
-                    MainActivity.this, AlertView.Style.Alert, new OnItemClickListener() {
+                    MainActivity.this, AlertView.Style.ActionSheet, new OnItemClickListener() {
                 @Override
                 public void onItemClick(Object o, int position) {
                     updateMemberInfo(areas.get(position));
