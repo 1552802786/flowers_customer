@@ -24,6 +24,7 @@ import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
 import com.yuangee.flower.customer.fragment.UserServiceFragment;
 import com.yuangee.flower.customer.fragment.home.HomeFragment;
 import com.yuangee.flower.customer.fragment.reserve.ReserveFragment;
+import com.yuangee.flower.customer.fragment.shopping.ShoppingDZFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
 import com.yuangee.flower.customer.widget.HomeItemView;
 import com.yuangee.flower.customer.widget.NoScrollViewPager;
@@ -89,7 +90,7 @@ public class BuyMianActivity extends RxBaseActivity {
         // add to fragments for adapter
         fragments.add(homeFragment);
         fragments.add(shoppingFragment);
-        fragments.add(new UserServiceFragment());
+        fragments.add(new ShoppingDZFragment());
         fragments.add(fenleiFragment);
         fragments.add(reserveFragment);
         fragments.add(new JinPaiFragment());
@@ -121,7 +122,7 @@ public class BuyMianActivity extends RxBaseActivity {
                 .addItem(newItem(R.drawable.ic_buy_cart, R.drawable.ic_buy_cart, "购物车"))
                 .build();
         navigationController.setupWithViewPager(vp);
-        navigationController.setSelect(1,true);
+        navigationController.setSelect(0,true);
         initEvent();
     }
 

@@ -96,7 +96,7 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
     private int page = 0;
     private int limit = 10;
     private String params = null;//关键字
-    private String generSubNames = "";
+    private String generSubNames = null;
     private String waresNames = "";
     private String bespeak;
 
@@ -127,8 +127,8 @@ public class SearchAcitvity extends RxBaseActivity implements ShoppingContract.V
         addAnimateListener = this;
         bespeak = getIntent().getStringExtra("bespeak");
         if (getIntent().hasExtra("params")) {
-            this.params = getIntent().getStringExtra("params");
-            editSuggest.setText(params);
+            this.waresNames = getIntent().getStringExtra("params");
+            editSuggest.setText(waresNames);
             findWares(waresNames, generSubNames, params);
             hideSoft();
         } else if (getIntent().hasExtra("genreSubNames")) {

@@ -1,6 +1,10 @@
 package com.yuangee.flower.customer.activity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MenuItem;
@@ -51,6 +56,9 @@ import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.JsonUtil;
+import com.yuangee.flower.customer.util.PhoneUtil;
+import com.yuangee.flower.customer.util.StringUtils;
+import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.AddCartAnimation;
 import com.yuangee.flower.customer.widget.CouponDialog;
 import com.yuangee.flower.customer.widget.NoScrollViewPager;
@@ -97,6 +105,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     private MyLocationListener myListener = new MyLocationListener();
     private List<HadOpenArea> areas;
     String[] areaNames;
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,7 +294,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
     public void setBudge(int number) {
         this.selectedNum = number;
-        addBadgeAt(2, this.selectedNum);
+        addBadgeAt(1, this.selectedNum);
     }
 
     private void initData() {
@@ -336,7 +345,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     private void initEvent() {
         // set listener to change the current item of view pager when click bottom nav item
         bnve.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            private int previousPosition = -1;
+            private int previousPosition = 0;
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -344,6 +353,32 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                 if (position == 2) {
                     Intent it = new Intent(MainActivity.this, BuyMianActivity.class);
                     startActivity(it);
+                    bnve.setCurrentItem(previousPosition);
+                } else if (position==4){
+                    bnve.setCurrentItem(previousPosition);
+                    phone = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId()).customServicePhone;
+                    if (StringUtils.isNotBlank(phone)) {
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setMessage(phone)
+                                .setPositiveButton("呼叫", new DialogInterface.OnClickListener() {
+                                    @SuppressLint("NewApi")
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        if (checkSelfPermission("android.permission.CALL_PHONE") != PackageManager.PERMISSION_GRANTED) {
+                                            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 4343);
+                                        } else {
+                                            PhoneUtil.call(MainActivity.this, phone);
+                                        }
+                                    }
+                                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }).create().show();
+                    } else {
+                        ToastUtil.showMessage(MainActivity.this, "无效的电话号码");
+                    }
                 } else if (previousPosition != position) {
                     // only set item when item changed
                     previousPosition = position;
@@ -361,6 +396,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
 
             @Override
             public void onPageSelected(int position) {
+
                 bnve.setCurrentItem(position);
             }
 
@@ -410,7 +446,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     public void showAddAnimate(ImageView startView, int selectedNum) {
         this.selectedNum += selectedNum;
         AddCartAnimation.AddToCart(startView, bnve.getBottomNavigationItemView(2), this, rootView, 1);
-        addBadgeAt(2, this.selectedNum);
+        addBadgeAt(1, this.selectedNum);
     }
 
 
