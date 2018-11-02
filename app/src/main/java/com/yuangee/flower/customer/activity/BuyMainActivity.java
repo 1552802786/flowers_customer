@@ -1,20 +1,9 @@
 package com.yuangee.flower.customer.activity;
 
-import android.annotation.TargetApi;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.util.SparseIntArray;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
@@ -23,9 +12,6 @@ import com.yuangee.flower.customer.adapter.VpAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.fragment.FenleiFragment;
 import com.yuangee.flower.customer.fragment.JinPaiFragment;
-import com.yuangee.flower.customer.fragment.ShoppingCartFragment;
-import com.yuangee.flower.customer.fragment.UserServiceFragment;
-import com.yuangee.flower.customer.fragment.home.HomeFragment;
 import com.yuangee.flower.customer.fragment.reserve.ReserveFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingDZFragment;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingFragment;
