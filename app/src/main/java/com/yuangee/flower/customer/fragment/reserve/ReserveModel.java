@@ -28,8 +28,8 @@ public class ReserveModel implements ReserveContract.Model {
 
     @Override
     public Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName,
-                                                      String params, long page, long limit, Long shopId) {
-        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, "1", limit,null, App.me().getMemberInfo().areaId, shopId)
+                                                      String params, long page, long limit, Long shopId,Long sort,Long updown) {
+        return ApiManager.getInstance().api.findWares(genreName, genreSubName, params, page * 10, "1", limit,null, App.me().getMemberInfo().areaId, shopId,sort,updown)
                 .map(new HttpResultFunc<PageResult<Goods>>(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

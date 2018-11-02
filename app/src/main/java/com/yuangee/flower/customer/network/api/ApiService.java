@@ -112,7 +112,9 @@ public interface ApiService {
                                                         @Query("limit") Long Limit,
                                                         @Query("bigDealOpen") String bigDealOpen,
                                                         @Query("areaId") Long areaId,
-                                                        @Query("shopId") Long shopId);
+                                                        @Query("shopId") Long shopId,
+                                                        @Query("sort") Long srort,
+                                                        @Query("updown") Long updown);
 
     @GET("rest/wares/findWares")
     Observable<BaseResult<PageResult<Goods>>> searchWares(@Query("waresName") String waresName,

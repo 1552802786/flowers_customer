@@ -32,8 +32,8 @@ public class ReservePresenter extends ReserveContract.Presenter {
     }
 
     @Override
-    public void getGoodsData(String genreName, String genreSubName, String params, final int page, final int limit, Long shopId) {
-        mRxManager.add(mModel.getGoodsData(genreName, genreSubName, params, page, limit, shopId)
+    public void getGoodsData(String genreName, String genreSubName, String params, final int page, final int limit, Long shopId,Long sort,Long updown) {
+        mRxManager.add(mModel.getGoodsData(genreName, genreSubName, params, page, limit, shopId,sort,updown)
                 .subscribe(new MySubscriber<>(context, true, true, new HaveErrSubscriberListener<PageResult<Goods>>() {
                     @Override
                     public void onNext(PageResult<Goods> pageResult) {

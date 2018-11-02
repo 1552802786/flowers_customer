@@ -235,7 +235,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
             @Override
             public void onDrawerClosed(View drawerView) {
                 page = 0;
-                presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+                presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId,null,1l);
             }
 
             @Override
@@ -299,7 +299,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId,null,1l);
         Log.e("tag","1242131313");
     }
 
@@ -347,7 +347,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId,null,1l);
                 }
             });
         } else {
@@ -357,7 +357,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId,null,1l);
                 }
             });
         }
@@ -378,13 +378,13 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId,null,1l);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId,null,1l);
     }
 
     @Override
@@ -398,7 +398,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     }
 
     public void findWares() {
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId,null,1l);
     }
 
 }

@@ -357,7 +357,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
         swipeRecyclerView.setVisibility(View.VISIBLE);
         mCustomEmptyView.setVisibility(View.GONE);
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api.
-                findWares("", "", "", 0L, null, 10L, null, App.me().getMemberInfo().areaId, null)
+                findWares("", "", "", 0L, null, 10L, null, App.me().getMemberInfo().areaId, null,null,null)
                 .map(new HttpResultFunc<PageResult<Goods>>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

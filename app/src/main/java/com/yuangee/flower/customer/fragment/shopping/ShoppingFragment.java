@@ -315,7 +315,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, null, 1L);
 
     }
 
@@ -363,7 +363,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1l);
                 }
             });
         } else {
@@ -373,7 +373,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1l);
                 }
             });
         }
@@ -394,13 +394,13 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1L);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1l);
     }
 
     @Override
@@ -414,17 +414,17 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         return false;
     }
 
-    public void findWares(String params) {
-        this.params = params;
-        tvSearch.setText("  " + params);
-        page = 0;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
-    }
-
-    public void findWares(String genreName, String genreSubName, String params) {
-        this.params = params;
-        page = 0;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
-    }
+//    public void findWares(String params) {
+//        this.params = params;
+//        tvSearch.setText("  " + params);
+//        page = 0;
+//        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+//    }
+//
+//    public void findWares(String genreName, String genreSubName, String params) {
+//        this.params = params;
+//        page = 0;
+//        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId);
+//    }
 
 }

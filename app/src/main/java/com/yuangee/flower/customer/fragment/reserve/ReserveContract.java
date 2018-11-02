@@ -26,7 +26,7 @@ public interface ReserveContract {
     }
 
     abstract class Presenter extends BasePresenter {
-        abstract void getGoodsData(String genreName, String genreSubName, String params, int page, int limit, Long shopId);
+        abstract void getGoodsData(String genreName, String genreSubName, String params, int page, int limit, Long shopId,Long sort,Long updown);
     }
 
     interface Model {
@@ -34,6 +34,6 @@ public interface ReserveContract {
          * 获取banner数据
          */
         Observable<PageResult<Goods>> getGoodsData(String genreName, String genreSubName,
-                                                   String params, long page, long limit, Long shopId);
+                                                   String params, long page, long limit, Long shopId,Long sort,Long updown);
     }
 }
