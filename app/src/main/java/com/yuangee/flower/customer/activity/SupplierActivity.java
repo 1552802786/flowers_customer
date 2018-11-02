@@ -55,8 +55,7 @@ public class SupplierActivity extends RxBaseActivity {
 
     @BindView(R.id.edit_search)
     EditText editSearch;
-    @BindView(R.id.fenlei)
-    TabLayout tableLayout;
+    TabLayout tabLayout;
     @OnClick(R.id.add_text)
     void toAdd() {
         Intent intent = new Intent(SupplierActivity.this, GoodsActivity.class);
@@ -90,6 +89,7 @@ public class SupplierActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
+        tabLayout=findViewById(R.id.fenlei);
         shopId = getIntent().getLongExtra("shopId", -1);
         shopName = getIntent().getStringExtra("shopName");
 
@@ -152,11 +152,11 @@ public class SupplierActivity extends RxBaseActivity {
             }
         });
         initFloatPath();
-        tableLayout.addTab(tableLayout.newTab().setText("全部"));
-        tableLayout.addTab(tableLayout.newTab().setText("预约"));
-        tableLayout.addTab(tableLayout.newTab().setText("订购"));
-        tableLayout.addTab(tableLayout.newTab().setText("竞拍"));
-        tableLayout.addTab(tableLayout.newTab().setText("大宗"));
+        tabLayout.addTab(tabLayout.newTab().setText("全部"));
+        tabLayout.addTab(tabLayout.newTab().setText("预约"));
+        tabLayout.addTab(tabLayout.newTab().setText("订购"));
+        tabLayout.addTab(tabLayout.newTab().setText("竞拍"));
+        tabLayout.addTab(tabLayout.newTab().setText("大宗"));
     }
 
     private void hideSoft() {

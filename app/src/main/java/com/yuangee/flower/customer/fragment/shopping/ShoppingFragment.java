@@ -147,10 +147,14 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
     @Override
     public void finishCreateView(Bundle state) {
-        isPrepared = true;
-        lazyLoad();
         presenter = new ShoppingPresenter(getActivity());
         presenter.setMV(new ShoppingModel(getActivity()), this);
+        isPrepared = true;
+        myDrawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+        initRecyclerView();
+        isPrepared = false;
+        lazyLoad();
+
     }
 
     @Override
@@ -158,9 +162,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         if (!isPrepared || !isVisible) {
             return;
         }
-        myDrawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
-        initRecyclerView();
-        isPrepared = false;
+
     }
 
     public void initDrawer(String tuijian) {

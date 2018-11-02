@@ -9,11 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -26,18 +23,15 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
-import com.google.gson.Gson;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
-import com.yuangee.flower.customer.FlowerApp;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.adapter.VpAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
 import com.yuangee.flower.customer.entity.AreaResult;
-import com.yuangee.flower.customer.entity.Coupon;
 import com.yuangee.flower.customer.entity.CouponEntity;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.HadOpenArea;
@@ -54,7 +48,6 @@ import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
-import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.JsonUtil;
 import com.yuangee.flower.customer.util.PhoneUtil;
 import com.yuangee.flower.customer.util.StringUtils;
@@ -67,18 +60,11 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import cn.qqtheme.framework.entity.Area;
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 import rx.Observable;
@@ -351,7 +337,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int position = items.get(item.getItemId());
                 if (position == 2) {
-                    Intent it = new Intent(MainActivity.this, BuyMianActivity.class);
+                    Intent it = new Intent(MainActivity.this, BuyMainActivity.class);
                     startActivity(it);
                     bnve.setCurrentItem(previousPosition);
                 } else if (position==4){

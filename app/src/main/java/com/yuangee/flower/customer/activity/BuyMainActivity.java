@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -40,20 +41,23 @@ import me.majiajie.pagerbottomtabstrip.item.BaseTabItem;
 /**
  * 作者：Rookie on 2018/10/8 11:12
  */
-public class BuyMianActivity extends RxBaseActivity {
+public class BuyMainActivity extends RxBaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private VpAdapter adapter;
 
     @BindView(R.id.activity_main)
     RelativeLayout rootView;
     @BindView(R.id.navigation_bar)
     RadioGroup group;
+    @BindView(R.id.vp)
+    NoScrollViewPager vp;
 
     private ShoppingFragment shoppingFragment;
-    private ShoppingCartFragment shoppingCartFragment;
     private ReserveFragment reserveFragment;
     private FenleiFragment fenleiFragment;
     private ShoppingDZFragment dazongFragment;
     private JinPaiFragment jpFragment;
+    List<Fragment> fragments = new ArrayList<>();
 
     @Override
     public int getLayoutId() {
@@ -66,91 +70,48 @@ public class BuyMianActivity extends RxBaseActivity {
         group.check(R.id.tab_d);
     }
 
-    /**
-     * 将所有的Fragment都置为隐藏状态。
-     *
-     * @param transaction 用于对Fragment执行操作的事务
-     */
-    private void hideFragments(FragmentTransaction transaction) {
-        if (shoppingFragment != null) {
-            transaction.hide(shoppingFragment);
-        }
-        if (reserveFragment != null) {
-            transaction.hide(reserveFragment);
-        }
-        if (dazongFragment != null) {
-            transaction.hide(dazongFragment);
-        }
-        if (fenleiFragment != null) {
-            transaction.hide(fenleiFragment);
-        }
-        if (jpFragment != null) {
-            transaction.hide(jpFragment);
-        }
-    }
-
     private void initData() {
+        shoppingFragment = new ShoppingFragment();
+        dazongFragment = new ShoppingDZFragment();
+        fenleiFragment = new FenleiFragment();
+        reserveFragment = new ReserveFragment();
+        jpFragment = new JinPaiFragment();
+
+        fragments.add(shoppingFragment);
+        fragments.add(dazongFragment);
+        fragments.add(fenleiFragment);
+        fragments.add(reserveFragment);
+        fragments.add(jpFragment);
+        adapter = new VpAdapter(getSupportFragmentManager(), fragments);
+        vp.setAdapter(adapter);
 
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                hideFragments(transaction);
                 switch (i) {
                     case R.id.tab_a:
+                        finish();
                         break;
                     case R.id.tab_b:
-
-                        if (shoppingFragment == null) {
-                            shoppingFragment = new ShoppingFragment();
-                            transaction.add(R.id.container, shoppingFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(shoppingFragment);
-                        }
+                        vp.setCurrentItem(0);
                         break;
                     case R.id.tab_c:
-                        if (dazongFragment == null) {
-                            dazongFragment = new ShoppingDZFragment();
-                            transaction.add(R.id.container, dazongFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(dazongFragment);
-                        }
+                        vp.setCurrentItem(1);
                         break;
                     case R.id.tab_d:
-                        if (fenleiFragment == null) {
-                            fenleiFragment = new FenleiFragment();
-                            transaction.add(R.id.container, fenleiFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(fenleiFragment);
-                        }
+                        vp.setCurrentItem(2);
                         break;
                     case R.id.tab_e:
-                        if (reserveFragment == null) {
-                            reserveFragment = new ReserveFragment();
-                            transaction.add(R.id.container, reserveFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(reserveFragment);
-                        }
+                        vp.setCurrentItem(3);
                         break;
                     case R.id.tab_f:
-                        if (jpFragment == null) {
-                            jpFragment = new JinPaiFragment();
-                            transaction.add(R.id.container, jpFragment);
-                        } else {
-                            // 如果SettingFragment不为空，则直接将它显示出来
-                            transaction.show(jpFragment);
-                        }
+                        vp.setCurrentItem(4);
                         break;
                     case R.id.tab_g:
-
+                        finish();
                         break;
                 }
-                transaction.commit();
+
             }
         });
         // set listener to change the current item of view pager when click bottom nav item
@@ -166,6 +127,12 @@ public class BuyMianActivity extends RxBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vp.setCurrentItem(getIntent().getIntExtra("index", 0));
+            }
+        }, 500);
     }
 
 }

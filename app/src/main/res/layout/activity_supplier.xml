@@ -62,7 +62,7 @@
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
-    <TableLayout
+    <android.support.design.widget.TabLayout
         android:id="@+id/fenlei"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -70,10 +70,10 @@
         app:tabIndicatorColor="@color/colorAccent"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/colorAccent"
-        app:tabTextColor="@color/gray_light"
+        app:tabTextColor="@color/bar_grey"
         tools:ignore="MissingPrefix">
 
-    </TableLayout>
+    </android.support.design.widget.TabLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
