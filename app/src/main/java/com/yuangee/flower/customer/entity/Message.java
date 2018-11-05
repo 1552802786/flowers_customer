@@ -8,6 +8,7 @@ public class Message {
     public long id;
     public String content;
     public String contentMore;
+    public String memberIds;
     public String created;
 
     public Read noticeRead;

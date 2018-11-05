@@ -531,7 +531,7 @@ public interface ApiService {
      * @return
      */
     @GET("rest/notice/findByMemberId")
-    Observable<BaseResult<List<Message>>> findAllMessage(@Query("memberId") Long memberId);
+    Observable<BaseResult<PageResult<Message>>> findAllMessage(@Query("memberId") Long memberId);
 
     /**
      * 读取通知消息

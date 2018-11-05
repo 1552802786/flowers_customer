@@ -15,6 +15,7 @@ import com.yuangee.flower.customer.entity.Message;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
+import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 
 import java.util.ArrayList;
@@ -90,18 +91,18 @@ public class MessageActivity extends RxBaseActivity {
     }
 
     private void getMessage() {
-        Observable<List<Message>> observable = ApiManager.getInstance().api
+        Observable<PageResult<Message>> observable = ApiManager.getInstance().api
                 .findAllMessage(App.getPassengerId())
-                .map(new HttpResultFunc<List<Message>>(this))
+                .map(new HttpResultFunc<PageResult<Message>>(this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new HaveErrSubscriberListener<List<Message>>() {
+        mRxManager.add(observable.subscribe(new MySubscriber<>(this, true, true, new HaveErrSubscriberListener<PageResult<Message>>() {
             @Override
-            public void onNext(List<Message> list) {
+            public void onNext(PageResult list) {
                 recyclerView.setPullLoadMoreCompleted();
-                if (null != list && list.size() != 0) {
-                    adapter.setMessages(list);
+                if (null != list && list.rows.size() != 0) {
+                    adapter.setMessages(list.rows);
                     hideEmpty();
                 } else {
                     showEmpty();
