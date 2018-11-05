@@ -11,6 +11,8 @@ import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.UserScoreEntity;
 import com.yuangee.flower.customer.util.JsonUtil;
+import com.yuangee.flower.customer.widget.SwipeRecyclerView;
+
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
@@ -25,7 +27,8 @@ import butterknife.BindView;
 public class UserAccountDetailActivity extends RxBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-
+    @BindView(R.id.account_detail_list)
+    SwipeRecyclerView recyclerView;
     @Override
     public int getLayoutId() {
         return R.layout.lactivity_user_account_detai;
