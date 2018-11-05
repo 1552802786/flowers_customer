@@ -21,7 +21,7 @@ android {
         release {
             keyAlias '捷豹司机'
             keyPassword 'yuangee'
-            storeFile file('/Users/rookie/StudioProjects/flowers_customer/app/kamo.jks')
+            storeFile file('C:/Users/win7/Downloads/flowers_customer/flowers_customer/app/kamo.jks')
             storePassword 'yuangee'
         }
     }
