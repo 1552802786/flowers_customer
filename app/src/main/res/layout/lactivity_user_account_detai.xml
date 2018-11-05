@@ -7,6 +7,7 @@
     <include layout="@layout/layout_toolbar" />
 
     <LinearLayout
+        android:id="@+id/change_voew"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">
@@ -14,9 +15,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="账户余额" />
+        <TextView
+            android:textColor="@color/red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="账户余额 2000" />
-
+            android:text=" 2000" />
         <TextView
             android:layout_width="60dp"
             android:layout_height="30dp"

@@ -104,6 +104,38 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         startActivity(intent);
     }
 
+    @OnClick(R.id.default_sec)
+    void defaultSec() {
+        sort = 1;
+        updown = 1;
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
+
+    }
+
+    @OnClick(R.id.price_sec)
+    void priceSec() {
+        sort = 2;
+        if (updown == 1) {
+            updown = 2;
+        } else {
+            updown = 1;
+        }
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
+
+    }
+
+    @OnClick(R.id.count_sec)
+    void countSec() {
+        sort = 3;
+        if (updown == 1) {
+            updown = 2;
+        } else {
+            updown = 1;
+        }
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
+
+    }
+
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
 
     private AddAnimateListener addAnimateListener;
@@ -127,6 +159,8 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
     private String genreName = "";
     private String genreSubName = "";
     private String params = "";//关键字
+    private long sort = 1;
+    private long updown = 1;
 
     public void setToSpecifiedFragmentListener(ToSpecifiedFragmentListener toSpecifiedFragmentListener) {
         this.toSpecifiedFragmentListener = toSpecifiedFragmentListener;
@@ -315,7 +349,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
 
         plRecycler.setVerticalScrollBarEnabled(true);
 
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, null, 1L);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
 
     }
 
@@ -363,7 +397,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1l);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
                 }
             });
         } else {
@@ -373,7 +407,7 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
                 @Override
                 public void onClick(View view) {
                     page = 0;
-                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1l);
+                    presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
                 }
             });
         }
@@ -394,13 +428,13 @@ public class ShoppingFragment extends RxLazyFragment implements ShoppingContract
         page = 0;
         goodsList.clear();
         plRecycler.setRefreshing(true);
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1L);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
     }
 
     @Override
     public void onLoadMore() {
         page++;
-        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId,null,1l);
+        presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
     }
 
     @Override

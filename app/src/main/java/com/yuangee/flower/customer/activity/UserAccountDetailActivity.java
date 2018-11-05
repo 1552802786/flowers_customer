@@ -4,8 +4,18 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONObject;
+import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
+import com.yuangee.flower.customer.entity.UserScoreEntity;
+import com.yuangee.flower.customer.util.JsonUtil;
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -25,7 +35,34 @@ public class UserAccountDetailActivity extends RxBaseActivity {
     public void initViews(Bundle savedInstanceState) {
 
     }
+    private void queryScore() {
+        String url = Config.BASE_URL + "rest/member/listMemberIntegral";
+        RequestParams params = new RequestParams(url);
+        params.addBodyParameter("memberId", App.getPassengerId() + "");
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JSONObject object = JSONObject.parseObject(result);
+                List<UserScoreEntity> entities = JsonUtil.jsonToArray(object.getString("data"), UserScoreEntity[].class);
+            }
 
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+
+    }
     @Override
     public void initToolBar() {
         mToolbar.setNavigationIcon(R.drawable.ic_close);
