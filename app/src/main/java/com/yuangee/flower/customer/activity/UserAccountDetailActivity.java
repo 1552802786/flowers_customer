@@ -1,6 +1,8 @@
 package com.yuangee.flower.customer.activity;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -36,6 +38,8 @@ public class UserAccountDetailActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
+        RecyclerView.LayoutManager manager=new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        recyclerView.setLayoutManager(manager);
 
     }
     private void queryScore() {
