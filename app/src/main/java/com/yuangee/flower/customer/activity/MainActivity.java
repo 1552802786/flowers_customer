@@ -24,6 +24,7 @@ import com.baidu.location.LocationClientOption;
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.squareup.otto.Subscribe;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
@@ -64,6 +65,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import cn.qqtheme.framework.entity.Area;
 import okhttp3.MultipartBody;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
@@ -179,8 +181,11 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                 for (int i = 0; i < areas.size(); i++) {
                     areaNames[i] = areas.get(i).areaName;
                 }
-                showAreaList();
+                if (App.me().getMemberInfo().areaId == 0) {
+                    showAreaList();
+                }
             }
+
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
@@ -224,15 +229,14 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     }
 
     public void showAreaList() {
-        if (App.me().getMemberInfo().areaId == 0) {
-            new AlertView(null, null, null, null, areaNames,
-                    MainActivity.this, AlertView.Style.ActionSheet, new OnItemClickListener() {
-                @Override
-                public void onItemClick(Object o, int position) {
-                    updateMemberInfo(areas.get(position));
-                }
-            }).show();
-        }
+
+        new AlertView(null, null, null, null, areaNames,
+                MainActivity.this, AlertView.Style.ActionSheet, new OnItemClickListener() {
+            @Override
+            public void onItemClick(Object o, int position) {
+                updateMemberInfo(areas.get(position));
+            }
+        }).setCancelable(true).show();
     }
 
     @Override
@@ -340,7 +344,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                     Intent it = new Intent(MainActivity.this, BuyMainActivity.class);
                     startActivity(it);
                     bnve.setCurrentItem(previousPosition);
-                } else if (position==4){
+                } else if (position == 4) {
                     bnve.setCurrentItem(previousPosition);
                     phone = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId()).customServicePhone;
                     if (StringUtils.isNotBlank(phone)) {

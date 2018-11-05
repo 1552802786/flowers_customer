@@ -13,8 +13,10 @@ import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.DepthPageTransformer;
 import com.yuangee.flower.customer.ApiManager;
 import com.yuangee.flower.customer.App;
+import com.yuangee.flower.customer.AppBus;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
 import com.yuangee.flower.customer.activity.SearchAcitvity;
 import com.yuangee.flower.customer.activity.SupplierActivity;
@@ -24,6 +26,7 @@ import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
+import com.yuangee.flower.customer.entity.HadOpenArea;
 import com.yuangee.flower.customer.entity.InformationEntity;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Shop;
@@ -34,6 +37,7 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.GlideImageLoader;
+import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 import com.yuangee.flower.customer.widget.SwipeRecyclerView;
 import com.yuangee.flower.customer.widget.sectioned.SectionedRecyclerViewAdapter;
@@ -73,6 +77,11 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     @OnClick(R.id.notification_icon)
     void toMessage() {
         startActivity(new Intent(getActivity(), MessageActivity.class));
+    }
+
+    @OnClick(R.id.location_icon)
+    void chooseArea() {
+        ((MainActivity)getActivity()).showAreaList();
     }
 
     private HomePresenter presenter;
@@ -333,31 +342,31 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
     private void refresh() {
         showLoading(true, "", "请稍候..", null);
         clearData();
-//        Observable<PageResult<InformationEntity>> obs = ApiManager.getInstance().api.queryMessageInfo()
-//                .map(new HttpResultFunc<PageResult<InformationEntity>>(getActivity()))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//        mRxManager.add(obs.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<PageResult<InformationEntity>>() {
-//            @Override
-//            public void onNext(PageResult<InformationEntity> result) {
-//                infoStr = new ArrayList<>();
-//                for (InformationEntity entity : result.rows) {
-//                    infoStr.add(entity.name);
-//                }
-//            }
-//
-//            @Override
-//            public void onError(int code) {
-//
-//            }
-//        })));
+        Observable<PageResult<InformationEntity>> obs = ApiManager.getInstance().api.queryMessageInfo()
+                .map(new HttpResultFunc<PageResult<InformationEntity>>(getActivity()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        mRxManager.add(obs.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<PageResult<InformationEntity>>() {
+            @Override
+            public void onNext(PageResult<InformationEntity> result) {
+                infoStr = new ArrayList<>();
+                for (InformationEntity entity : result.rows) {
+                    infoStr.add(entity.name);
+                }
+            }
+
+            @Override
+            public void onError(int code) {
+
+            }
+        })));
         presenter.getBannerData();
         presenter.getRecommendData();
         presenter.getShaop();
         swipeRecyclerView.setVisibility(View.VISIBLE);
         mCustomEmptyView.setVisibility(View.GONE);
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api.
-                findWares("", "", "", 0L, null, 10L, null, App.me().getMemberInfo().areaId, null,null,null)
+                findWares("", "", "", 0L, null, 10L, null, App.me().getMemberInfo().areaId, null, null, null)
                 .map(new HttpResultFunc<PageResult<Goods>>(getActivity()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
