@@ -145,12 +145,13 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
 
     @OnClick(R.id.search_btn)
     void searchLocalGood() {
-        RadioButton button = new RadioButton(this);
+
         ScrollView scrollView = new ScrollView(this);
         final RadioGroup group = new RadioGroup(this);
         scrollView.addView(group);
         for (Goods g : goodsList) {
             if (g.name.contains(search.getText().toString().trim())) {
+                RadioButton button = new RadioButton(this);
                 button.setText(g.genreName + "-" + g.genreSubName + "-" + g.name + "(" + g.color + "/¥" + g.unitPrice + "/" + g.salesVolume + ")");
                 group.addView(button);
             }

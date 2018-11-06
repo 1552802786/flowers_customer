@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -24,6 +25,7 @@ import com.yuangee.flower.customer.activity.WebActivity;
 import com.yuangee.flower.customer.adapter.GoodsAdapter;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.entity.BannerBean;
+import com.yuangee.flower.customer.entity.CouponEntity;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.entity.HadOpenArea;
@@ -37,11 +39,17 @@ import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.result.PageResult;
 import com.yuangee.flower.customer.util.GlideImageLoader;
+import com.yuangee.flower.customer.util.JsonUtil;
 import com.yuangee.flower.customer.util.ToastUtil;
+import com.yuangee.flower.customer.widget.CouponDialog;
 import com.yuangee.flower.customer.widget.CustomEmptyView;
 import com.yuangee.flower.customer.widget.SwipeRecyclerView;
 import com.yuangee.flower.customer.widget.sectioned.SectionedRecyclerViewAdapter;
 import com.yuangee.flower.customer.widget.sectioned.StatelessSection;
+
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -338,28 +346,40 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             });
         }
     }
+    private void queryListArticl() {
+        String url = Config.BASE_URL + "rest/article/list";
+        RequestParams params = new RequestParams(url);
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                List<InformationEntity> entities = JsonUtil.jsonToArray(result, InformationEntity[].class);
+                for (InformationEntity entity : entities) {
+                    infoStr.add(entity.name);
+                }
 
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+
+    }
     private void refresh() {
         showLoading(true, "", "请稍候..", null);
         clearData();
-        Observable<PageResult<InformationEntity>> obs = ApiManager.getInstance().api.queryMessageInfo()
-                .map(new HttpResultFunc<PageResult<InformationEntity>>(getActivity()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        mRxManager.add(obs.subscribe(new MySubscriber<>(getActivity(), false, false, new HaveErrSubscriberListener<PageResult<InformationEntity>>() {
-            @Override
-            public void onNext(PageResult<InformationEntity> result) {
-                infoStr = new ArrayList<>();
-                for (InformationEntity entity : result.rows) {
-                    infoStr.add(entity.name);
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        })));
+//        queryListArticl();
         presenter.getBannerData();
         presenter.getRecommendData();
         presenter.getShaop();

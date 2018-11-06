@@ -211,9 +211,9 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
     @Override
     public void finishCreateView(Bundle state) {
         isPrepared = true;
-        lazyLoad();
         presenter = new ReservePresenter(getActivity());
         presenter.setMV(new ReserveModel(getActivity()), this);
+        lazyLoad();
     }
 
     @Override
@@ -352,7 +352,7 @@ public class ReserveFragment extends RxLazyFragment implements ReserveContract.V
         plRecycler.setVerticalScrollBarEnabled(true);
 
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, shopId, sort, updown);
-        Log.e("tag", "1242131313");
+
     }
 
     @Override

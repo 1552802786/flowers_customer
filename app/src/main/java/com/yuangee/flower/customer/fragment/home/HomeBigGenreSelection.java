@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +39,7 @@ public class HomeBigGenreSelection extends StatelessSection {
     public HomeBigGenreSelection(List<String> info, Context mContext) {
         super(R.layout.type_con, R.layout.layout_home_recommend_empty);
         this.mContext = mContext;
+
         infoStr.add("红玫瑰今日竞拍9.9元起");
         infoStr.add("新货上架，芍药上架，市场新低");
         infoStr.add("端午节当季花卉活动");
