@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
@@ -86,6 +87,15 @@ public class ShoppingDZFragment extends RxLazyFragment implements ShoppingContra
     @BindView(R.id.detail_type_recycler)
     RecyclerView detailRecycler;
 
+    @BindView(R.id.default_sec)
+    LinearLayout default_sec;
+
+    @BindView(R.id.price_sec)
+    LinearLayout price_sec;
+
+    @BindView(R.id.count_sec)
+    LinearLayout count_sec;
+
     @OnClick(R.id.reset_sub)
     void resetSub() {
         resetDrawer();
@@ -110,7 +120,9 @@ public class ShoppingDZFragment extends RxLazyFragment implements ShoppingContra
         sort = 1;
         updown = 1;
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
-
+        ((TextView) default_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.color_orange));
+        ((TextView) price_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.txt_normal));
+        ((TextView) count_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.txt_normal));
     }
 
     @OnClick(R.id.price_sec)
@@ -122,7 +134,9 @@ public class ShoppingDZFragment extends RxLazyFragment implements ShoppingContra
             updown = 1;
         }
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
-
+        ((TextView) default_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.txt_normal));
+        ((TextView) price_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.color_orange));
+        ((TextView) count_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.txt_normal));
     }
 
     @OnClick(R.id.count_sec)
@@ -134,7 +148,9 @@ public class ShoppingDZFragment extends RxLazyFragment implements ShoppingContra
             updown = 1;
         }
         presenter.getGoodsData(genreName, genreSubName, params, page, limit, null, shopId, sort, updown);
-
+        ((TextView) default_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.txt_normal));
+        ((TextView) price_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.txt_normal));
+        ((TextView) count_sec.getChildAt(0)).setTextColor(getResources().getColor(R.color.color_orange));
     }
     private ToSpecifiedFragmentListener toSpecifiedFragmentListener;
 

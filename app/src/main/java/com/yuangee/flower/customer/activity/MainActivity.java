@@ -12,9 +12,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.location.BDAbstractLocationListener;
@@ -332,6 +336,7 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
     /**
      * set listeners
      */
+
     private void initEvent() {
         // set listener to change the current item of view pager when click bottom nav item
         bnve.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -347,28 +352,29 @@ public class MainActivity extends RxBaseActivity implements ToSpecifiedFragmentL
                 } else if (position == 4) {
                     bnve.setCurrentItem(previousPosition);
                     phone = DbHelper.getInstance().getMemberLongDBManager().load(App.getPassengerId()).customServicePhone;
-                    if (StringUtils.isNotBlank(phone)) {
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setMessage(phone)
-                                .setPositiveButton("呼叫", new DialogInterface.OnClickListener() {
-                                    @SuppressLint("NewApi")
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        if (checkSelfPermission("android.permission.CALL_PHONE") != PackageManager.PERMISSION_GRANTED) {
-                                            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 4343);
-                                        } else {
-                                            PhoneUtil.call(MainActivity.this, phone);
-                                        }
+                    String[] strs = new String[]{"客服电话", "在线服务", "售后服务"};
+                    new AlertView(null, null, null, null, strs,
+                            MainActivity.this, AlertView.Style.ActionSheet, new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Object o, int position) {
+                            switch (position) {
+                                case 0:
+                                    if (StringUtils.isNotBlank(phone)) {
+                                        PhoneUtil.call(MainActivity.this, phone);
+                                    } else {
+                                        ToastUtil.showMessage(MainActivity.this, "无效电话号码");
                                     }
-                                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
+                                    break;
+                                case 2:
+                                    Intent it = new Intent(MainActivity.this, WebActivity.class);
+                                    it.putExtra("url", "https://jinshuju.net/f/XuOQKk");
+                                    it.putExtra("title", "订单投诉");
+                                    startActivity(it);
+                                    break;
                             }
-                        }).create().show();
-                    } else {
-                        ToastUtil.showMessage(MainActivity.this, "无效的电话号码");
-                    }
+                        }
+                    }).setCancelable(true).show();
+
                 } else if (previousPosition != position) {
                     // only set item when item changed
                     previousPosition = position;
