@@ -202,7 +202,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             }
         }
         if (moreGoodWares.size() > 0) {
-            mSectionedAdapter.addSection(new HomeRecommedSelection(moreGoodWares, getActivity(), new StatelessSection.OnItemClickListener() {
+            mSectionedAdapter.addSection(new HomeFivePartSelection(moreGoodWares, getActivity(), new StatelessSection.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
                     Recommend recommend = moreGoodWares.get(position);
@@ -235,7 +235,7 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
             }));
         }
         if (sellWares.size() > 0) {
-            mSectionedAdapter.addSection(new HomeRecommedSelection(sellWares, getActivity(), new StatelessSection.OnItemClickListener() {
+            mSectionedAdapter.addSection(new HomeFivePartSelection(sellWares, getActivity(), new StatelessSection.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
                     Recommend recommend = sellWares.get(position);

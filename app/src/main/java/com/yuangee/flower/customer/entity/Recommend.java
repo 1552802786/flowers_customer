@@ -14,7 +14,7 @@ public class Recommend {
     public String startTime;
 
     public String endTime;
-
+    public String title;
     public String image;
     public String module;
     public String areaId;

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -81,7 +82,8 @@ public class HomeRecommedSelection extends StatelessSection {
                 .load(Config.BASE_URL + bean.image)
                 .apply(options)
                 .into(orderHolder.imageView);
-
+        orderHolder.title.setText(bean.title);
+        orderHolder.title2.setText(bean.depict);
         //给该item设置一个监听器
         if (mOnItemClickListener != null) {
             orderHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -110,9 +112,12 @@ public class HomeRecommedSelection extends StatelessSection {
 
         @BindView(R.id.image_view)
         RoundedImageView imageView;
-
+        @BindView(R.id.title)
+        TextView title;
+        @BindView(R.id.title_second)
+        TextView title2;
         @BindView(R.id.rel_layout)
-        RelativeLayout relativeLayout;
+        LinearLayout relativeLayout;
 
         public RecommendHolder(View itemView) {
             super(itemView);
