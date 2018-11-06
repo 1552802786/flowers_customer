@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
+import com.yuangee.flower.customer.adapter.UserScoreAdapter;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.entity.UserScoreEntity;
 import com.yuangee.flower.customer.util.JsonUtil;
@@ -26,11 +27,14 @@ import butterknife.BindView;
 /**
  * 作者：Rookie on 2018/9/19 11:06
  */
-public class UserAccountDetailActivity extends RxBaseActivity {
+public class UserScoreDetailActivity extends RxBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.account_detail_list)
-    SwipeRecyclerView recyclerView;
+    RecyclerView recyclerView;
+    @BindView(R.id.charge_view)
+    View chargeView;
+    private UserScoreAdapter adapter;
     @Override
     public int getLayoutId() {
         return R.layout.lactivity_user_account_detai;
@@ -38,8 +42,12 @@ public class UserAccountDetailActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
+        chargeView.setVisibility(View.GONE);
         RecyclerView.LayoutManager manager=new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(manager);
+        adapter=new UserScoreAdapter(this);
+        recyclerView.setAdapter(adapter);
+        queryScore();
 
     }
     private void queryScore() {
@@ -49,8 +57,8 @@ public class UserAccountDetailActivity extends RxBaseActivity {
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                JSONObject object = JSONObject.parseObject(result);
-                List<UserScoreEntity> entities = JsonUtil.jsonToArray(object.getString("data"), UserScoreEntity[].class);
+                List<UserScoreEntity> entities = JsonUtil.jsonToArray(result, UserScoreEntity[].class);
+                adapter.setData(entities);
             }
 
             @Override

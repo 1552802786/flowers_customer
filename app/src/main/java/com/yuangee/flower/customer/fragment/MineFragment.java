@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -24,18 +23,16 @@ import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.activity.CustomerAgreementActivity;
 import com.yuangee.flower.customer.activity.CustomerOrderActivity;
-import com.yuangee.flower.customer.activity.CustomerOrderPayActivity;
 import com.yuangee.flower.customer.activity.FeedbackActivity;
 import com.yuangee.flower.customer.activity.MainActivity;
 import com.yuangee.flower.customer.activity.MessageActivity;
-import com.yuangee.flower.customer.activity.ShopOrderActivity;
 import com.yuangee.flower.customer.activity.PersonalCenterActivity;
 import com.yuangee.flower.customer.activity.RegisterActivity;
 import com.yuangee.flower.customer.activity.SupplierActivity;
-import com.yuangee.flower.customer.activity.UserAccountDetailActivity;
+import com.yuangee.flower.customer.activity.UserMoneyDetailActivity;
+import com.yuangee.flower.customer.activity.UserScoreDetailActivity;
 import com.yuangee.flower.customer.base.RxLazyFragment;
 import com.yuangee.flower.customer.db.DbHelper;
-import com.yuangee.flower.customer.entity.CustomerOrder;
 import com.yuangee.flower.customer.entity.Member;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
@@ -148,12 +145,12 @@ public class MineFragment extends RxLazyFragment {
     }
     @OnClick(R.id.my_money)
     void gotoMymoney(){
-        Intent it=new Intent(getActivity(), UserAccountDetailActivity.class);
+        Intent it=new Intent(getActivity(), UserMoneyDetailActivity.class);
         startActivity(it);
     }
     @OnClick(R.id.my_score)
     void gotoMyscore(){
-        Intent it=new Intent(getActivity(), UserAccountDetailActivity.class);
+        Intent it=new Intent(getActivity(), UserScoreDetailActivity.class);
         it.putExtra("isSocre",true);
         startActivity(it);
     }

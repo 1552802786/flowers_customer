@@ -53,7 +53,7 @@ public class BuyMainActivity extends RxBaseActivity {
     @Override
     public void initViews(Bundle savedInstanceState) {
         initData();
-        group.check(R.id.tab_d);
+        group.check(R.id.tab_b);
     }
 
     private void initData() {
