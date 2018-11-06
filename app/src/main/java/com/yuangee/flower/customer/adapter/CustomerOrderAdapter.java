@@ -123,6 +123,8 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         holder.tvOrderStatus = view.findViewById(R.id.order_status);
         holder.tvOrderTime = view.findViewById(R.id.order_time);
         holder.clock_icon = view.findViewById(R.id.clock_icon);
+        holder.creatTime = view.findViewById(R.id.order_create_time);
+        holder.expressId = view.findViewById(R.id.order_expressid);
 
         return holder;
     }
@@ -183,7 +185,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
 
         String kindStr = "共<font color='#f74f50'>" + (totalWares != 0 ? "" + totalWares : "0") + "</font>类商品";
         holder.tvGoodsKind.setText(Html.fromHtml(kindStr));
-
+        holder.creatTime.setText(bean.created);
         if (!isShop) {
 
             if (bean.status == CustomerOrder.ORDER_STATUS_NOTPAY) {
@@ -211,6 +213,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                 holder.leftBtn.setVisibility(View.VISIBLE);
                 holder.rightBtn.setVisibility(View.GONE);
                 holder.leftBtn.setText("提醒发货");
+                holder.expressId.setText(bean.courierNumber);
                 holder.leftBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -515,6 +518,8 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         ImageView img4;
         ImageView img5;
         ImageView clock_icon;
+        TextView creatTime;
+        TextView expressId;
     }
 
 }

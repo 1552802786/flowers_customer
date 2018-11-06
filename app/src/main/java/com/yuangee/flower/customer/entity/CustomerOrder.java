@@ -20,7 +20,6 @@ public class CustomerOrder implements Serializable{
     public static final int ORDER_STATUS_FINISH=6;//质检后完成
 
     public Long id;
-
     public String orderNo;//订单号
 
     public Integer quantity;//数量
@@ -47,7 +46,7 @@ public class CustomerOrder implements Serializable{
 
     public String receiverAddress;//收货人地址
 
-    public String courierNumber;//订单号
+    public String courierNumber;//运单号
 
     public Long expressId;//收货地址信息id
 

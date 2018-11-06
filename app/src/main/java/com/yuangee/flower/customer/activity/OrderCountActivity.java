@@ -3,6 +3,7 @@ package com.yuangee.flower.customer.activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -121,9 +122,9 @@ public class OrderCountActivity extends RxBaseActivity {
             @Override
             public void onNext(ShopOrderCount count) {
                 hideEmpty();
-                saledMoney.setText("¥ " + count.shouldSettleMoney);
+                saledMoney.setText("¥ " + (TextUtils.isEmpty(count.shouldSettleMoney) ? "0" : count.shouldSettleMoney));
                 orderNumber.setText(count.orderCount);
-                orderMoney.setText("¥ " + count.orderMoney);
+                orderMoney.setText("¥ " + (TextUtils.isEmpty(count.orderMoney) ? "0" : count.orderMoney));
             }
 
             @Override

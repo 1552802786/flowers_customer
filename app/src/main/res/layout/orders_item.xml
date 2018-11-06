@@ -15,15 +15,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/empty"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="40dp" />
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="8dp" />
 
     <TextView
         android:id="@+id/order_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/empty"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="8dp"
         android:text="待付款"
         android:textColor="@color/colorAccent" />
@@ -85,22 +85,44 @@
         android:layout_margin="5dp"
         android:text="" />
 
-    <TextView
-        android:textSize="12sp"
-        android:id="@+id/order_create_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/order_goods_kind"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="5dp" />
+
     <!-- 共<font color='#52A436'>6</font>类商品 -->
     <LinearLayout
         android:id="@+id/order_fee_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/img_con"
+        android:layout_alignParentRight="true"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/order_expressid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/order_goods_kind"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="8dp"
+                android:text="2018-11-06"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/order_create_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/order_goods_kind"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="8dp"
+                android:text="2018-11-06"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/clock_icon"
@@ -123,8 +145,8 @@
         android:id="@+id/right_btn"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/order_fee_layout"
+        android:layout_alignParentRight="true"
         android:layout_margin="5dp"
         android:background="@drawable/corners_color_accent_small"
         android:text="取消订单"
