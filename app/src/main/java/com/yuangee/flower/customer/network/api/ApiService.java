@@ -553,6 +553,9 @@ public interface ApiService {
     Observable<BaseResult<PageResult<Goods>>> findWares(@Query("shopId") Long shopId,
                                                         @Query("offset") Integer offset,
                                                         @Query("waresName") String waresName,
+                                                        @Query("bespeak") Boolean  bespeak,
+                                                        @Query("bigDealOpen ") Boolean bigDealOpen ,
+                                                        @Query("jinpai") Boolean jinpai,
                                                         @Query("limit") Integer limit);
 
     /**

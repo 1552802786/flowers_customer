@@ -152,7 +152,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
         for (Goods g : goodsList) {
             if (g.name.contains(search.getText().toString().trim())) {
                 RadioButton button = new RadioButton(this);
-                button.setText(g.genreName + "-" + g.genreSubName + "-" + g.name + "(" + g.color + "/¥" + g.unitPrice + "/" + g.salesVolume + ")");
+                button.setText(g.genreName + "--" + g.genreSubName + "--" + g.name + "(" + g.color + "/¥" + g.unitPrice + "/" + g.salesVolume + ")");
                 group.addView(button);
             }
         }
@@ -164,7 +164,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
                         for (int i = 0; i < group.getChildCount(); i++) {
                             RadioButton button = (RadioButton) group.getChildAt(i);
                             if (button.isChecked()) {
-                                String[] str = button.getText().toString().split("-");
+                                String[] str = button.getText().toString().split("--");
                                 parentType.setText(str[0]);
                                 childType.setText(str[1]);
                                 productName.setText(str[2]);
@@ -375,7 +375,7 @@ public class CustomerAddLocalOrderActivity extends RxBaseActivity {
 
     private void getGoodsData() {
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api
-                .findWares(shopId, 0, null, 999)
+                .findWares(shopId, 0, null, null,null,null,999)
                 .map(new HttpResultFunc<PageResult<Goods>>(CustomerAddLocalOrderActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

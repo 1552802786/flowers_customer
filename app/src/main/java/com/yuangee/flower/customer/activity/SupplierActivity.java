@@ -56,6 +56,7 @@ public class SupplierActivity extends RxBaseActivity {
     @BindView(R.id.edit_search)
     EditText editSearch;
     TabLayout tabLayout;
+
     @OnClick(R.id.add_text)
     void toAdd() {
         Intent intent = new Intent(SupplierActivity.this, GoodsActivity.class);
@@ -81,6 +82,8 @@ public class SupplierActivity extends RxBaseActivity {
     private FloatingActionMenu actionMenu;
     private List<Goods> goodsList;
     private String waresNames;
+    private boolean yuyue = false;
+    private boolean dazong = false;
 
     @Override
     public int getLayoutId() {
@@ -89,7 +92,7 @@ public class SupplierActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        tabLayout=findViewById(R.id.fenlei);
+        tabLayout = findViewById(R.id.fenlei);
         shopId = getIntent().getLongExtra("shopId", -1);
         shopName = getIntent().getStringExtra("shopName");
 
@@ -127,6 +130,8 @@ public class SupplierActivity extends RxBaseActivity {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     hideSoft();
                     waresNames = editSearch.getText().toString();
+                    yuyue = false;
+                    dazong = false;
                     getGoodsData();
                     return true;
                 }
@@ -147,6 +152,8 @@ public class SupplierActivity extends RxBaseActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (TextUtils.isEmpty(editable.toString().trim())) {
+                    yuyue = false;
+                    dazong = false;
                     getGoodsData();
                 }
             }
@@ -157,6 +164,36 @@ public class SupplierActivity extends RxBaseActivity {
         tabLayout.addTab(tabLayout.newTab().setText("订购"));
         tabLayout.addTab(tabLayout.newTab().setText("竞拍"));
         tabLayout.addTab(tabLayout.newTab().setText("大宗"));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                yuyue = false;
+                dazong = false;
+                if (tab.getPosition() == 0) {
+                    getGoodsData();
+                } else if (tab.getPosition() == 1) {
+                    yuyue = true;
+                    getGoodsData();
+                } else if (tab.getPosition() == 2) {
+                    getGoodsData();
+                } else if (tab.getPosition() == 3) {
+                    getGoodsData();
+                } else if (tab.getPosition() == 4) {
+                    dazong = true;
+                    getGoodsData();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     private void hideSoft() {
@@ -174,7 +211,7 @@ public class SupplierActivity extends RxBaseActivity {
 
     private void getGoodsData() {
         Observable<PageResult<Goods>> observable = ApiManager.getInstance().api
-                .findWares(shopId, page * 10, waresNames, limit)
+                .findWares(shopId, page * 10, waresNames, yuyue, dazong, null, limit)
                 .map(new HttpResultFunc<PageResult<Goods>>(SupplierActivity.this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
