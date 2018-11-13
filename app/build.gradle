@@ -51,7 +51,7 @@ android {
 
     }
     greendao {
-        schemaVersion 10
+        schemaVersion 11
         targetGenDir 'src/main/java'
         daoPackage 'com.yuangee.flower.customer.db'//设置DaoMaster、DaoSession、Dao包名
     }

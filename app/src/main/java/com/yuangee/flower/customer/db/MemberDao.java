@@ -40,8 +40,9 @@ public class MemberDao extends AbstractDao<Member, Long> {
         public final static Property IsRecycle = new Property(13, boolean.class, "isRecycle", false, "IS_RECYCLE");
         public final static Property InFirst = new Property(14, boolean.class, "inFirst", false, "IN_FIRST");
         public final static Property Balance = new Property(15, double.class, "balance", false, "BALANCE");
-        public final static Property ExpressDeliveryId = new Property(16, int.class, "expressDeliveryId", false, "EXPRESS_DELIVERY_ID");
-        public final static Property CustomServicePhone = new Property(17, String.class, "customServicePhone", false, "CUSTOM_SERVICE_PHONE");
+        public final static Property Integral = new Property(16, double.class, "integral", false, "INTEGRAL");
+        public final static Property ExpressDeliveryId = new Property(17, int.class, "expressDeliveryId", false, "EXPRESS_DELIVERY_ID");
+        public final static Property CustomServicePhone = new Property(18, String.class, "customServicePhone", false, "CUSTOM_SERVICE_PHONE");
     }
 
 
@@ -73,8 +74,9 @@ public class MemberDao extends AbstractDao<Member, Long> {
                 "\"IS_RECYCLE\" INTEGER NOT NULL ," + // 13: isRecycle
                 "\"IN_FIRST\" INTEGER NOT NULL ," + // 14: inFirst
                 "\"BALANCE\" REAL NOT NULL ," + // 15: balance
-                "\"EXPRESS_DELIVERY_ID\" INTEGER NOT NULL ," + // 16: expressDeliveryId
-                "\"CUSTOM_SERVICE_PHONE\" TEXT);"); // 17: customServicePhone
+                "\"INTEGRAL\" REAL NOT NULL ," + // 16: integral
+                "\"EXPRESS_DELIVERY_ID\" INTEGER NOT NULL ," + // 17: expressDeliveryId
+                "\"CUSTOM_SERVICE_PHONE\" TEXT);"); // 18: customServicePhone
     }
 
     /** Drops the underlying database table. */
@@ -138,11 +140,12 @@ public class MemberDao extends AbstractDao<Member, Long> {
         stmt.bindLong(14, entity.getIsRecycle() ? 1L: 0L);
         stmt.bindLong(15, entity.getInFirst() ? 1L: 0L);
         stmt.bindDouble(16, entity.getBalance());
-        stmt.bindLong(17, entity.getExpressDeliveryId());
+        stmt.bindDouble(17, entity.getIntegral());
+        stmt.bindLong(18, entity.getExpressDeliveryId());
  
         String customServicePhone = entity.getCustomServicePhone();
         if (customServicePhone != null) {
-            stmt.bindString(18, customServicePhone);
+            stmt.bindString(19, customServicePhone);
         }
     }
 
@@ -201,11 +204,12 @@ public class MemberDao extends AbstractDao<Member, Long> {
         stmt.bindLong(14, entity.getIsRecycle() ? 1L: 0L);
         stmt.bindLong(15, entity.getInFirst() ? 1L: 0L);
         stmt.bindDouble(16, entity.getBalance());
-        stmt.bindLong(17, entity.getExpressDeliveryId());
+        stmt.bindDouble(17, entity.getIntegral());
+        stmt.bindLong(18, entity.getExpressDeliveryId());
  
         String customServicePhone = entity.getCustomServicePhone();
         if (customServicePhone != null) {
-            stmt.bindString(18, customServicePhone);
+            stmt.bindString(19, customServicePhone);
         }
     }
 
@@ -233,8 +237,9 @@ public class MemberDao extends AbstractDao<Member, Long> {
             cursor.getShort(offset + 13) != 0, // isRecycle
             cursor.getShort(offset + 14) != 0, // inFirst
             cursor.getDouble(offset + 15), // balance
-            cursor.getInt(offset + 16), // expressDeliveryId
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // customServicePhone
+            cursor.getDouble(offset + 16), // integral
+            cursor.getInt(offset + 17), // expressDeliveryId
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18) // customServicePhone
         );
         return entity;
     }
@@ -257,8 +262,9 @@ public class MemberDao extends AbstractDao<Member, Long> {
         entity.setIsRecycle(cursor.getShort(offset + 13) != 0);
         entity.setInFirst(cursor.getShort(offset + 14) != 0);
         entity.setBalance(cursor.getDouble(offset + 15));
-        entity.setExpressDeliveryId(cursor.getInt(offset + 16));
-        entity.setCustomServicePhone(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setIntegral(cursor.getDouble(offset + 16));
+        entity.setExpressDeliveryId(cursor.getInt(offset + 17));
+        entity.setCustomServicePhone(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
      }
     
     @Override

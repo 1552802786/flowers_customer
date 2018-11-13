@@ -36,6 +36,7 @@ public class UserMoneyDetailActivity extends RxBaseActivity {
     @BindView(R.id.money)
     TextView money;
     private UserMoneyAdapter adapter;
+
     @Override
     public int getLayoutId() {
         return R.layout.lactivity_user_account_detai;
@@ -43,13 +44,15 @@ public class UserMoneyDetailActivity extends RxBaseActivity {
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-        RecyclerView.LayoutManager manager=new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        adapter=new UserMoneyAdapter(this);
+        adapter = new UserMoneyAdapter(this);
         recyclerView.setAdapter(adapter);
         queryScore();
+        money.setText(getIntent().getStringExtra("money"));
 
     }
+
     private void queryScore() {
         String url = Config.BASE_URL + "rest/member/listMemberRecharge";
         RequestParams params = new RequestParams(url);
@@ -78,6 +81,7 @@ public class UserMoneyDetailActivity extends RxBaseActivity {
         });
 
     }
+
     @Override
     public void initToolBar() {
         mToolbar.setNavigationIcon(R.drawable.ic_close);

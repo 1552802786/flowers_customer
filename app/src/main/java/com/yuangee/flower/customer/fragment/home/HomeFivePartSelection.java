@@ -83,7 +83,7 @@ public class HomeFivePartSelection extends StatelessSection {
             orderHolder.relativeLayout.setVisibility(View.GONE);
             if (recommends.size() > 1) {
                 Glide.with(mContext)
-                        .load(Config.BASE_URL + recommends.get(2).image)
+                        .load(Config.BASE_URL + recommends.get(1).image)
                         .apply(options)
                         .into(orderHolder.imageView2);
                 orderHolder.title2.setText(recommends.get(1).title);

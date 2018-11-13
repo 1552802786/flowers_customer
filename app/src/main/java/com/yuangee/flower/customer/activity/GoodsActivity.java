@@ -9,10 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +36,7 @@ import com.yuangee.flower.customer.Config;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
+import com.yuangee.flower.customer.entity.BigGoodEntity;
 import com.yuangee.flower.customer.entity.Genre;
 import com.yuangee.flower.customer.entity.GenreSub;
 import com.yuangee.flower.customer.entity.Goods;
@@ -43,6 +46,7 @@ import com.yuangee.flower.customer.network.NoErrSubscriberListener;
 import com.yuangee.flower.customer.util.DisplayUtil;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
+import com.yuangee.flower.customer.widget.ExpandableHeightListView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +74,8 @@ public class GoodsActivity extends RxBaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    private BigAdapter bigAdapter;
+    private NewBigAdapter newAdapter;
 
     @OnClick(R.id.genre_first)
     void choiceFirst() {
@@ -402,6 +408,70 @@ public class GoodsActivity extends RxBaseActivity {
         }
     }
 
+    @OnClick(R.id.is_big_switch)
+    void isBigSwitch() {
+        if (!isBig.isOpened()) {
+            bigNeedIocn.setVisibility(View.INVISIBLE);
+            bigView.setVisibility(View.GONE);
+        } else {
+            bigNeedIocn.setVisibility(View.VISIBLE);
+            bigView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @OnClick(R.id.is_new_switch)
+    void isNewSwitch() {
+        if (!isNew.isOpened()) {
+            newNeedicon.setVisibility(View.INVISIBLE);
+            newView.setVisibility(View.GONE);
+        } else {
+            newNeedicon.setVisibility(View.VISIBLE);
+            newView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @OnClick(R.id.new_big_switch)
+    void isNewBigSwitch() {
+        if (!isNewBig.isOpened()) {
+            newBigNeed.setVisibility(View.INVISIBLE);
+            newBigView.setVisibility(View.GONE);
+        } else {
+            newBigNeed.setVisibility(View.VISIBLE);
+            newBigView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    List<BigGoodEntity> bigDatas = new ArrayList<>();
+    List<BigGoodEntity> newBigDatas = new ArrayList<>();
+
+    @OnClick(R.id.add_area_btn)
+    void addOneBigArea() {
+        String mini = bigMini.getText().toString().trim();
+        String max = bigMax.getText().toString().trim();
+        String price = bigPrice.getText().toString().trim();
+        if (TextUtils.isEmpty(mini) || TextUtils.isEmpty(max) || TextUtils.isEmpty(price)) {
+            ToastUtil.showMessage(this, "请完善信息！！");
+            return;
+        } else {
+            bigDatas.add(new BigGoodEntity(mini, max, price));
+            bigAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @OnClick(R.id.new_add_area_btn)
+    void addOneNewBigArea() {
+        String mini = newBigMini.getText().toString().trim();
+        String max = newBigMax.getText().toString().trim();
+        String price = newBigPrice.getText().toString().trim();
+        if (TextUtils.isEmpty(mini) || TextUtils.isEmpty(max) || TextUtils.isEmpty(price)) {
+            ToastUtil.showMessage(this, "请完善信息！！");
+            return;
+        } else {
+            newBigDatas.add(new BigGoodEntity(mini, max, price));
+            newAdapter.notifyDataSetChanged();
+        }
+    }
+
     //参与预约
     @BindView(R.id.is_reserve_switch)
     SwitchView isReserve;
@@ -422,6 +492,49 @@ public class GoodsActivity extends RxBaseActivity {
     @BindView(R.id.goods_jingpai_count)
     EditText jingpaiPrice;
 
+    //参与大宗
+    @BindView(R.id.is_big_switch)
+    SwitchView isBig;
+    @BindView(R.id.big_need_icon)
+    ImageView bigNeedIocn;
+    @BindView(R.id.big_view)
+    View bigView;
+    @BindView(R.id.big_mini_count)
+    EditText bigMini;
+    @BindView(R.id.big_max_count)
+    EditText bigMax;
+    @BindView(R.id.big_price)
+    EditText bigPrice;
+    @BindView(R.id.big_list)
+    ExpandableHeightListView bigList;
+
+    //上新
+    @BindView(R.id.is_new_switch)
+    SwitchView isNew;
+    @BindView(R.id.new_big_switch)
+    SwitchView isNewBig;
+    @BindView(R.id.new_need_icon)
+    ImageView newNeedicon;
+    @BindView(R.id.new_big_need)
+    ImageView newBigNeed;
+    @BindView(R.id.new_view)
+    View newView;
+    @BindView(R.id.new_big_mini_count)
+    EditText newBigMini;
+    @BindView(R.id.new_big_max_count)
+    EditText newBigMax;
+    @BindView(R.id.new_big_price)
+    EditText newBigPrice;
+    @BindView(R.id.new_big_list)
+    ExpandableHeightListView newList;
+    @BindView(R.id.new_big_sales_value)
+    EditText newBigSales;
+    @BindView(R.id.new_sales_value)
+    EditText newSales;
+    @BindView(R.id.new_price)
+    EditText newPrice;
+    @BindView(R.id.new_big_view)
+    View newBigView;
 
     @BindView(R.id.goods_apply_date)
     TextView receiveDate;
@@ -649,6 +762,10 @@ public class GoodsActivity extends RxBaseActivity {
         if (goods == null) {
             goods = new Goods();
         }
+        bigAdapter = new BigAdapter();
+        bigList.setAdapter(bigAdapter);
+        newAdapter = new NewBigAdapter();
+        newList.setAdapter(newAdapter);
     }
 
 
@@ -745,16 +862,37 @@ public class GoodsActivity extends RxBaseActivity {
         MultipartBody.Part shopNamePart = MultipartBody.Part.createFormData("shopName", String.valueOf(shopName));
         MultipartBody.Part actionPart;
         MultipartBody.Part bespeakPart;
-        MultipartBody.Part bespeakNumPart = MultipartBody.Part.createFormData("bespeakNum", reserveCount.getText().toString());
+        MultipartBody.Part bespeakNumPart;
+        MultipartBody.Part bigPart;
+        MultipartBody.Part newPart;
+        MultipartBody.Part newBigPart;
         if (isReserve.isOpened()) {
             bespeakPart = MultipartBody.Part.createFormData("bespeak", String.valueOf(1));
+            bespeakNumPart = MultipartBody.Part.createFormData("bespeakNum", reserveCount.getText().toString());
         } else {
             bespeakPart = MultipartBody.Part.createFormData("bespeak", String.valueOf(0));
+            bespeakNumPart = MultipartBody.Part.createFormData("bespeakNum", null);
         }
         if (isJinpai.isOpened()) {
             actionPart = MultipartBody.Part.createFormData("auction", String.valueOf(1));
         } else {
             actionPart = MultipartBody.Part.createFormData("auction", String.valueOf(0));
+        }
+        if (isBig.isOpened()) {
+            bigPart = MultipartBody.Part.createFormData("bigDealOpen", String.valueOf(1));
+        } else {
+            bigPart = MultipartBody.Part.createFormData("bigDealOpen", String.valueOf(0));
+        }
+        if (isNew.isOpened()) {
+            newPart = MultipartBody.Part.createFormData("newOpen", String.valueOf(1));
+            if (isNewBig.isOpened()) {
+                newBigPart = MultipartBody.Part.createFormData("newBigDealOpen", String.valueOf(1));
+            } else {
+                newBigPart = MultipartBody.Part.createFormData("newBigDealOpen", String.valueOf(0));
+            }
+        } else {
+            newBigPart = MultipartBody.Part.createFormData("newBigDealOpen", String.valueOf(0));
+            newPart = MultipartBody.Part.createFormData("newOpen", String.valueOf(0));
         }
         JSONObject object = new JSONObject();
         try {
@@ -772,7 +910,7 @@ public class GoodsActivity extends RxBaseActivity {
         if (apply.getText().toString().contains("发布")) {
             Observable<Object> observable = ApiManager.getInstance().api
                     .createWares(waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart,
-                            actionPart, bespeakPart, bespeakNumPart, depictPart, memoPart, mumPricePart, deliverPart)
+                            actionPart, bespeakPart, bespeakNumPart, depictPart, memoPart, mumPricePart,bigPart,newPart,newBigPart,deliverPart)
                     .map(new HttpResultFunc<>(GoodsActivity.this))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -843,6 +981,25 @@ public class GoodsActivity extends RxBaseActivity {
             ToastUtil.showMessage(this, "请填写数量");
             return;
         }
+        if (isBig.isOpened() && bigDatas.size() == 0) {
+            ToastUtil.showMessage(this, "请添加大宗区间");
+            return;
+        }
+        if (isNew.isOpened()) {
+            if (TextUtils.isEmpty(newPrice.getText().toString().trim())||TextUtils.isEmpty(newSales.getText().toString().trim())){
+                ToastUtil.showMessage(this, "请完善上新数据");
+                return;
+            }
+            if (isNewBig.isOpened()){
+                if (TextUtils.isEmpty(newBigSales.getText().toString().trim())){
+                    ToastUtil.showMessage(this, "请填写大宗数量");
+                    return;
+                }else if (newBigDatas.size()==0){
+                    ToastUtil.showMessage(this, "请添加上新大宗区间");
+                    return;
+                }
+            }
+        }
         goods.grade = grade.getText().toString();
         goods.color = color.getText().toString();
         goods.spec = specLength.getText().toString();
@@ -851,5 +1008,115 @@ public class GoodsActivity extends RxBaseActivity {
         goods.unitPrice = Double.valueOf(goodsPrice.getText().toString());
         goods.salesVolume = Integer.valueOf(salesValue.getText().toString());
         createOrUpdate();
+    }
+
+    class BigAdapter extends BaseAdapter {
+
+
+        @Override
+        public int getCount() {
+            return bigDatas.size();
+        }
+
+        @Override
+        public BigGoodEntity getItem(int i) {
+            return bigDatas.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(final int i, View view, ViewGroup viewGroup) {
+            Holder holder;
+            if (view == null) {
+                view = LayoutInflater.from(GoodsActivity.this).inflate(R.layout.dazong_add_item, null);
+                holder = new Holder(view);
+                view.setTag(holder);
+            } else {
+                holder = (Holder) view.getTag();
+            }
+            holder.miniTv.setText(bigDatas.get(i).mini);
+            holder.maxTv.setText(bigDatas.get(i).max);
+            holder.priceTv.setText(bigDatas.get(i).price);
+            holder.btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bigDatas.remove(i);
+                    notifyDataSetChanged();
+                }
+            });
+            return view;
+        }
+
+        class Holder {
+            TextView miniTv, maxTv, priceTv;
+            ImageView btn;
+
+            public Holder(View view) {
+                miniTv = view.findViewById(R.id.big_mini_count);
+                maxTv = view.findViewById(R.id.big_max_count);
+                priceTv = view.findViewById(R.id.big_price);
+                btn = view.findViewById(R.id.add_area_btn);
+                btn.setImageResource(R.drawable.sub_one_order);
+            }
+        }
+    }
+
+    class NewBigAdapter extends BaseAdapter {
+
+
+        @Override
+        public int getCount() {
+            return newBigDatas.size();
+        }
+
+        @Override
+        public BigGoodEntity getItem(int i) {
+            return newBigDatas.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(final int i, View view, ViewGroup viewGroup) {
+            Holder holder;
+            if (view == null) {
+                view = LayoutInflater.from(GoodsActivity.this).inflate(R.layout.dazong_add_item, null);
+                holder = new Holder(view);
+                view.setTag(holder);
+            } else {
+                holder = (Holder) view.getTag();
+            }
+            holder.miniTv.setText(newBigDatas.get(i).mini);
+            holder.maxTv.setText(newBigDatas.get(i).max);
+            holder.priceTv.setText(newBigDatas.get(i).price);
+            holder.btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    newBigDatas.remove(i);
+                    notifyDataSetChanged();
+                }
+            });
+            return view;
+        }
+
+        class Holder {
+            TextView miniTv, maxTv, priceTv;
+            ImageView btn;
+
+            public Holder(View view) {
+                miniTv = view.findViewById(R.id.big_mini_count);
+                maxTv = view.findViewById(R.id.big_max_count);
+                priceTv = view.findViewById(R.id.big_price);
+                btn = view.findViewById(R.id.add_area_btn);
+                btn.setImageResource(R.drawable.sub_one_order);
+            }
+        }
     }
 }

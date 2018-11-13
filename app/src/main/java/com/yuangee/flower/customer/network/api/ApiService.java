@@ -175,6 +175,9 @@ public interface ApiService {
                                                @Part MultipartBody.Part depict,
                                                @Part MultipartBody.Part memo,
                                                @Part MultipartBody.Part mumPrice,
+                                               @Part MultipartBody.Part bigDeal,
+                                               @Part MultipartBody.Part newGood,
+                                               @Part MultipartBody.Part newBigDeal,
                                                @Part MultipartBody.Part startDeliver);
 
     /**

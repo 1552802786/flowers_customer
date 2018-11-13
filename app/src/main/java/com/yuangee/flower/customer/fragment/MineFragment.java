@@ -91,6 +91,10 @@ public class MineFragment extends RxLazyFragment {
 
     @BindView(R.id.my_all_order)
     TextView myAllOrder;
+    @BindView(R.id.userAccountNumber)
+    TextView myMoney;
+    @BindView(R.id.userCoinNumber)
+    TextView myScore;
     private String phone;
 
 
@@ -146,6 +150,7 @@ public class MineFragment extends RxLazyFragment {
     @OnClick(R.id.my_money)
     void gotoMymoney(){
         Intent it=new Intent(getActivity(), UserMoneyDetailActivity.class);
+        it.putExtra("money",myMoney.getText().toString());
         startActivity(it);
     }
     @OnClick(R.id.my_score)
@@ -258,6 +263,8 @@ public class MineFragment extends RxLazyFragment {
         PersonUtil.getMemberInfo(mRxManager, getActivity(), id, new PersonUtil.OnGetMember() {
             @Override
             public void onSuccess(Member o) {
+                myMoney.setText(String.valueOf(o.balance));
+                myScore.setText(String.valueOf(o.integral));
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
                         .placeholder(R.drawable.ic_default_photo)

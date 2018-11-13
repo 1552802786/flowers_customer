@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/big_input_layout"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:visibility="visible">
+
+    <EditText
+        android:id="@+id/big_mini_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:hint=""
+        android:inputType="number"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:text="--" />
+
+    <EditText
+        android:id="@+id/big_max_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:hint=""
+        android:inputType="number"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/big_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:hint=""
+        android:digits="0,1,2,3,4,5,6,7,8,9,.,"
+        android:inputType="number"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        android:textColor="@color/gray_light" />
+
+    <ImageView
+        android:id="@+id/add_area_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        app:srcCompat="@drawable/add_one_order" />
+</LinearLayout>

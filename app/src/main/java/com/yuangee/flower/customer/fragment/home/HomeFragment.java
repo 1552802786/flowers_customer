@@ -32,6 +32,7 @@ import com.yuangee.flower.customer.entity.HadOpenArea;
 import com.yuangee.flower.customer.entity.InformationEntity;
 import com.yuangee.flower.customer.entity.Recommend;
 import com.yuangee.flower.customer.entity.Shop;
+import com.yuangee.flower.customer.fragment.HomeGoodShopSelection;
 import com.yuangee.flower.customer.fragment.ToSpecifiedFragmentListener;
 import com.yuangee.flower.customer.fragment.shopping.ShoppingPresenter;
 import com.yuangee.flower.customer.network.HaveErrSubscriberListener;
@@ -253,11 +254,23 @@ public class HomeFragment extends RxLazyFragment implements HomeContract.View, O
                 }
             }));
         }
+        if (shop.size()>0){
+            mSectionedAdapter.addSection(new HomeGoodShopSelection(shop, getActivity(), new StatelessSection.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Recommend recommend = newWares.get(position);
+                    Intent intent = new Intent(getActivity(), SearchAcitvity.class);
+                    intent.putExtra("params", recommend.keywords);
+                    startActivity(intent);
+                }
+            }));
+        }
         if (result.rows.size() > 0) {
             GoodsAdapter adapter = new GoodsAdapter(getActivity(), 0, mRxManager);
             adapter.setData(result.rows);
             mSectionedAdapter.addSection(new HomeBottomSelection(getActivity(), adapter));
         }
+
         mSectionedAdapter.notifyDataSetChanged();
     }
 

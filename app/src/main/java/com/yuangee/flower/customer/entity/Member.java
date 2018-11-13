@@ -61,6 +61,8 @@ public class Member {
     @Property
     public double balance;
     @Property
+    public double integral;
+    @Property
     public int expressDeliveryId;
     @Property
     public String customServicePhone;
@@ -81,11 +83,11 @@ public class Member {
     @Transient
     public MemberToken memberToken;//token
 
-    @Generated(hash = 330853293)
+    @Generated(hash = 681278557)
     public Member(long id, String name, String userName, String passWord, String phone,
             String email, String photo, boolean gender, String address, String type,
             String areaName, long areaId, boolean inBlacklist, boolean isRecycle,
-            boolean inFirst, double balance, int expressDeliveryId,
+            boolean inFirst, double balance, double integral, int expressDeliveryId,
             String customServicePhone) {
         this.id = id;
         this.name = name;
@@ -103,6 +105,7 @@ public class Member {
         this.isRecycle = isRecycle;
         this.inFirst = inFirst;
         this.balance = balance;
+        this.integral = integral;
         this.expressDeliveryId = expressDeliveryId;
         this.customServicePhone = customServicePhone;
     }
@@ -253,6 +256,14 @@ public class Member {
 
     public void setAreaName(String areaName) {
         this.areaName = areaName;
+    }
+
+    public double getIntegral() {
+        return this.integral;
+    }
+
+    public void setIntegral(double integral) {
+        this.integral = integral;
     }
 
 }

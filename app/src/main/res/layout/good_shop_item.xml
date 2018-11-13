@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item1"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/rel_layout2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="2.5dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/title_second2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="11sp" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/image_view2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            app:riv_border_color="@color/transparent"
+            app:riv_border_width="0dip"
+            app:riv_corner_radius="6dip"
+            app:riv_mutate_background="true"
+            app:riv_oval="false"
+            app:riv_tile_mode="repeat" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rel_layout3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="2.5dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/title_second3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="11sp" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/image_view3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            app:riv_border_color="@color/transparent"
+            app:riv_border_width="0dip"
+            app:riv_corner_radius="6dip"
+            app:riv_mutate_background="true"
+            app:riv_oval="false"
+            app:riv_tile_mode="repeat" />
+    </LinearLayout>
+
+</LinearLayout>
