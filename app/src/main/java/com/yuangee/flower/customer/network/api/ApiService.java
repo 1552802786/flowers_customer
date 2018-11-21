@@ -1,5 +1,6 @@
 package com.yuangee.flower.customer.network.api;
 
+import com.alibaba.fastjson.annotation.JSONType;
 import com.google.gson.JsonElement;
 import com.yuangee.flower.customer.entity.AreaResult;
 import com.yuangee.flower.customer.entity.BannerBean;
@@ -137,93 +138,19 @@ public interface ApiService {
     /**
      * 添加商品
      *
-     * @param waresImage   商品图片
-     * @param genreId      所属类别id
-     * @param genreName    所属类别名称
-     * @param genreSubId   所属类别-子类id
-     * @param genreSubName 所属类别-子类名称
-     * @param name         商品名称
-     * @param grade        商品等级 A-D
-     * @param color        商品颜色
-     * @param spec         商品规格
-     * @param unit         商品单位
-     * @param unitPrice    商品单价
-     * @param salesVolume  可售量
-     * @param shopId       供货商Id
-     * @param shopName     供货商名称
      * @return
      */
-    @Multipart
+    @FormUrlEncoded
     @POST("rest/wares/createWares")
-    Observable<BaseResult<Object>> createWares(@Part MultipartBody.Part waresImage,
-                                               @Part MultipartBody.Part genreId,
-                                               @Part MultipartBody.Part genreName,
-                                               @Part MultipartBody.Part genreSubId,
-                                               @Part MultipartBody.Part genreSubName,
-                                               @Part MultipartBody.Part name,
-                                               @Part MultipartBody.Part grade,
-                                               @Part MultipartBody.Part color,
-                                               @Part MultipartBody.Part spec,
-                                               @Part MultipartBody.Part unit,
-                                               @Part MultipartBody.Part unitPrice,
-                                               @Part MultipartBody.Part salesVolume,
-                                               @Part MultipartBody.Part shopId,
-                                               @Part MultipartBody.Part shopName,
-                                               @Part MultipartBody.Part auction,
-                                               @Part MultipartBody.Part bespeak,
-                                               @Part MultipartBody.Part bespeakNum,
-                                               @Part MultipartBody.Part depict,
-                                               @Part MultipartBody.Part memo,
-                                               @Part MultipartBody.Part mumPrice,
-                                               @Part MultipartBody.Part bigDeal,
-                                               @Part MultipartBody.Part newGood,
-                                               @Part MultipartBody.Part newBigDeal,
-                                               @Part MultipartBody.Part startDeliver);
+    Observable<BaseResult<Object>> createWares(@Field("data") String data);
 
     /**
      * 修改商品
-     *
-     * @param Id           商品Id
-     * @param waresImage   商品图片
-     * @param genreId      所属类别id
-     * @param genreName    所属类别名称
-     * @param genreSubId   所属类别-子类id
-     * @param genreSubName 所属类别-子类名称
-     * @param name         商品名称
-     * @param grade        商品等级 A-D
-     * @param color        商品颜色
-     * @param spec         商品规格
-     * @param unit         商品单位
-     * @param unitPrice    商品单价
-     * @param salesVolume  可售量
-     * @param shopId       供货商Id
-     * @param shopName     供货商名称
      * @return
      */
-    @Multipart
+    @FormUrlEncoded
     @POST("rest/wares/updateWares")
-    Observable<BaseResult<Object>> updateWares(@Part MultipartBody.Part Id,
-                                               @Part MultipartBody.Part waresImage,
-                                               @Part MultipartBody.Part genreId,
-                                               @Part MultipartBody.Part genreName,
-                                               @Part MultipartBody.Part genreSubId,
-                                               @Part MultipartBody.Part genreSubName,
-                                               @Part MultipartBody.Part name,
-                                               @Part MultipartBody.Part grade,
-                                               @Part MultipartBody.Part color,
-                                               @Part MultipartBody.Part spec,
-                                               @Part MultipartBody.Part unit,
-                                               @Part MultipartBody.Part unitPrice,
-                                               @Part MultipartBody.Part salesVolume,
-                                               @Part MultipartBody.Part shopId,
-                                               @Part MultipartBody.Part shopName,
-                                               @Part MultipartBody.Part auction,
-                                               @Part MultipartBody.Part bespeak,
-                                               @Part MultipartBody.Part bespeakNum,
-                                               @Part MultipartBody.Part depict,
-                                               @Part MultipartBody.Part memo,
-                                               @Part MultipartBody.Part mumPrice,
-                                               @Part MultipartBody.Part startDeliver);
+    Observable<BaseResult<Object>> updateWares(@Field("data") String data);
 
     /**
      * 删除商品

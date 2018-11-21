@@ -32,7 +32,9 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.yuangee.flower.customer.ApiManager;
+import com.yuangee.flower.customer.App;
 import com.yuangee.flower.customer.Config;
+import com.yuangee.flower.customer.FlowerApp;
 import com.yuangee.flower.customer.R;
 import com.yuangee.flower.customer.base.RxBaseActivity;
 import com.yuangee.flower.customer.db.DbHelper;
@@ -43,25 +45,43 @@ import com.yuangee.flower.customer.entity.Goods;
 import com.yuangee.flower.customer.network.HttpResultFunc;
 import com.yuangee.flower.customer.network.MySubscriber;
 import com.yuangee.flower.customer.network.NoErrSubscriberListener;
+import com.yuangee.flower.customer.util.Base64;
 import com.yuangee.flower.customer.util.DisplayUtil;
+import com.yuangee.flower.customer.util.MyHttpLoggingInterceptor;
 import com.yuangee.flower.customer.util.StringUtils;
 import com.yuangee.flower.customer.util.ToastUtil;
 import com.yuangee.flower.customer.widget.ExpandableHeightListView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import ch.ielse.view.SwitchView;
+import okhttp3.Cache;
+import okhttp3.Call;
+import okhttp3.Headers;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -332,13 +352,8 @@ public class GoodsActivity extends RxBaseActivity {
     void chooseDate() {
         final List<String> date = new ArrayList<>();
         date.add("全天");
-        for (int i = 0; i < 24; i++) {
-            if (i < 10) {
-                date.add("0" + i + "点");
-            } else {
-                date.add(i + "点");
-            }
-        }
+        date.add(17 + "点");
+
         ScrollView scrollView = new ScrollView(GoodsActivity.this);
         final RadioGroup group = new RadioGroup(this);
         scrollView.addView(group);
@@ -837,107 +852,170 @@ public class GoodsActivity extends RxBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 将图片转换成Base64编码
+     *
+     * @param imgFile 待处理图片
+     * @return
+     */
+    public String getImgStr(String imgFile) {
+        //将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+
+
+        InputStream in = null;
+        byte[] data = null;
+        //读取图片字节数组
+        try {
+            in = new FileInputStream(imgFile);
+            data = new byte[in.available()];
+            in.read(data);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.e("TAG", new String(Base64.encode(data)));
+        return new String(Base64.encode(data));
+    }
+
     private void createOrUpdate() {
         if (StringUtils.isBlank(goods.image) && StringUtils.isBlank(imgPath)) {
             ToastUtil.showMessage(this, "请选择商品照片");
             return;
         }
-        MultipartBody.Part waresImagePart = null;
-        if (StringUtils.isNotBlank(imgPath)) {
-            waresImagePart = MultipartBody.Part.createFormData("waresImage", "waresImage.png", RequestBody.create(MediaType.parse("image/png"), new File(imgPath)));
-        }
-        MultipartBody.Part idPart = MultipartBody.Part.createFormData("id", String.valueOf(goods.id));
-        MultipartBody.Part genreIdPart = MultipartBody.Part.createFormData("genreId", String.valueOf(goods.genreId));
-        MultipartBody.Part genreSubIdPart = MultipartBody.Part.createFormData("genreSubId", String.valueOf(goods.genreSubId));
-        MultipartBody.Part genreNamePart = MultipartBody.Part.createFormData("genreName", goods.genreName);
-        MultipartBody.Part genreSubNamePart = MultipartBody.Part.createFormData("genreSubName", goods.genreSubName);
-        MultipartBody.Part namePart = MultipartBody.Part.createFormData("name", goods.name);
-        MultipartBody.Part gradePart = MultipartBody.Part.createFormData("grade", goods.grade);
-        MultipartBody.Part colorPart = MultipartBody.Part.createFormData("color", goods.color);
-        MultipartBody.Part specPart = MultipartBody.Part.createFormData("spec", goods.spec);
-        MultipartBody.Part unitPart = MultipartBody.Part.createFormData("unit", goods.unit);
-        MultipartBody.Part unitPricePart = MultipartBody.Part.createFormData("unitPrice", String.valueOf(goods.unitPrice));
-        MultipartBody.Part salesVolumePart = MultipartBody.Part.createFormData("salesVolume", String.valueOf(goods.salesVolume));
-        MultipartBody.Part shopIdPart = MultipartBody.Part.createFormData("shopId", String.valueOf(shopId));
-        MultipartBody.Part shopNamePart = MultipartBody.Part.createFormData("shopName", String.valueOf(shopName));
-        MultipartBody.Part actionPart;
-        MultipartBody.Part bespeakPart;
-        MultipartBody.Part bespeakNumPart;
-        MultipartBody.Part bigPart;
-        MultipartBody.Part newPart;
-        MultipartBody.Part newBigPart;
-        if (isReserve.isOpened()) {
-            bespeakPart = MultipartBody.Part.createFormData("bespeak", String.valueOf(1));
-            bespeakNumPart = MultipartBody.Part.createFormData("bespeakNum", reserveCount.getText().toString());
-        } else {
-            bespeakPart = MultipartBody.Part.createFormData("bespeak", String.valueOf(0));
-            bespeakNumPart = MultipartBody.Part.createFormData("bespeakNum", null);
-        }
-        if (isJinpai.isOpened()) {
-            actionPart = MultipartBody.Part.createFormData("auction", String.valueOf(1));
-        } else {
-            actionPart = MultipartBody.Part.createFormData("auction", String.valueOf(0));
-        }
-        if (isBig.isOpened()) {
-            bigPart = MultipartBody.Part.createFormData("bigDealOpen", String.valueOf(1));
-        } else {
-            bigPart = MultipartBody.Part.createFormData("bigDealOpen", String.valueOf(0));
-        }
-        if (isNew.isOpened()) {
-            newPart = MultipartBody.Part.createFormData("newOpen", String.valueOf(1));
-            if (isNewBig.isOpened()) {
-                newBigPart = MultipartBody.Part.createFormData("newBigDealOpen", String.valueOf(1));
-            } else {
-                newBigPart = MultipartBody.Part.createFormData("newBigDealOpen", String.valueOf(0));
-            }
-        } else {
-            newBigPart = MultipartBody.Part.createFormData("newBigDealOpen", String.valueOf(0));
-            newPart = MultipartBody.Part.createFormData("newOpen", String.valueOf(0));
-        }
-        JSONObject object = new JSONObject();
+        JSONObject obj = new JSONObject();
         try {
+            if (StringUtils.isNotBlank(imgPath)) {
+                obj.put("image", "data:image/jpeg;base64," + getImgStr(imgPath));
+            }
+            obj.put("id", String.valueOf(goods.id));
+            obj.put("genreId", String.valueOf(goods.genreId));
+            obj.put("genreSubId", String.valueOf(goods.genreSubId));
+            obj.put("genreName", goods.genreName);
+            obj.put("genreSubName", goods.genreSubName);
+            obj.put("name", goods.name);
+            obj.put("grade", goods.grade);
+            obj.put("color", goods.color);
+            obj.put("spec", goods.spec);
+            obj.put("unit", goods.unit);
+            obj.put("unitPrice", String.valueOf(goods.unitPrice));
+            obj.put("salesVolume", String.valueOf(goods.salesVolume));
+            obj.put("shopId", String.valueOf(shopId));
+            obj.put("shopName", String.valueOf(shopName));
+            if (isReserve.isOpened()) {
+                obj.put("bespeak", true);
+                obj.put("bespeakNum", reserveCount.getText().toString());
+            } else {
+                obj.put("bespeak", false);
+                obj.put("bespeakNum", "");
+            }
+            if (isJinpai.isOpened()) {
+                obj.put("auction", true);
+            } else {
+                obj.put("auction", false);
+            }
+            JSONArray array = new JSONArray();
+            if (isBig.isOpened()) {
+                for (BigGoodEntity entity : bigDatas) {
+                    JSONObject o = new JSONObject();
+                    o.put("type", "0");
+                    o.put("start", entity.mini);
+                    o.put("end", entity.max);
+                    o.put("price", entity.price);
+                    array.put(o);
+                }
+                obj.put("bigDealOpen", true);
+            } else {
+                obj.put("bigDealOpen", false);
+            }
+            if (isNew.isOpened()) {
+                obj.put("newOpen", true);
+                if (isNewBig.isOpened()) {
+                    for (BigGoodEntity entity : newBigDatas) {
+                        JSONObject o = new JSONObject();
+                        o.put("type", "1");
+                        o.put("start", entity.mini);
+                        o.put("end", entity.max);
+                        o.put("price", entity.price);
+                        array.put(o);
+                    }
+
+                    obj.put("newBigDealOpen", true);
+                } else {
+                    obj.put("newBigDealOpen", false);
+                }
+            } else {
+                obj.put("newBigDealOpen", false);
+                obj.put("newOpen", false);
+            }
+            if (isBig.isOpened() && isNewBig.isOpened()) {
+                obj.put("newBigDealWaresScopList", array);
+            } else if (isNewBig.isOpened()) {
+                obj.put("bigDealWaresScopList", array);
+            }
+            JSONObject object = new JSONObject();
             object.put(first_chooseAble_label.getText().toString().trim(), first_chooseAble_Text.getText().toString().trim());
             object.put(second_chooseAble_label.getText().toString().trim(), second_chooseAble_Text.getText().toString().trim());
             object.put(third_chooseAble_label.getText().toString().trim(), third_chooseAble_Text.getText().toString().trim());
             object.put(fourth_chooseAble_label.getText().toString().trim(), fourth_chooseAble_Text.getText().toString().trim());
+            obj.put("depict", object.toString());
+            obj.put("memo", userMessage.getText().toString().trim());
+            obj.put("mumPrice", jingpaiPrice.getText().toString().trim());
+            obj.put("startDeliver", receiveDate.getText().toString().trim());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        MultipartBody.Part depictPart = MultipartBody.Part.createFormData("depict", object.toString());
-        MultipartBody.Part memoPart = MultipartBody.Part.createFormData("memo", userMessage.getText().toString().trim());
-        MultipartBody.Part mumPricePart = MultipartBody.Part.createFormData("mumPrice", jingpaiPrice.getText().toString().trim());
-        MultipartBody.Part deliverPart = MultipartBody.Part.createFormData("startDeliver", receiveDate.getText().toString().trim());
+
+        final String token = App.me().getSharedPreferences().getString("token", "");
+        File cacheFile = new File(FlowerApp.getContext().getCacheDir(), "cache");
+        Cache cache = new Cache(cacheFile, 1024 * 1024 * 2); //2M
+        MyHttpLoggingInterceptor logInterceptor = new MyHttpLoggingInterceptor();   //拦截器用来输出请求日志方便调试
+        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY); //日志输出等级为BODY(打印请求和返回值的头部和body信息)
+
+        Log.e("token", new String(it.sauronsoftware.base64.Base64.encode(token).getBytes()));
+        //创建okhttp客户端
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(16000, TimeUnit.MILLISECONDS)
+                .connectTimeout(16000, TimeUnit.MILLISECONDS)
+                .addInterceptor(logInterceptor) //添加日志拦截器,进行输出日志
+                .retryOnConnectionFailure(false)    //失败不重连
+                .cache(cache)
+                .build();
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        //请求body
+        RequestBody body = RequestBody.create(JSON, obj.toString());
+        //请求header的添加
+        Headers headers = new Headers.Builder()
+                .add("X-token", new String(it.sauronsoftware.base64.Base64.encode(token).getBytes()))
+                .build();
+
+        Request request;
         if (apply.getText().toString().contains("发布")) {
-            Observable<Object> observable = ApiManager.getInstance().api
-                    .createWares(waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart,
-                            actionPart, bespeakPart, bespeakNumPart, depictPart, memoPart, mumPricePart,bigPart,newPart,newBigPart,deliverPart)
-                    .map(new HttpResultFunc<>(GoodsActivity.this))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
+            //请求组合创建
+             request= new Request.Builder()
+                    .url(Config.BASE_URL + "rest/wares/createWares")
+                    .post(body)
+                    .headers(headers)
+                    .build();
 
-            mRxManager.add(observable.subscribe(new MySubscriber<>(GoodsActivity.this, true, false, new NoErrSubscriberListener<Object>() {
-                @Override
-                public void onNext(Object o) {
-                    ToastUtil.showMessage(GoodsActivity.this, "商品发布成功");
-                    finish();
-                }
-            })));
         } else {
-            Observable<Object> observable = ApiManager.getInstance().api
-                    .updateWares(idPart, waresImagePart, genreIdPart, genreNamePart, genreSubIdPart, genreSubNamePart, namePart, gradePart, colorPart, specPart, unitPart, unitPricePart, salesVolumePart, shopIdPart, shopNamePart,
-                            actionPart, bespeakPart, bespeakNumPart, depictPart, memoPart, mumPricePart, deliverPart)
-                    .map(new HttpResultFunc<>(GoodsActivity.this))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-
-            mRxManager.add(observable.subscribe(new MySubscriber<>(GoodsActivity.this, true, false, new NoErrSubscriberListener<Object>() {
-                @Override
-                public void onNext(Object o) {
-                    ToastUtil.showMessage(GoodsActivity.this, "商品修改成功");
-                    finish();
-                }
-            })));
+            //请求组合创建
+            request= new Request.Builder()
+                    .url(Config.BASE_URL + "rest/wares/updateWares")
+                    .post(body)
+                    .headers(headers)
+                    .build();
         }
+        okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ToastUtil.showMessage(GoodsActivity.this, "商品发布成功");
+            }
+        });
     }
 
     private void subCheck() {
@@ -986,15 +1064,15 @@ public class GoodsActivity extends RxBaseActivity {
             return;
         }
         if (isNew.isOpened()) {
-            if (TextUtils.isEmpty(newPrice.getText().toString().trim())||TextUtils.isEmpty(newSales.getText().toString().trim())){
+            if (TextUtils.isEmpty(newPrice.getText().toString().trim()) || TextUtils.isEmpty(newSales.getText().toString().trim())) {
                 ToastUtil.showMessage(this, "请完善上新数据");
                 return;
             }
-            if (isNewBig.isOpened()){
-                if (TextUtils.isEmpty(newBigSales.getText().toString().trim())){
+            if (isNewBig.isOpened()) {
+                if (TextUtils.isEmpty(newBigSales.getText().toString().trim())) {
                     ToastUtil.showMessage(this, "请填写大宗数量");
                     return;
-                }else if (newBigDatas.size()==0){
+                } else if (newBigDatas.size() == 0) {
                     ToastUtil.showMessage(this, "请添加上新大宗区间");
                     return;
                 }
